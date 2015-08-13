@@ -1,16 +1,6 @@
 import json
+import re
 import pprint
-
-
-organs = {'organs': [{'name': 'Heart',
-                      'args': [['aorta'],
-                               ['KDO', 'KDRLG + LP * 2'],
-                               ['OAK'],
-                               ['LP'],
-                               ['MGP', 'aorta + OAK'],
-                               ['KDRLG']],
-                      }]}
-pprint.pprint(organs)
 
 
 class Organ(object):
@@ -50,24 +40,49 @@ class OrganFactory(object):
 
     def __init__(self):
         self.organs = []
+        self.re = re.compile(r'[a-zA-Z]+[a-zA-Z0-9\-_]*')
 
     def __check_if_list_is_unique(list_):
         seen = set()
         return not any(i in seen or seen.add(i) for i in list_)
 
     def create_organ(self, json_data):
-        pass
+        data = json.loads(json_data)
+        self.__convert_calculated_args_expression(data['args'])
 
-    def convert_calculated_args_expression(self, args):
+    def __convert_calculated_args_expression(self, args):
         # TODO: Replace exec with secure mechanism.
         # Maybe it's going to be a simple lexical analyzer
+
+        indexes = {arg[0]: i for (i, arg) in enumerate(args)}
+
         for each in args:
             try:
                 arg, expr = each
-            except IndexError:
-                # No second argument == value is not calculated
+            except ValueError:
+                # No second argument == value will not be calculated
                 continue
 
+            for match in self.re.finditer(expr):
+                # Mew. Too complicated i guess
+                group = match.group()
+                arg_index = indexes[group]
+                expr = expr.replace(group, 'self.args[{}]'.format(arg_index))
 
-# organ_factory = OrganFactory()
-# organ_factory.create_organ(json.dumps(organs['organs'][0]))
+            print(expr)
+
+
+if __name__ == '__main__':
+
+    organs = {'organs': [{'name': 'Heart',
+                          'args': [['aorta'],
+                                   ['KDO', 'aorta + LP * 2'],
+                                   ['OAK'],
+                                   ['LP'],
+                                   ['MGP', 'aorta + OAK'],
+                                   ['KDRLG']],
+                          }]}
+    pprint.pprint(organs)
+
+    organ_factory = OrganFactory()
+    organ_factory.create_organ(json.dumps(organs['organs'][0]))
