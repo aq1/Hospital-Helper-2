@@ -50,6 +50,9 @@ class OrganFactory(object):
         data = json.loads(json_data)
         self.__convert_calculated_args_expression(data['args'])
 
+    def _get_value_from_mediator(self, key):
+        return self.mediator.get(key)
+
     def __convert_calculated_args_expression(self, args):
         # TODO: Replace exec with secure mechanism.
         # Maybe it's going to be a simple lexical analyzer
@@ -63,13 +66,25 @@ class OrganFactory(object):
                 # No second argument == value will not be calculated
                 continue
 
+            i = 0
+            out = []
             for match in self.re.finditer(expr):
-                # Mew. Too complicated i guess
+                begin, end = match.span()
                 group = match.group()
-                arg_index = indexes[group]
-                expr = expr.replace(group, 'self.args[{}]'.format(arg_index))
+                try:
+                    replacement = 'self.args[{}]'.format(indexes[group])
+                except KeyError:
+                    replacement = 'self._get_value_from_mediator("{}")'.format(group)
 
-            print(expr)
+                out.append(expr[i:begin])
+                out.append(replacement)
+                i = end
+
+                # Mew. Too complicated i guess
+                # group = match.group()
+                # expr = expr.replace(group, 'self.args[{}]'.format(arg_index))
+
+            print(''.join(out))
 
 
 if __name__ == '__main__':
@@ -79,7 +94,7 @@ if __name__ == '__main__':
                                    ['KDO', 'aorta + LP * 2'],
                                    ['OAK'],
                                    ['LP'],
-                                   ['MGP', 'aorta + OAK'],
+                                   ['MGP', 'aorta + OAK + bsa'],
                                    ['KDRLG']],
                           }]}
     pprint.pprint(organs)
