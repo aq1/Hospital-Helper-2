@@ -1,6 +1,5 @@
-import json
-import re
-import pprint
+# -*- coding: UTF-8 -*-
+from json_to_obj import JsonToObj
 
 
 class Organ(object):
@@ -17,6 +16,9 @@ class Organ(object):
         self.name = name
         self.args = args
 
+    def _get_value_from_mediator(self, key):
+        return self.mediator.get(key)
+
     def calculate(self):
         for each in self.args:
             try:
@@ -27,77 +29,93 @@ class Organ(object):
     def get_args_list(self):
         return self.args
 
+    def __repr__(self):
+        args = []
+        for i, each in enumerate(self.args):
+            try:
+                arg = '{}={}'.format(each[0], each[1])
+            except IndexError:
+                arg = each[0]
+
+            args.append('{}: {}'.format(i, arg))
+
+        return '{}:\n{}'.format(self.name, ';\n'.join(args))
+
+    def __str__(self):
+        return self.__repr__()
+
 
 class OrganFactory(object):
 
     '''
-    Translates json object to an Organ objects.
-
-    It's meant that json is generated initially by programmer
-    and can be edited by user, so there has to be an automatic
-    process that creates objects.
+    Contains all organs objects.
+    Delegates creation process to JsonToObj class (self.factory).
     '''
 
-    def __init__(self):
-        self.organs = []
-        self.re = re.compile(r'[a-zA-Z]+[a-zA-Z0-9\-_]*')
+    def __init__(self, data=None):
+        self.factory = JsonToObj(klass=Organ)
+
+        if not data:
+            self.organs = []
+        else:
+            self.organs = self.create_many_organs(data)
 
     def __check_if_list_is_unique(list_):
         seen = set()
         return not any(i in seen or seen.add(i) for i in list_)
 
-    def create_organ(self, json_data):
-        data = json.loads(json_data)
-        self.__convert_calculated_args_expression(data['args'])
+    def create_organ(self, data):
+        # data excepts to be a dict
+        return self.factory.create_obj(data=data)
 
-    def _get_value_from_mediator(self, key):
-        return self.mediator.get(key)
+    def create_many_organs(self, data):
+        out = []
+        for organ in data:
+            out.append(self.create_organ(organ))
+        return out
+
+    def __str_to_expr(self, string, indexes):
+        # Mew. Too complicated i guess
+        i = 0
+        out = []
+
+        for match in self.re.finditer(string):
+            begin, end = match.span()
+            group = match.group()
+            try:
+                replacement = 'self.args[{}]'.format(indexes[group])
+            except KeyError:
+                replacement = 'self._get_value_from_mediator("{}")'.format(group)
+
+            out.append(string[i:begin])
+            out.append(replacement)
+            i = end
+
+        return ''.join(out)
 
     def __convert_calculated_args_expression(self, args):
         # TODO: Replace exec with secure mechanism.
         # Maybe it's going to be a simple lexical analyzer
 
         indexes = {arg[0]: i for (i, arg) in enumerate(args)}
+        organ_args = []
 
         for each in args:
             try:
                 arg, expr = each
             except ValueError:
                 # No second argument == value will not be calculated
+                organ_args.append(each)
                 continue
 
-            i = 0
-            out = []
-            for match in self.re.finditer(expr):
-                begin, end = match.span()
-                group = match.group()
-                try:
-                    replacement = 'self.args[{}]'.format(indexes[group])
-                except KeyError:
-                    replacement = 'self._get_value_from_mediator("{}")'.format(group)
+            organ_args.append((arg, self.__str_to_expr(expr, indexes)))
 
-                out.append(expr[i:begin])
-                out.append(replacement)
-                i = end
+        return organ_args
 
-                # Mew. Too complicated i guess
-                # group = match.group()
-                # expr = expr.replace(group, 'self.args[{}]'.format(arg_index))
-
-            print(''.join(out))
+    def __repr__(self):
+        return 'Organs:\n{}'.format('\n'.join(map(str, self.organs)))
 
 
 if __name__ == '__main__':
 
-    organs = {'organs': [{'name': 'Heart',
-                          'args': [['aorta'],
-                                   ['KDO', 'aorta + LP * 2'],
-                                   ['OAK'],
-                                   ['LP'],
-                                   ['MGP', 'aorta + OAK + bsa'],
-                                   ['KDRLG']],
-                          }]}
-    pprint.pprint(organs)
-
-    organ_factory = OrganFactory()
-    organ_factory.create_organ(json.dumps(organs['organs'][0]))
+    pass

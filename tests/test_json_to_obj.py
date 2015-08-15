@@ -1,4 +1,4 @@
-import json
+from organ_factory import Organ
 
 organs = {'organs': [{'name': 'Heart',
                       'args': [['aorta'],
@@ -15,7 +15,7 @@ organs = {'organs': [{'name': 'Heart',
                                ['arg3'],
                                ['arg4']]}]}
 
-organs = organs['organs']
+organs = organs['organs'][0]
 
-organ_factory = OrganFactory(organs)
+organ_factory = JsonToObj(Organ, organs).create_obj()
 print(organ_factory)
