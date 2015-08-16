@@ -1,34 +1,9 @@
 # -*- coding: UTF-8 -*-
 
+
 from json_to_obj import JsonToObj
-from abstract_logic_obj import AbstractObject
-
-
-class Organ(AbstractObject):
-
-    '''
-    Represents a single organ that contains its name
-    and list of arguments. If argument has it second value
-    then it's calculable and class will calculate the expression.
-
-    Objects of this class are created by OrganFactory class.
-    '''
-
-    def _get_value_from_mediator(self, key):
-        return self.mediator.get(key)
-
-    def calculate(self):
-        for each in self.args:
-            try:
-                exec(each[0])
-            except IndexError:
-                continue
-
-    def get_args_list(self):
-        return self.args
-
-    def __str__(self):
-        return self.__repr__()
+from organ import Organ
+from mediator import Mediator
 
 
 class OrganFactory(object):
@@ -103,5 +78,26 @@ class OrganFactory(object):
 
 
 if __name__ == '__main__':
+    import json
 
-    pass
+    organs = {'organs': [{'name': 'Heart',
+                          'args': [['aorta'],
+                                   ['KDO', 'aorta + LP * 2'],
+                                   ['OAK'],
+                                   ['LP'],
+                                   ['MGP', 'aorta + OAK + bsa'],
+                                   ['KDRLG']],
+                          },
+                         {'name': 'Pancreas',
+                          'args': [['arg0', 'arg1+arg2+arg3*arg4'],
+                                   ['arg1', 'arg2 + arg1 + from_mediator'],
+                                   ['arg2'],
+                                   ['arg3'],
+                                   ['arg4']]}]}
+
+    organs = organs['organs']
+
+    organ_factory = OrganFactory(organs)
+    a = organ_factory.organs[0]
+    a.calculate()
+

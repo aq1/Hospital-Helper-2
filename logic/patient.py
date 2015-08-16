@@ -1,5 +1,6 @@
 # -*- coding: UTF-8 -*-
 
+
 from json_to_obj import JsonToObj
 from abstract_logic_obj import AbstractObject
 
