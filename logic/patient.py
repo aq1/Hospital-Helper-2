@@ -1,16 +1,11 @@
 # -*- coding: UTF-8 -*-
 
 from json_to_obj import JsonToObj
+from abstract_logic_obj import AbstractObject
 
 
-class Patient(object):
-
-    def __init__(self, name, data):
-        self.name = Patient
-        self.data = data
-
-    def __repr__(self):
-        return 'Patient'
+class Patient(AbstractObject):
+    pass
 
 
 class TestProperty(object):
@@ -42,5 +37,5 @@ if __name__ == '__main__':
                              ['bsa', '(weight + height) / age'],
                              ['sent_by']]}
 
-    patient = JsonToObj(klass=Patient, data=patient_args).create_obj()
+    patient = JsonToObj(klass=Patient, args=patient_args).create_obj()
     print(patient)

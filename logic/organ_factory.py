@@ -1,20 +1,18 @@
 # -*- coding: UTF-8 -*-
+
 from json_to_obj import JsonToObj
+from abstract_logic_obj import AbstractObject
 
 
-class Organ(object):
+class Organ(AbstractObject):
 
     '''
-    Represents a single organ that contaions its name
+    Represents a single organ that contains its name
     and list of arguments. If argument has it second value
     then it's calculable and class will calculate the expression.
 
     Objects of this class are created by OrganFactory class.
     '''
-
-    def __init__(self, name, args):
-        self.name = name
-        self.args = args
 
     def _get_value_from_mediator(self, key):
         return self.mediator.get(key)
@@ -29,18 +27,6 @@ class Organ(object):
     def get_args_list(self):
         return self.args
 
-    def __repr__(self):
-        args = []
-        for i, each in enumerate(self.args):
-            try:
-                arg = '{}={}'.format(each[0], each[1])
-            except IndexError:
-                arg = each[0]
-
-            args.append('{}: {}'.format(i, arg))
-
-        return '{}:\n{}'.format(self.name, ';\n'.join(args))
-
     def __str__(self):
         return self.__repr__()
 
@@ -52,25 +38,25 @@ class OrganFactory(object):
     Delegates creation process to JsonToObj class (self.factory).
     '''
 
-    def __init__(self, data=None):
+    def __init__(self, args=None):
         self.factory = JsonToObj(klass=Organ)
 
-        if not data:
+        if not args:
             self.organs = []
         else:
-            self.organs = self.create_many_organs(data)
+            self.organs = self.create_many_organs(args)
 
     def __check_if_list_is_unique(list_):
         seen = set()
         return not any(i in seen or seen.add(i) for i in list_)
 
-    def create_organ(self, data):
-        # data excepts to be a dict
-        return self.factory.create_obj(data=data)
+    def create_organ(self, args):
+        # args excepts to be a dict
+        return self.factory.create_obj(args=args)
 
-    def create_many_organs(self, data):
+    def create_many_organs(self, args):
         out = []
-        for organ in data:
+        for organ in args:
             out.append(self.create_organ(organ))
         return out
 

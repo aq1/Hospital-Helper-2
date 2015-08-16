@@ -13,10 +13,10 @@ class JsonToObj(object):
     process that creates objects.
     '''
 
-    def __init__(self, klass, data=None):
+    def __init__(self, klass, args=None):
         self.re = re.compile(r'[a-zA-Z]+[a-zA-Z0-9\-_]*')
         self.klass = klass
-        self.data = data
+        self.args = args
 
     def __str_to_expr(self, string, indexes):
         # Mew. Too complicated i guess
@@ -54,14 +54,14 @@ class JsonToObj(object):
 
         return out
 
-    def create_obj(self, klass=None, data=None):
+    def create_obj(self, klass=None, args=None):
         if not klass:
             klass = self.klass
-        if not data:
-            data = self.data
+        if not args:
+            args = self.args
 
-        name = data['name']
-        args = self.__convert_args(data['args'])
+        name = args['name']
+        args = self.__convert_args(args['args'])
 
         return klass(name, args)
 
