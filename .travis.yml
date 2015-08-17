@@ -8,7 +8,7 @@ install:
   - pip install -r requirements.txt
 
 script:
-  - pwd; ls -a -l;
+  - pwd; ls -a -l; nosetests -v;
 
 after_success:
   - codecov
