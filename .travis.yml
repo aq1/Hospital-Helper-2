@@ -8,8 +8,8 @@ python:
 before_install:
   - pip install codecov
 
+script:
+  - coverage run n.py
+
 after_success:
   - codecov
-
-script:
-  - python n.py
