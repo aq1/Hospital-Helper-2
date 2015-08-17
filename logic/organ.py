@@ -1,8 +1,8 @@
 # -*- coding: UTF-8 -*-
 
 
-from abstract_logic_obj import AbstractObject
-from mediator import Mediator
+from logic.abstract_logic_obj import AbstractObject
+from logic.mediator import Mediator
 
 
 class Organ(AbstractObject):
