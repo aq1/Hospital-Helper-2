@@ -17,7 +17,8 @@ class Mediator(object):
         return cls.instance
 
     def __init__(self, obj=None):
-        self.add_obj(obj)
+        if obj:
+            self.add_obj(obj)
 
     def add_obj(self, obj):
         for attr in ('name', 'get'):

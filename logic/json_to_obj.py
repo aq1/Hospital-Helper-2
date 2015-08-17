@@ -19,7 +19,7 @@ class JsonToObj(object):
         self.klass = klass
         self.args = args
 
-    def __str_to_expr(self, string, indexes):
+    def _str_to_expr(self, string, indexes):
         # Mew. Too complicated i guess
         i = 0
         out = []
@@ -38,7 +38,7 @@ class JsonToObj(object):
 
         return ''.join(out)
 
-    def __convert_args(self, arg_list):
+    def _convert_args(self, arg_list):
         out = []
 
         indexes = {arg[0]: i for (i, arg) in enumerate(arg_list)}
@@ -51,7 +51,7 @@ class JsonToObj(object):
                 out.append(each)
                 continue
 
-            out.append([arg, self.__str_to_expr(expr, indexes)])
+            out.append([arg, self._str_to_expr(expr, indexes)])
 
         return out
 
@@ -62,7 +62,7 @@ class JsonToObj(object):
             args = self.args
 
         name = args['name']
-        args = self.__convert_args(args['args'])
+        args = self._convert_args(args['args'])
 
         return klass(name, args)
 
