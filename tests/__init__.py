@@ -1,4 +1,4 @@
 # -*- coding: UTF-8 -*-
 
 
-from test_logic import TestJsonToObj
+from tests import test_logic
