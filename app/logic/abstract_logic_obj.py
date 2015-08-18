@@ -1,7 +1,7 @@
 # -*- coding: UTF-8 -*-
 
 
-from mediator import Mediator
+from app.logic.mediator import Mediator
 
 
 class AbstractObject(object):

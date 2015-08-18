@@ -1,18 +1,10 @@
 # -*- coding: UTF-8 -*-
 
-
-import sys
-import os
-
 import unittest
 
-
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
-
-
-from logic.json_to_obj import JsonToObj
-from logic.organ import Organ
-from logic.organ_factory import OrganFactory
+from app.logic.json_to_obj import JsonToObj
+from app.logic.organ import Organ
+from app.logic.organ_factory import OrganFactory
 
 
 class TestJsonToObj(unittest.TestCase):

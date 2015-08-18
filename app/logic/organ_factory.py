@@ -1,9 +1,8 @@
 # -*- coding: UTF-8 -*-
 
 
-from json_to_obj import JsonToObj
-from organ import Organ
-from mediator import Mediator
+from app.logic.json_to_obj import JsonToObj
+from app.logic.organ import Organ
 
 
 class OrganFactory(object):

@@ -8,7 +8,7 @@ install:
   - pip install -r requirements.txt
 
 script:
-  - pwd; nosetests; python -c "import sys; print(sys.path)"
+  - pwd; nosetests;
 
 after_success:
   - codecov

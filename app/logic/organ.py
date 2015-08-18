@@ -1,8 +1,7 @@
 # -*- coding: UTF-8 -*-
 
 
-from logic.abstract_logic_obj import AbstractObject
-from logic.mediator import Mediator
+from app.logic.abstract_logic_obj import AbstractObject
 
 
 class Organ(AbstractObject):
@@ -17,9 +16,3 @@ class Organ(AbstractObject):
 
     def get_args_list(self):
         return self.args
-
-
-
-# a = Organ(name='123', args=[['asd'], ['dsd', 'asd + asd']], mediator=Mediator())
-
-# print(a.calculate())
