@@ -12,4 +12,4 @@ script:
   - nosetests --with-coverage;
 
 after_success:
-  - codecov
+  - codecov --token=ec91a349-0f98-4ea4-930b-7d3751d08433
