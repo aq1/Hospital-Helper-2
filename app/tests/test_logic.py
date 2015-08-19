@@ -30,6 +30,9 @@ class TestJsonToObj(unittest.TestCase):
 
         self.assertEqual(out, 'self.args[0] + self._get_value_from_mediator("hello")')
 
+    def test_repr(self):
+        self.assertEqual(self.json_to_obj.__repr__(), self.json_to_obj.__class__.__name__)
+
 
 class TestOrganFactory(unittest.TestCase):
 
