@@ -15,6 +15,11 @@ class JsonToObj(object):
     '''
 
     def __init__(self, klass, args=None):
+
+        if args:
+            assert isinstance(args, dict)
+            assert args.get('name', None) and args.get('args', None)
+
         self.re = re.compile(r'[a-zA-Z]+[a-zA-Z0-9\-_]*')
         self.klass = klass
         self.args = args
@@ -28,7 +33,8 @@ class JsonToObj(object):
             begin, end = match.span()
             group = match.group()
             try:
-                replacement = 'self.args[{}]'.format(indexes[group])
+                indexes[group]
+                replacement = 'self.{}'.format(group)
             except KeyError:
                 replacement = 'self._get_value_from_mediator("{}")'.format(group)
 
@@ -36,6 +42,7 @@ class JsonToObj(object):
             out.append(replacement)
             i = end
 
+        out.append(string[i:])
         return ''.join(out)
 
     def _convert_args(self, arg_list):
@@ -51,7 +58,8 @@ class JsonToObj(object):
                 out.append(each)
                 continue
 
-            out.append([arg, self._str_to_expr(expr, indexes)])
+            exec_str = 'self.{} = {}'.format(arg, self._str_to_expr(expr, indexes))
+            out.append([arg, exec_str])
 
         return out
 

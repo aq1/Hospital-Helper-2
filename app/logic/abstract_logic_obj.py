@@ -11,11 +11,13 @@ class AbstractObject(object):
     '''
 
     def __init__(self, name, args):
+
         self.name = name
         self.args = args
         self.mediator = Mediator(self)
 
         for each in args:
+            assert isinstance(each, (tuple, list))
             self.__dict__[each[0]] = 0
 
     def get(self, key):
