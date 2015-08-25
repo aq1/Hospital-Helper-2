@@ -13,7 +13,7 @@ class TestJsonToObj(unittest.TestCase):
         self.klass = Organ
         self.json_to_obj = JsonToObj(Organ)
 
-        with open('structure.json', 'r', encoding='utf8') as f:
+        with open('app/tests/structure.json', 'r', encoding='utf8') as f:
             self.json = json.loads(f.read())
 
     def test_object_creation(self):
