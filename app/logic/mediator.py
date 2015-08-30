@@ -21,7 +21,7 @@ class Mediator(object):
             self.add_obj(obj)
 
     def add_obj(self, obj):
-        for attr in ('name', 'get'):
+        for attr in ('name', 'get_value'):
             assert hasattr(obj, attr)
 
         self.obj_dict[obj.name] = obj
@@ -29,7 +29,7 @@ class Mediator(object):
     def get(self, key):
         for _, obj in self.obj_dict.items():
             try:
-                return obj.get(key)
+                return obj.get_value(key)
             except KeyError:
                 continue
         else:

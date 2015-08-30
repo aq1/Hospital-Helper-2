@@ -2,6 +2,7 @@
 
 import math
 import builtins
+import traceback
 
 from . import AbstractObject
 
@@ -20,9 +21,10 @@ class CalculableObject(AbstractObject):
                 exec(expr)
             except Exception as e:
                 print('{} in "{}"'.format(e, expr))
+                traceback.print_tb(e.__traceback__)
 
-    def get(self, key):
+    def get_value(self, key):
         return self[key]
 
-    def get_arg_list(self):
+    def get_value_list(self):
         return [(key, value) for key, value in self.items()]
