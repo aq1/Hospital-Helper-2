@@ -1,60 +1,52 @@
 # -*- coding: UTF-8 -*-
 
+import collections
+import unidecode
 
-from app.logic.mediator import Mediator
+from . import Mediator
+from . import Parser
 
 
-class AbstractObject(object):
-
-    '''
-    Abstract class for Organ and Patient common features.
-    '''
+class AbstractObject(collections.OrderedDict, Parser):
 
     def __init__(self, name, args):
 
-        self.name = name
-        self.args = args
+        super(AbstractObject, self).__init__()
+
+        self.name = self._unidecode(name)
+        self.calculation = []
         self.mediator = Mediator(self)
 
-        for each in args:
-            assert isinstance(each, (tuple, list))
-            self.__dict__[each[0]] = 0
+        calculations_to_add = []
 
-    def get(self, key):
-        return self.__dict__[key]
-
-    def calculate(self):
-        for each in self.args:
+        for arg in args:
+            assert isinstance(arg, (tuple, list))
+            key = self._unidecode(arg[0])
             try:
-                arg, expr = each
-            except ValueError:
-                continue
-
-            try:
-                exec(expr)
-            except (NameError, ValueError, IndexError, AttributeError) as e:
-                print('Error: "{}" in expression\n"{}"\nCannot calculate'.format(e, expr))
-
-    def _get_value_from_mediator(self, key):
-        return self.mediator.get_attr(key)
-
-    def __getattr__(self, key):
-        return self.__dict__[key]
-
-    def __setattr__(self, key, value):
-        self.__dict__[key] = value
-
-    def __str__(self):
-        args = []
-        for i, each in enumerate(self.args):
-            try:
-                arg = '{}={}'.format(each[0], each[1])
+                calculation = arg[1]
             except IndexError:
-                arg = each[0]
+                pass
+            else:
+                calculations_to_add.append((key, calculation))
 
-            args.append('{}: {}'.format(i, arg))
+            self[key] = 0
 
-        return '{}:\n{}'.format(self.name, ';\n'.join(args))
+        for key, calculation in calculations_to_add:
+            self._add_calculation(key, calculation)
+
+    def _add_calculation(self, key, calculation):
+        self.calculation.append(self.str_to_calculation(key, calculation))
+
+    def _unidecode(self, value):
+        return unidecode.unidecode(value.lower().replace(' ', '_'))
+
+    def _get_from_mediator(self, key):
+        return self.mediator.get(key)
 
     def __repr__(self):
-        return '<class "{}: {}">'.format(self.__class__.__name__, self.name)
+        name = self.name
+        items = ''.join(['\n\t{}: {}'.format(key, val)
+                         for key, val in self.items()])
+        calculation = ''.join(['\n\t{}'.format(calc)
+                               for calc in self.calculation])
+        return '{}\n{}\n{}'.format(name, items, calculation)

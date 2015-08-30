@@ -17,7 +17,7 @@ class Mediator(object):
         return cls.instance
 
     def __init__(self, obj=None):
-        if obj:
+        if obj is not None:
             self.add_obj(obj)
 
     def add_obj(self, obj):
@@ -26,7 +26,7 @@ class Mediator(object):
 
         self.obj_dict[obj.name] = obj
 
-    def get_attr(self, key):
+    def get(self, key):
         for _, obj in self.obj_dict.items():
             try:
                 return obj.get(key)
