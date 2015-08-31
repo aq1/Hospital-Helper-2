@@ -16,3 +16,5 @@ from app.tests.test_calculable_object import TestCalculableObject
 a = TestCalculableObject()
 a.setUp()
 a.test_calculation()
+
+print(str(a.object_b))

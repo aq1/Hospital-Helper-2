@@ -31,3 +31,9 @@ class TestCalculableObject(unittest.TestCase):
         self.assertEqual(self.object_a['arg4'], 25)
 
         self.assertEqual(self.object_b['arg0'], 26)
+
+    def test_repr(self):
+        self.object_b['arg0'] = 0
+        object_b_repr = str(self.object_b)
+        repr_str = 'objectb\n\targ0: 0\n\n\tself["arg0"] = self._get_from_mediator("arg4") + 1'
+        self.assertEqual(object_b_repr, repr_str)

@@ -49,4 +49,4 @@ class AbstractObject(collections.OrderedDict, Parser):
                          for key, val in self.items()])
         calculation = ''.join(['\n\t{}'.format(calc)
                                for calc in self.calculation])
-        return '{}\n{}\n{}'.format(name, items, calculation)
+        return '{}{}\n{}'.format(name, items, calculation)
