@@ -14,7 +14,7 @@ class TestCalculableObject(unittest.TestCase):
                            ['arg4', 'arg3 * int("25")']]}
 
         args_b = {'name': 'ObjectB',
-                  'args': [['arg0', 'arg4 + 1']]}
+                  'args': [['arg0', 'ObjectA.arg4 + 1']]}
 
         self.object_a = CalculableObject(
             name=args_a['name'], args=args_a['args'])
@@ -35,5 +35,5 @@ class TestCalculableObject(unittest.TestCase):
     def test_repr(self):
         self.object_b['arg0'] = 0
         object_b_repr = str(self.object_b)
-        repr_str = 'objectb\n\targ0: 0\n\n\tself["arg0"] = self._get_from_mediator("arg4") + 1'
+        repr_str = 'objectb\n\targ0: 0\n\n\tself["arg0"] = self._get_from_mediator("objecta.arg4") + 1'
         self.assertEqual(object_b_repr, repr_str)

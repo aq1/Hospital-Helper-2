@@ -4,7 +4,7 @@ import re
 from . import ALLOWED_MODULES
 
 
-PROPERTY_RE = re.compile(r'[^\W\d]+[\w\-_]*', re.UNICODE)
+PROPERTY_RE = re.compile(r'[^\W\d]+\.?[\w\-_]*', re.UNICODE)
 
 
 class Parser(object):

@@ -28,3 +28,6 @@ class CalculableObject(AbstractObject):
 
     def get_value_list(self):
         return [(key, value) for key, value in self.items()]
+
+    def get_items(self):
+        return dict(self.items())

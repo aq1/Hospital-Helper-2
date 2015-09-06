@@ -20,13 +20,16 @@ class Mediator(object):
         if obj is not None:
             self.add_obj(obj)
 
+    def __iter__(self):
+        return iter(self.obj_dict.values())
+
     def add_obj(self, obj):
         for attr in ('name', 'get_value'):
             assert hasattr(obj, attr)
 
         self.obj_dict[obj.name] = obj
 
-    def get(self, key):
+    def _get_by_key(self, key):
         for _, obj in self.obj_dict.items():
             try:
                 return obj.get_value(key)
@@ -34,6 +37,16 @@ class Mediator(object):
                 continue
         else:
             raise AttributeError('Attribute "{}" was not found in objects'.format(key))
+
+    def _get_by_name_and_key(self, name, key):
+        return self.obj_dict[name][key]
+
+    def get(self, key):
+        dot = key.find('.')
+        if dot != -1:
+            return self._get_by_name_and_key(key[:dot], key[dot+1:])
+        else:
+            return self._get_by_key(key)
 
     def get_attr_from_class(self, class_name, key):
         return self.obj_dict[class_name].get(key)
