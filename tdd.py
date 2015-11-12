@@ -8,8 +8,33 @@ modules = math, builtins
 
 class Mediator:
 
+    def __init__(self, objects=None):
+
+        if objects is None:
+            objects = []
+
+        self.objects = objects
+
+    def _get_value(self, name):
+        for obj in self.objects:
+            try:
+                return obj[name]
+            except KeyError:
+                continue
+
+        raise AttributeError('Name {} was not found in objects'.format(name))
+
     def get(self, key):
-        return 0
+        try:
+            obj, name = key.split('.')
+        except IndexError:
+            name = key
+
+        return self._get_value(name)
+
+    def __call__(self, obj):
+        self.objects.append(obj)
+        return self
 
 
 class AllowedModule(list):
@@ -29,7 +54,8 @@ class Parser:
 
     property_re = re.compile(r'[^\W\d]+\.?[\w\-_]*', re.UNICODE)
     module_str = '{}.{}'
-    self_str = 'self._get("{}")'
+    get_str = 'self._get("{}")'
+    self_str = 'self._set("{}", {})'
 
     @classmethod
     def parse_calculation_string(cls, name, string):
@@ -45,7 +71,7 @@ class Parser:
                     group = cls.module_str.format(module.name, group)
                     break
             else:
-                group = cls.self_str.format(group)
+                group = cls.get_str.format(group)
 
             out.append(''.join((string[i:begin], group)))
             i = end
@@ -53,7 +79,7 @@ class Parser:
             out.append(string[i:])
 
         expr = ''.join([chunk for chunk in out])
-        return '{} = {}'.format(name, expr)
+        return cls.self_str.format(name, expr)
 
 
 class CalculableObject(OrderedDict):
@@ -62,7 +88,7 @@ class CalculableObject(OrderedDict):
         super().__init__()
 
         self.name = name
-        self.mediator = mediator
+        self.mediator = mediator(self)
         self.calculations = []
 
         for each in args:
@@ -74,10 +100,16 @@ class CalculableObject(OrderedDict):
 
         self.calculations = '\n'.join(self.calculations)
 
-    def _get(self, name):
-        value = self.get(name)
+    def _set(self, name, value):
+        if not self.get(name):
+            raise AttributeError('No such attribute: {}'.format(name))
 
-        if not value:
+        self[name] = value
+
+    def _get(self, name):
+        try:
+            value = self[name]
+        except KeyError:
             value = self.mediator.get(name)
 
         return value
