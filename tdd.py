@@ -1,3 +1,4 @@
+import pprint
 import sys
 import re
 import json
@@ -55,10 +56,10 @@ STRUCTURE = """[{
         "name": "НПВ"
     }, {
         "name": "КДО",
-        "calculation": "(7 / (2.4 + КДРЛЖ) * КДРЛЖ) ** 3"
+        "calculation": "7 / (2.4 + (0.1 * КДРЛЖ)) * (0.1 * КДРЛЖ) ** 3"
     }, {
         "name": "КСО",
-        "calculation": "(7 / (2.4 + КСРЛЖ) * КСРЛЖ) ** 3"
+        "calculation": "7 / (2.4 + 0.1 * КСРЛЖ) * 0.1 * КСРЛЖ ** 3"
     }, {
         "name": "ФВ",
         "calculation": "((КДО - КСО) / КДО) * 100"
@@ -295,8 +296,7 @@ ALLOWED_MODULES = [AllowedModule(module) for module in modules]
 
 class Parser:
 
-    property_re = re.compile(r'[^\W\d]+\.?[\w\-_]*', re.UNICODE)
-    
+    property_re = re.compile(r'[^\W\d]+\.?[\w\_\'"]*', re.UNICODE)
     module_str = '{}.{}'
     get_str = 'self._get("{}")'
     self_str = 'self._set("{}", {})'
@@ -332,7 +332,8 @@ class Parser:
     @classmethod
     def parse_structure(cls, structure):
 
-        structure = cls._unidecode(structure)
+        structure = cls._unidecode(structure.replace(' ', ''))
+
         try:
             structure = json.loads(structure)
         except ValueError:
@@ -360,6 +361,9 @@ class CalculableObject(OrderedDict):
 
         self.calculations = '\n'.join(self.calculations)
 
+    def __str__(self):
+        return '{}: [{}]'.format(self.name, ', '.join(self.keys()))
+
     def _set(self, name, value):
         if self.get(name) is None:
             raise AttributeError('No such attribute: {}'.format(name))
@@ -378,7 +382,10 @@ class CalculableObject(OrderedDict):
         pass
 
     def calculate(self):
-        exec(self.calculations)
+        try:
+            exec(self.calculations)
+        except (ZeroDivisionError):
+            pass
 
 
 def test_calc_obj():
@@ -419,12 +426,33 @@ def test_calc_obj():
 
 
 def test_json_to_structure():
-    import pprint
     parser = Parser()
 
     parsed_structure = parser.parse_structure(STRUCTURE)
     pprint.pprint(parsed_structure)
 
 
+def test_json_to_objs():
+    parser = Parser()
+    parsed_structure = parser.parse_structure(STRUCTURE)
+
+    # for item in parsed_structure:
+    #     c = CalculableObject(item['name'], item['args'], parser, Mediator())
+    #     print(c.name)
+    #     print(c.calculations_str())
+    #     c.calculate()
+    c = CalculableObject(parsed_structure[1]['name'], parsed_structure[1]['args'], parser, Mediator())
+    k = CalculableObject(parsed_structure[0]['name'], parsed_structure[0]['args'], parser, Mediator())
+
+    print(c.calculations)
+    # c._set('ksrlzh', 10)
+    c._set('kdrlzh', 10)
+    c.calculate()
+    print(c._get('kdo'))
+
 # test_calc_obj()
-test_json_to_structure()
+# test_json_to_structure()
+test_json_to_objs()
+# kdr = 10
+# a = 7/(2.4+kdr)*kdr**3
+#  print(a)
