@@ -332,7 +332,7 @@ class Parser:
     @classmethod
     def parse_structure(cls, structure):
 
-        structure = cls._unidecode(structure.replace(' ', ''))
+        structure = cls._unidecode(structure)
 
         try:
             structure = json.loads(structure)
