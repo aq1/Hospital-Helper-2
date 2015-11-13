@@ -303,7 +303,7 @@ class Parser:
 
     @staticmethod
     def _unidecode(value):
-        return unidecode.unidecode(value.lower().replace(' ', '_'))
+        return unidecode.unidecode(value.lower().replace(' ', ''))
 
     @classmethod
     def parse_calculation_string(cls, name, string):
