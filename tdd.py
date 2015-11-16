@@ -7,231 +7,6 @@ from collections import OrderedDict
 import unidecode
 
 
-STRUCTURE = """[{
-    "name": "Клиент",
-    "db": true,
-    "args": [{
-        "name": "Фамилия"
-    }, {
-        "name": "Имя"
-    }, {
-        "name": "Отчество"
-    }, {
-        "name": "Возраст"
-    }, {
-        "name": "Чсс"
-    }, {
-        "name": "Рост"
-    }, {
-        "name": "Вес"
-    }, {
-        "name": "_ППТ",
-        "calculation": "sqrt(Рост * Вес / 3600)"
-    }]
-}, {
-    "name": "Сердце",
-    "args": [{
-        "name": "Аорта"
-    }, {
-        "name": "ОАК"
-    }, {
-        "name": "ЛП"
-    }, {
-        "name": "КДРЛЖ"
-    }, {
-        "name": "КСРЛЖ"
-    }, {
-        "name": "ЗСЛЖ"
-    }, {
-        "name": "МЖП"
-    }, {
-        "name": "АК"
-    }, {
-        "name": "КЛА"
-    }, {
-        "name": "ПП"
-    }, {
-        "name": "ПЖ"
-    }, {
-        "name": "НПВ"
-    }, {
-        "name": "КДО",
-        "calculation": "7 / (2.4 + (0.1 * КДРЛЖ)) * (0.1 * КДРЛЖ) ** 3"
-    }, {
-        "name": "КСО",
-        "calculation": "7 / (2.4 + 0.1 * КСРЛЖ) * 0.1 * КСРЛЖ ** 3"
-    }, {
-        "name": "ФВ",
-        "calculation": "((КДО - КСО) / КДО) * 100"
-    }, {
-        "name": "ИММЛЖ",
-        "calculation": "(0.8 * (1.04 * (sum((КДРЛЖ, МЖП, ЗСЛЖ)) ** 3) - КДРЛЖ ** 3) + 0.6) / Клиент._ППТ"
-    }, {
-        "name": "ОТС",
-        "calculation": "(2 * ЗСЛЖ) / КДРЛЖ"
-    }]
-}, {
-    "name": "Печень",
-    "args": [{
-        "name": "КВР"
-    }, {
-        "name": "ВВ"
-    }, {
-        "name": "НПВ"
-    }, {
-        "name": "Холедох"
-    }]
-}, {
-    "name": "Желчный",
-    "args": [{
-        "name": "Длина"
-    }, {
-        "name": "Ширина"
-    }, {
-        "name": "Толщина"
-    }, {
-        "name": "Стенка"
-    }, {
-        "name": "Объем",
-        "calculation": "0.00052 * (Длина * Ширина * Толщина)"
-    }]
-}, {
-    "name": "Поджелудочная",
-    "args": [{
-        "name": "Головка"
-    }, {
-        "name": "Тело"
-    }, {
-        "name": "Хвост"
-    }, {
-        "name": "Вирсунгов"
-    }]
-}, {
-    "name": "Селезенка",
-    "args": [{
-        "name": "Длина"
-    }, {
-        "name": "Ширина"
-    }, {
-        "name": "Толщина"
-    }, {
-        "name": "Площадь"
-    }]
-}, {
-    "name": "Почки",
-    "args": [{
-        "name": "Длина"
-    }, {
-        "name": "Ширина"
-    }, {
-        "name": "Паренхим"
-    }, {
-        "name": "Чашечки"
-    }, {
-        "name": "Лоханка"
-    }, {
-        "name": "Длина_2"
-    }, {
-        "name": "Ширина_2"
-    }, {
-        "name": "Паренхим_2"
-    }, {
-        "name": "Чашечки_2"
-    }, {
-        "name": "Лоханка_2"
-    }]
-}, {
-    "name": "Щитовидная",
-    "args": [{
-        "name": "Перешеек"
-    }, {
-        "name": "Длина"
-    }, {
-        "name": "Ширина"
-    }, {
-        "name": "Толщина"
-    }, {
-        "name": "Объем",
-        "calculation": "0.00048 * (Длина * Ширина * Толщина)"
-    }, {
-        "name": "Длина_2"
-    }, {
-        "name": "Ширина_2"
-    }, {
-        "name": "Толщина_2"
-    }, {
-        "name": "Объем_2",
-        "calculation": "0.00048 * (Длина_2 * Ширина_2 * Толщина_2)"
-    }, {
-        "name": "V_общ",
-        "calculation": "Объем + Объем_2"
-    }]
-}, {
-    "name": "Предстательная",
-    "args": [{
-        "name": "Длина"
-    }, {
-        "name": "Ширина"
-    }, {
-        "name": "Толщина"
-    }, {
-        "name": "Объем",
-        "calculation": "0.00052 * (Длина * Ширина * Толщина)"
-    }]
-}, {
-    "name": "М.Пузырь",
-    "args": [{
-        "name": "Длина"
-    }, {
-        "name": "Ширина"
-    }, {
-        "name": "Толщина"
-    }, {
-        "name": "Стенка"
-    }, {
-        "name": "Объем",
-        "calculation": "0.00052 * (Длина * Ширина * Толщина)"
-    }]
-}, {
-    "name": "Гинекология",
-    "args": []
-}, {
-    "name": "Образование",
-    "args": [{
-        "name": "Длина_1"
-    }, {
-        "name": "Длина_2"
-    }, {
-        "name": "Длина_3"
-    }, {
-        "name": "Длина_4"
-    }, {
-        "name": "Длина_5"
-    }, {
-        "name": "Длина_6"
-    }]
-}, {
-    "name": "Киста",
-    "args": [{
-        "name": "Длина_1"
-    }, {
-        "name": "Длина_2"
-    }, {
-        "name": "Длина_3"
-    }, {
-        "name": "Длина_4"
-    }, {
-        "name": "Длина_5"
-    }, {
-        "name": "Длина_6"
-    }, {
-        "name": "Длина_7"
-    }, {
-        "name": "Длина_8"
-    }]
-}]"""
-
-
 class Mediator:
 
     '''
@@ -424,6 +199,33 @@ def test_calc_obj():
 
     print(mediator)
 
+# class Client(Base):
+
+#     __tablename__ = 'client'
+
+#     id = Column(Integer, primary_key=True)
+#     name = Column(String, nullable=False, default='')
+#     surname = Column(String, nullable=False, default='')
+#     patronymic = Column(String, nullable=False, default='')
+#     date_of_birth = Column(Date)
+#     hr = Column(SmallInteger, nullable=False, default=0)
+#     height = Column(SmallInteger, nullable=False, default=0)
+#     weight = Column(SmallInteger, nullable=False, default=0)
+#     examined = Column(Date, nullable=False, default=datetime.datetime.now)
+#     doctor = Column(ForeignKey('doctor.id'), nullable=False)
+#     sent_by = Column(String, nullable=False, default='')
+
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm.session import sessionmaker
+from sqlalchemy import create_engine
+from sqlalchemy import (Column, Integer, String, Float,
+                        ForeignKey, Date, SmallInteger,
+                        Text)
+DATABASE = 'data.db'
+Base = declarative_base()
+engine = create_engine('sqlite:///{}'.format(DATABASE), echo=True)
+SESSION = sessionmaker()(bind=engine)
+
 
 def test_json_to_structure():
     parser = Parser()
@@ -434,21 +236,27 @@ def test_json_to_structure():
 
 def test_json_to_objs():
     parser = Parser()
+    model_factory = ModelFactory()
     parsed_structure = parser.parse_structure(STRUCTURE)
 
-    # for item in parsed_structure:
+    for item in parsed_structure:
+        if item.get('db'):
+            db_class = model_factory.get_model(item)
+            print(db_class)
+    Base.metadata.create_all(engine)
+
     #     c = CalculableObject(item['name'], item['args'], parser, Mediator())
     #     print(c.name)
     #     print(c.calculations_str())
     #     c.calculate()
-    c = CalculableObject(parsed_structure[1]['name'], parsed_structure[1]['args'], parser, Mediator())
-    k = CalculableObject(parsed_structure[0]['name'], parsed_structure[0]['args'], parser, Mediator())
+    # c = CalculableObject(parsed_structure[1]['name'], parsed_structure[1]['args'], parser, Mediator())
+    # k = CalculableObject(parsed_structure[0]['name'], parsed_structure[0]['args'], parser, Mediator())
 
-    print(c.calculations)
+    # print(c.calculations)
     # c._set('ksrlzh', 10)
-    c._set('kdrlzh', 10)
-    c.calculate()
-    print(c._get('kdo'))
+    # c._set('kdrlzh', 10)
+    # c.calculate()
+    # print(c._get('kdo'))
 
 # test_calc_obj()
 # test_json_to_structure()
