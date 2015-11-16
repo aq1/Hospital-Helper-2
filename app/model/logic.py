@@ -9,7 +9,7 @@ import collections
 
 import unidecode
 
-from model import exceptions
+from model import exceptions, db
 
 
 class AllowedModule(list):
@@ -177,8 +177,13 @@ class CalculableObject(collections.OrderedDict):
 
 class ObjectFactory:
 
+    model_factory = db.ModelFactory()
+
     @classmethod
-    def get_object(cls, info, model=None):
+    def get_object(cls, info):
+
+        if info.get('db'):
+            model = cls.model_factory.get_model(info)
 
         return CalculableObject(name=info['name'],
                                 args=info['args'],

@@ -84,11 +84,20 @@ class Report(Base, Model):
     template = Column(ForeignKey('template.id'))
 
 
+class Group(Base, Model):
+
+    __tablename__ = 'group'
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String, nullable=False)
+
+
 class Item(Base, Model):
 
     __tablename__ = 'item'
 
     id = Column(Integer, primary_key=True)
+    group = Column(ForeignKey('group.id'))
     name = Column(String, nullable=False)
 
 
@@ -136,7 +145,9 @@ class ModelFactory:
             fields[rel] = Column(
                 ForeignKey('{}.id'.format(rel)), nullable=False)
 
-        Item.get_or_create(name=item['name'])
+        group, _ = Group.get_or_create(name=item.get('group', item['name']))
+        i, created = Item.get_or_create(name=item['name'], group=group.id)
+        print(group.id, created)
         try:
             return type('{}Model'.format(item['name']), (Base, ), fields)
         except exc.InvalidRequestError as e:

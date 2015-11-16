@@ -6,6 +6,7 @@ STRUCTURE_KEY = 'structure'
 INIT_STRUCTURE = """[{
     "name": "Клиент",
     "db": true,
+    "group": "Клиент", 
     "relations": ["doctor"],
         "args": [{
         "name": "Фамилия",
@@ -78,6 +79,7 @@ INIT_STRUCTURE = """[{
     }]
 }, {
     "name": "Печень",
+    "group": "Брюшная полость", 
     "db": true,
     "relations": ["Клиент"],
     "args": [{
@@ -91,6 +93,7 @@ INIT_STRUCTURE = """[{
     }]
 }, {
     "name": "Желчный",
+    "group": "Брюшная полость", 
     "db": true,
     "relations": ["Клиент"],
     "args": [{
@@ -107,6 +110,7 @@ INIT_STRUCTURE = """[{
     }]
 }, {
     "name": "Поджелудочная",
+    "group": "Брюшная полость", 
     "db": true,
     "relations": ["Клиент"],
     "args": [{
@@ -120,6 +124,7 @@ INIT_STRUCTURE = """[{
     }]
 }, {
     "name": "Селезенка",
+    "group": "Брюшная полость", 
     "db": true,
     "relations": ["Клиент"],
     "args": [{
