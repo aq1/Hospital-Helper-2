@@ -23,7 +23,7 @@ SESSION = sessionmaker()(bind=engine, autocommit=True, expire_on_commit=False)
 class Model:
 
     @classmethod
-    def get_or_create(cls, defaults=None, **kwargs):
+    def get_or_create(cls, defaults=None, instant_flush=False, **kwargs):
         inst = SESSION.query(cls).filter_by(**kwargs).first()
 
         if inst:
@@ -34,6 +34,10 @@ class Model:
 
         inst = cls(**kwargs)
         SESSION.add(inst)
+
+        if instant_flush:
+            SESSION.flush()
+
         return inst, True
 
 
@@ -145,9 +149,10 @@ class ModelFactory:
             fields[rel] = Column(
                 ForeignKey('{}.id'.format(rel)), nullable=False)
 
-        group, _ = Group.get_or_create(name=item.get('group', item['name']))
-        i, created = Item.get_or_create(name=item['name'], group=group.id)
-        print(group.id, created)
+        group, _ = Group.get_or_create(name=item.get('group', item['name']),
+                                       instant_flush=True)
+        Item.get_or_create(name=item['name'], group=group.id)
+
         try:
             return type('{}Model'.format(item['name']), (Base, ), fields)
         except exc.InvalidRequestError as e:

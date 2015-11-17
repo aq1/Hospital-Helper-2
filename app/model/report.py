@@ -6,5 +6,9 @@ from model import db
 class Report:
 
     def __init__(self, items):
-        self.template = db.SESSION.query(db.Template).filter(
-            db.Item.name == 'serdtse').first()
+
+        self.items = []
+
+        for item in items:
+            if item.template and any(item.values()):
+                self.items.append(item)

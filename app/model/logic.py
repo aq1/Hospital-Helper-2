@@ -132,6 +132,7 @@ class CalculableObject(collections.OrderedDict):
         self.mediator = mediator(self)
         self.model = model
         self.calculations = []
+        self.template = None
 
         for each in args:
             self[each['name']] = 0
