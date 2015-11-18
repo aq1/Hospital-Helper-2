@@ -1,25 +1,25 @@
 # -*- coding: UTF-8 -*-
 
 import options
-from model import db, logic, exceptions
+from model import db, logic, report, exceptions
 
 
-def convert_structure_to_objects(structure):
+def convert_structure_to_items(structure):
     parser = logic.Parser()
     object_factory = logic.ObjectFactory
 
     parsed_structure = parser.parse_structure(structure)
 
-    objects = []
+    items = []
     names = set()
     for i, item in enumerate(parsed_structure, 1):
 
         names.add(item['name'])
-        objects.append(object_factory.get_object(item))
+        items.append(object_factory.get_object(item))
         if i != len(names):
             raise exceptions.NonUniqueObjectNames(item['name'])
 
-    return objects
+    return items
 
 
 def init():
@@ -32,8 +32,15 @@ def init():
         db.SESSION.add(structure)
         structure = structure.value
 
-    objects = convert_structure_to_objects(structure)
+    items = convert_structure_to_items(structure)
     db.create_db()
+
+    for i in items:
+        i.template = 'norma'
+        i['asd'] = 2
+
+    r = report.Report(items)
+    r.get_templates()
     # for i, o in enumerate(objects):
     #     print(i, o.get_for_template())
 

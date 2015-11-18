@@ -111,6 +111,7 @@ class Template(Base, Model):
 
     id = Column(Integer, primary_key=True)
     item = Column(ForeignKey('item.id'))
+    name = Column(String, nullable=False, default='')
     body = Column(Text, nullable=False, default='')
     conclusion = Column(Text, nullable=False, default='')
 
