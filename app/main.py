@@ -1,7 +1,8 @@
 # -*- coding: UTF-8 -*-
 
 import options
-from model import db, logic, report, exceptions
+from model import (db, logic, report,
+                   exceptions, template)
 
 
 def convert_structure_to_items(structure):
@@ -41,8 +42,6 @@ def init():
 
     r = report.Report(items)
     r.get_templates()
-    # for i, o in enumerate(objects):
-    #     print(i, o.get_for_template())
 
 
 if __name__ == '__main__':

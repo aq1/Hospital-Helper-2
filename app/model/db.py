@@ -4,7 +4,7 @@ import datetime
 
 import slugify
 
-from sqlalchemy import exc
+from sqlalchemy import exc, UniqueConstraint
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm.session import sessionmaker
 from sqlalchemy import create_engine
@@ -77,6 +77,8 @@ class Hospital(Base, Model):
     name = Column(String, nullable=False)
     header = Column(Text, nullable=False, default='')
 
+    __table_args__ = tuple(UniqueConstraint('name'))
+
 
 class Report(Base, Model):
 
@@ -95,6 +97,8 @@ class Group(Base, Model):
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
 
+    __table_args__ = tuple(UniqueConstraint('name'))
+
 
 class Item(Base, Model):
 
@@ -103,6 +107,11 @@ class Item(Base, Model):
     id = Column(Integer, primary_key=True)
     group = Column(ForeignKey('group.id'))
     name = Column(String, nullable=False)
+
+    __table_args__ = tuple(UniqueConstraint('group', 'name'))
+
+    def __str__(self):
+        return '{} {}'.format(self.group, self.name)
 
 
 class Template(Base, Model):
@@ -115,6 +124,8 @@ class Template(Base, Model):
     body = Column(Text, nullable=False, default='')
     conclusion = Column(Text, nullable=False, default='')
 
+    __table_args__ = tuple(UniqueConstraint('item', 'name'))
+
 
 class KeyValue(Base, Model):
 
@@ -122,6 +133,8 @@ class KeyValue(Base, Model):
 
     key = Column(String, primary_key=True)
     value = Column(String, nullable=False)
+
+    __table_args__ = tuple(UniqueConstraint('key', 'value'))
 
 
 class ModelFactory:
