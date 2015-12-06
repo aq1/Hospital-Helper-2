@@ -125,10 +125,11 @@ class Mediator:
 
 class CalculableObject(collections.OrderedDict):
 
-    def __init__(self, name, args, parser, mediator, model=None):
+    def __init__(self, name, group, args, parser, mediator, model=None):
         super().__init__()
 
         self.name = name
+        self.group = group
         self.mediator = mediator(self)
         self.model = model
         self.calculations = []
@@ -169,9 +170,11 @@ class CalculableObject(collections.OrderedDict):
         except (ZeroDivisionError):
             pass
 
-    def get_for_template(self):
+    def for_template(self):
         return {
-            '{}.{}'.format(self.name, key): value
+            self.name: {
+                key: value
+            }
             for key, value in self.items()
         }
 
@@ -188,6 +191,7 @@ class ObjectFactory:
 
         return CalculableObject(name=info['name'],
                                 args=info['args'],
+                                group=info.get('group', info['name']),
                                 parser=Parser(),
                                 mediator=Mediator(),
                                 model=model)

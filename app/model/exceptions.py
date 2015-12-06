@@ -32,3 +32,15 @@ class NeedBodyOrConclusion(Exception):
 
     def __str__(self):
         return 'Need body or conclusion for template'
+
+
+class Warning(Exception):
+
+    def __str__(self):
+        return 'Something bad happened, but it is not critical'
+
+
+class NoTemplateForItem(Warning):
+
+    def __str__(self):
+        return 'No template found for item'

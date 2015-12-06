@@ -2,7 +2,7 @@
 
 import options
 from model import (db, logic, report,
-                   exceptions, template)
+                   exceptions)
 
 
 def convert_structure_to_items(structure):
@@ -38,10 +38,11 @@ def init():
 
     for i in items:
         i.template = 'norma'
-        i['asd'] = 2
+        i['asd'] = 'Yo man'
 
     r = report.Report(items)
-    r.get_templates()
+    document = r.render()
+    print(document)
 
 
 if __name__ == '__main__':
