@@ -34,6 +34,12 @@ class NeedBodyOrConclusion(Exception):
         return 'Need body or conclusion for template'
 
 
+class NoSuchTranslation(Exception):
+
+    def __str__(self):
+        return 'No such translation'
+
+
 class Warning(Exception):
 
     def __str__(self):

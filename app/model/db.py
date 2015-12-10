@@ -137,6 +137,15 @@ class KeyValue(Base, Model):
     __table_args__ = tuple(UniqueConstraint('key', 'value'))
 
 
+class Translation(Base, Model):
+
+    __tablename__ = 'translation'
+
+    sys = Column(String, primary_key=True)
+    ru = Column(String, nullable=False)
+    en = Column(String, nullable=True)
+
+
 class ModelFactory:
 
     def __init__(self):

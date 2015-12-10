@@ -38,7 +38,7 @@ class Parser:
     self_str = 'self._set("{}", {})'
 
     @staticmethod
-    def _unidecode(value):
+    def unidecode(value):
         return unidecode.unidecode(value.lower().replace(' ', ''))
 
     @classmethod
@@ -68,7 +68,7 @@ class Parser:
     @classmethod
     def parse_structure(cls, structure):
 
-        structure = cls._unidecode(structure)
+        structure = cls.unidecode(structure)
 
         try:
             structure = json.loads(structure)

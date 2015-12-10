@@ -2,7 +2,7 @@
 
 import options
 from model import (db, logic, report,
-                   exceptions)
+                   exceptions, localization)
 
 
 def convert_structure_to_items(structure):
@@ -42,8 +42,9 @@ def init():
 
     r = report.Report(items)
     document = r.render()
-    print(document)
 
 
 if __name__ == '__main__':
-    init()
+    # init()
+    localization.create_init_translation()
+    localization.Localization.install('ru')
