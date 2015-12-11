@@ -5,6 +5,7 @@ STRUCTURE_KEY = 'structure'
 
 INIT_STRUCTURE = """[{
     "name": "Клиент",
+    "verbose_name": "",
     "db": true,
     "group": "Клиент", 
     "relations": ["doctor"],
@@ -110,6 +111,7 @@ INIT_STRUCTURE = """[{
     }]
 }, {
     "name": "Поджелудочная",
+    "verbose_name": "Поджелудочная железа",
     "group": "Брюшная полость", 
     "db": true,
     "relations": ["Клиент"],
@@ -163,6 +165,7 @@ INIT_STRUCTURE = """[{
     }]
 }, {
     "name": "Щитовидная",
+    "verbose_name": "Щитовидная железа",
     "db": true,
     "relations": ["Клиент"],
     "args": [{
@@ -191,6 +194,7 @@ INIT_STRUCTURE = """[{
     }]
 }, {
     "name": "Предстательная",
+    "verbose_name": "Предстательная железа",
     "db": true,
     "relations": ["Клиент"],
     "args": [{
@@ -205,6 +209,7 @@ INIT_STRUCTURE = """[{
     }]
 }, {
     "name": "М.Пузырь",
+    "verbose_name": "Мочевой пузырь",
     "db": true,
     "relations": ["Клиент"],
     "args": [{

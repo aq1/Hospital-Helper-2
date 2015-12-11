@@ -1,6 +1,12 @@
 # -*- coding: UTF-8 -*-
 
 
+class AppNotReady(Exception):
+
+    def __str__(self):
+        return 'App is not ready yet'
+
+
 class BadStructure(Exception):
 
     def __str__(self):

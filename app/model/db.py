@@ -63,10 +63,11 @@ class Doctor(Base, Model):
     __tablename__ = 'doctor'
 
     id = Column(Integer, primary_key=True)
+    hospital = Column(ForeignKey('hospital.id'))
+
     name = Column(String, nullable=False, default='')
     surname = Column(String, nullable=False, default='')
     patronymic = Column(String, nullable=False, default='')
-    hospital = ForeignKey('hospital.id')
 
 
 class Hospital(Base, Model):

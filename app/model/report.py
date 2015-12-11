@@ -1,5 +1,6 @@
 # -*- coding: UTF-8 -*-
 
+import datetime
 from collections import OrderedDict
 
 from odf.opendocument import OpenDocumentText
@@ -11,7 +12,14 @@ from model import db, exceptions
 
 class Report:
 
-    def __init__(self, items):
+    def __init__(self, items, doctor_id):
+
+        self.doctor = db.SESSION.query(db.Doctor).get(doctor_id)
+
+        if self.doctor:
+            self.hospital = db.SESSION.query(db.Hospital).get(self.doctor.hospital)
+        else:
+            self.hospital = None
 
         self.template_groups = OrderedDict()
 
@@ -31,14 +39,30 @@ class Report:
         item.template = template
         self.template_groups[item.group].append(item)
 
+    def _get_header(self):
+
+        if not self.hospital:
+            return ''
+        else:
+            return self.hospital.header
+
+    def _get_footer(self):
+
+        if not self.doctor:
+            return ''
+        else:
+            return '{} {} {}'.format(self.doctor.surname, self.doctor.name, self.doctor.patronymic)
+
     def render(self, strict_mode=False):
         document = OpenDocumentText()
 
-        for _, group in self.template_groups.items():
+        document.text.addElement(P(text=self._get_header()))
+
+        for k, group in self.template_groups.items():
             conclusion = []
 
             for item in group:
-                document.text.addElement(H(outlinelevel=4, text=item.name))
+                document.text.addElement(H(outlinelevel=4, text=item.get_verbose_name()))
                 if not item.template:
                     if strict_mode:
                         raise exceptions.NoTemplateForItem()
@@ -48,7 +72,10 @@ class Report:
 
             conclusion = '\n'.join(conclusion)
             document.text.addElement(P(text=conclusion))
-            return document
+
+        document.text.addElement(P(text=self._get_footer()))
+
+        return document
 
 
 # # Styles

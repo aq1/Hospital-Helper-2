@@ -36,15 +36,15 @@ def init():
     items = convert_structure_to_items(structure)
     db.create_db()
 
+    localization.Localization.install('ru')
+
     for i in items:
         i.template = 'norma'
-        i['asd'] = 'Yo man'
+        i['npv'] = 'Yo man'
 
-    r = report.Report(items)
+    r = report.Report(items, 1)
     document = r.render()
-
+    document.save('hello.odt')
 
 if __name__ == '__main__':
-    # init()
-    localization.create_init_translation()
-    localization.Localization.install('ru')
+    init()
