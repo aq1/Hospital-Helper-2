@@ -40,7 +40,7 @@ def init():
 
     for i in items:
         i.template = 'norma'
-        i['npv'] = 'Yo man'
+        i['npv'] = '12'
 
     r = report.Report(items, 1)
     document = r.render()

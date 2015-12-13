@@ -51,7 +51,10 @@ class Report:
         if not self.doctor:
             return ''
         else:
-            return '{} {} {}'.format(self.doctor.surname, self.doctor.name, self.doctor.patronymic)
+            return '{} {} {} {}'.format(datetime.datetime.now().strftime('%d.%m.%Y'),
+                                        self.doctor.surname,
+                                        self.doctor.name,
+                                        self.doctor.patronymic)
 
     def render(self, strict_mode=False):
         document = OpenDocumentText()
@@ -76,21 +79,3 @@ class Report:
         document.text.addElement(P(text=self._get_footer()))
 
         return document
-
-
-# # Styles
-# h1style = Style(name="Heading 1", family="paragraph")
-# h1style.addElement(TextProperties(attributes={'fontsize':"24pt",'fontweight':"bold" }))
-# s.addElement(h1style)
-# # An automatic style
-# boldstyle = Style(name="Bold", family="text")
-# boldprop = TextProperties(fontweight="bold")
-# boldstyle.addElement(boldprop)
-# textdoc.automaticstyles.addElement(boldstyle)
-# # Text
-# textdoc.text.addElement(h)
-# boldpart = Span(stylename=boldstyle, text="This part is bold. ")
-# p.addElement(boldpart)
-# p.addText("This is after bold.")
-# textdoc.text.addElement(p)
-# textdoc.save("myfirstdocument.odt")

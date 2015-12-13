@@ -6,6 +6,7 @@ import json
 import math
 import builtins
 import collections
+from collections import defaultdict
 
 import unidecode
 
@@ -175,12 +176,13 @@ class CalculableObject(collections.OrderedDict):
             pass
 
     def for_template(self):
-        return {
-            self.name: {
-                _(key): value
-            }
-            for key, value in self.items()
+        out = {
+            self.name: defaultdict(str)
         }
+
+        for key, value in self.items():
+            out[self.name][key] = value
+        return out
 
 
 class ObjectFactory:

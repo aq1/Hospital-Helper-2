@@ -270,3 +270,5 @@ INIT_STRUCTURE = """[{
 }]"""
 
 DATABASE = 'data.db'
+
+CONCLUSION = 'Заключение: '
