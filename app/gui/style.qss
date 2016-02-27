@@ -1,0 +1,66 @@
+AttributesFrame {
+    font-size: 20px;
+    background-color: #EEEDEF;
+}
+
+TopFrame {
+    font-size: 20px;
+    background-color: #58CACF;
+}
+
+TopSystemButtons QPushButton {
+    background-color: #45A0A3;
+    font-weight: bold;
+    color: white;
+    border: 1px solid #45A0A3;
+    padding: 5px 10px;
+    font-size: 25px;
+}
+
+TopSystemButtons {
+    background-color: #45A0A3;
+}
+
+TopSystemButtons QLabel {
+    margin: 0;
+    font-size: 25px;
+    background-color: #45A0A3;
+    color: white;   
+}
+
+TopSystemButtons QPushButton:hover {
+    background-color: #327275;
+}
+
+
+TopSystemButtons QPushButton:pressed {
+    background-color: #1F484A;
+}
+
+Input {
+    background-color: white;
+    border: none;
+    border-bottom: 2px solid #45A0A3;
+    margin: 10px;
+}
+
+Input QLineEdit {
+    background-color: white;
+    /*background-color: #EEEDEF;*/
+    border: none;
+    border-bottom: 1px solid #737373;
+    /*margin: 0 10px 20px 10px;*/
+    /*margin-bottom: 20px;*/
+    /*margin-left: 10px;*/
+    margin: 10px;
+    font-size: 25px;
+}
+
+Input QLabel {
+    font-size: 25px;
+    background-color: white;
+    /*background-color: #EEEDEF;*/
+    margin: 10px;
+    /*margin-bottom: 20px;*/
+    /*margin-left: 20px;*/
+}

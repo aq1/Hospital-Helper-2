@@ -1,6 +1,8 @@
 # -*- coding: UTF-8 -*-
 
 import options
+
+from gui import gui
 from model import (db, logic, report,
                    exceptions, localization)
 
@@ -38,13 +40,15 @@ def init():
 
     localization.Localization.install('ru')
 
-    for i in items:
-        i.template = 'norma'
-        i['npv'] = '12'
+    gui.init(items)
 
-    r = report.Report(items, 1)
-    document = r.render()
-    document.save('hello.odt')
+    # for i in items:
+    #     i.template = 'norma'
+    #     i['npv'] = '12'
+
+    # r = report.Report(items, 1)
+    # document = r.render()
+    # document.save('hello.odt')
 
 if __name__ == '__main__':
     init()
