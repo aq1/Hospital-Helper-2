@@ -185,8 +185,10 @@ class SelectMenu(QFrame):
         for i, btn in enumerate(self.buttons):
             if i == 0:
                 # Data button needs special action
-                btn.enterEvent = self.main_window.data_button_entered
+                btn.enterEvent = functools.partial(self.main_window.set_select_menu_item_visibility, True)
                 btn.setStyleSheet(self.BUTTON_SELECTED_QSS)
+            else:
+                btn.enterEvent = functools.partial(self.main_window.set_select_menu_item_visibility, False)
 
             btn.clicked.connect(functools.partial(self.button_clicked, btn))
             hbox.addWidget(btn)
@@ -259,9 +261,12 @@ class DataWidget(QFrame):
         self.stacked_layout = QStackedLayout()
         self.setLayout(self.stacked_layout)
 
-        for item in items[1:]:
+        for item in items:
             frame = AttributesFrame(main_window=self, item=item)
             self.stacked_layout.addWidget(frame)
+
+    def select_item(self, index):
+        self.stacked_layout.setCurrentIndex(index)
 
 
 class ReportWidget(QFrame):
@@ -292,6 +297,41 @@ class OptionsWidget(QFrame):
         hbox = QHBoxLayout()
         self.setLayout(hbox)
         hbox.addWidget(QLabel('Options widget'))
+
+
+class SelectItemMenu(QFrame):
+
+    def __init__(self, main_window, items):
+
+        super().__init__(main_window)
+
+        self.main_window = main_window
+        self.resize(main_window.width() * 0.4, main_window.height() * 0.4)
+        self.move(100, 250)
+        self.hide()
+
+        grid = QGridLayout()
+        self.setLayout(grid)
+        grid.setSpacing(0)
+        grid.setContentsMargins(0, 0, 0, 0)
+
+        rows = 5
+        for i, item in enumerate(items):
+            b = QPushButton(_(item.name))
+            b.clicked.connect(functools.partial(self.button_clicked, i))
+            grid.addWidget(b, i % rows, i // rows)
+
+        shadow = QGraphicsDropShadowEffect()
+        shadow.setBlurRadius(20)
+        shadow.setXOffset(0)
+        shadow.setYOffset(0)
+        self.setGraphicsEffect(shadow)
+
+    def button_clicked(self, index, event=None):
+        self.main_window.select_item(index)
+
+    def leaveEvent(self, event):
+        self.main_window.set_select_menu_item_visibility(False)
 
 
 class MainWindow(QWidget):
@@ -330,8 +370,7 @@ class MainWindow(QWidget):
         self.move(qr.topLeft())
 
         self._create_layout()
-
-        self.stack_index = 0
+        self.select_menu = SelectItemMenu(self, items)
 
         self._set_shortcuts()
 
@@ -343,26 +382,43 @@ class MainWindow(QWidget):
 
     def _create_layout(self):
         # Order matters
-        frames = DataWidget, ReportWidget, DBWidget, OptionsWidget
-        for frame in frames:
-            self.stacked_layout.addWidget(frame(self, self.items))
+        self.frames = [frame(self, self.items) for frame in (DataWidget,
+                                                             ReportWidget,
+                                                             DBWidget,
+                                                             OptionsWidget)]
+        for frame in self.frames:
+            self.stacked_layout.addWidget(frame)
+
+    def set_select_menu_item_visibility(self, value, event=None):
+        # Event is triggered only on 'Data' tab
+        if not self.stacked_layout.currentIndex():
+            self.select_menu.setVisible(value)
+            self.select_menu.raise_()
+
+    def select_item(self, index):
+        self.frames[0].select_item(index)
+        self.set_select_menu_item_visibility(False)
 
     def data_button_entered(self, event):
         # Event is triggered only on 'Data' tab
-        if self.stack_index:
-            return
-
-        print('HAHA')
+        if not self.stack_index:
+            self.set_select_menu_item_visibility(True)
 
     def select_menu_button_clicked(self, btn):
         for i, each in enumerate(self.MENU_LABELS):
             if _(each) == btn.text():
-                self.stack_index = i
-                self.stacked_layout.setCurrentIndex(self.stack_index)
+                if self.stacked_layout.currentIndex() == i == 0:
+                    self.set_select_menu_item_visibility(True)
+                self.stacked_layout.setCurrentIndex(i)
 
     def keyPressEvent(self, event):
-        print(event.modifiers() == Qt.ControlModifier, event.text() is '')
+        if (event.modifiers() == Qt.ControlModifier and event.text() is ''):
+            self.set_select_menu_item_visibility(True)
         super().keyPressEvent(event)
+
+    def keyReleaseEvent(self, event):
+        if (event.text() is ''):
+            self.set_select_menu_item_visibility(False)
 
     def close(self, event=None):
         QCoreApplication.instance().quit()
