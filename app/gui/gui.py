@@ -8,7 +8,8 @@ from PyQt5.QtCore import QCoreApplication, Qt
 from PyQt5.QtWidgets import (QWidget, QLabel, QLineEdit, QDesktopWidget, QVBoxLayout,
                              QTextEdit, QGridLayout, QApplication, QHBoxLayout,
                              QFormLayout, QStyle, QShortcut, QStyle, QStyleOption,
-                             QFrame, QPushButton, QScrollArea, QStackedLayout, QGridLayout)
+                             QFrame, QPushButton, QScrollArea, QStackedLayout, QGridLayout,
+                             QGraphicsDropShadowEffect)
 
 from PyQt5.QtGui import (QKeySequence, QFont, QFontDatabase, QPainter)
 
@@ -22,6 +23,7 @@ class TopSystemButtons(QFrame):
         super().__init__()
 
         self.main_window = main_window
+        self.move_offset = None
 
         b = QHBoxLayout()
         b.addStretch()
@@ -29,18 +31,34 @@ class TopSystemButtons(QFrame):
         b.setContentsMargins(0, 0, 0, 0)
 
         exit_button = QPushButton('x')
-        exit_button.clicked.connect(QCoreApplication.instance().quit)
+        exit_button.clicked.connect(main_window.close)
 
         minimize_button = QPushButton('_')
-        minimize_button.clicked.connect(self.minimize)
+        minimize_button.clicked.connect(main_window.minimize)
 
         b.addWidget(minimize_button)
         b.addSpacing(1)
         b.addWidget(exit_button)
         self.setLayout(b)
 
-    def minimize(self, event):
-        QWidget().setWindowState(Qt.WindowMinimized)
+    def mousePressEvent(self, event):
+        self.move_offset = event.pos()
+
+    def mouseReleaseEvent(self, event):
+        """
+        This prevents window from moving when buttons pressed
+        """
+        self.move_offset = None
+
+    def mouseMoveEvent(self, event):
+        if not self.move_offset:
+            return
+
+        x = event.globalX()
+        y = event.globalY()
+        x_w = self.move_offset.x()
+        y_w = self.move_offset.y()
+        self.main_window.move(x - x_w, y - y_w)
 
 
 class TopFrame(QFrame):
@@ -48,7 +66,16 @@ class TopFrame(QFrame):
     Top Frame with decorative elements
     """
 
-    pass
+    def __init__(self, main_window):
+        super().__init__()
+
+        self.main_window = main_window
+
+        shadow = QGraphicsDropShadowEffect()
+        shadow.setBlurRadius(10)
+        shadow.setXOffset(0)
+        shadow.setYOffset(3)
+        self.setGraphicsEffect(shadow)
 
 
 class Input(QFrame):
@@ -59,13 +86,22 @@ class Input(QFrame):
 
     def __init__(self, label_text):
         super().__init__()
+
+        if label_text.startswith('_'):
+            return
+
         hbox = QHBoxLayout()
         hbox.addWidget(QLabel(_(label_text)))
         hbox.addStretch()
         e = QLineEdit()
         e.setAlignment(Qt.AlignRight)
-        e.setFixedWidth(170)
+        e.setFixedWidth(200)
 
+        shadow = QGraphicsDropShadowEffect()
+        shadow.setBlurRadius(10)
+        shadow.setXOffset(0)
+        shadow.setYOffset(0)
+        self.setGraphicsEffect(shadow)
         hbox.addWidget(e)
 
         # self.setFrameStyle(QFrame.StyledPanel | QFrame.Sunken)
@@ -100,14 +136,14 @@ class AttributesFrame(QWidget):
         hbox = QHBoxLayout()
         hbox.setSpacing(0)
         hbox.setContentsMargins(0, 0, 0, 0)
-        hbox.addSpacing(self.width() * 0.15)
+        hbox.addSpacing(main_window.width() * 0.08)
         # grid = QGridLayout()
         # grid.setOriginCorner(Qt.TopLeftCorner)
 
         # col = -2
         rows = 5
         for i, arg_name in enumerate(item):
-            if i % 5 == 0:
+            if i % rows == 0:
                 try:
                     vbox.addStretch(10)
                 except NameError:
@@ -163,7 +199,53 @@ class AttributesFrame(QWidget):
         # vbox.addLayout(hbox, stretch=40)
         # self.setLayout(vbox)
 
-        QShortcut(QKeySequence('Esc'), self).activated.connect(QCoreApplication.instance().quit)
+
+class LeftMenu(QFrame):
+
+    def __init__(self, main_window, items):
+
+        super().__init__(main_window)
+
+        self.main_window = main_window
+        w = main_window.width() * 0.065
+        h = main_window.height() * 0.8
+        self.resize(w, h)
+        self.move(0, main_window.height() * 0.15)
+
+        shadow = QGraphicsDropShadowEffect()
+        shadow.setBlurRadius(20)
+        shadow.setXOffset(0)
+        shadow.setYOffset(0)
+        self.setGraphicsEffect(shadow)
+
+        vbox = QVBoxLayout()
+        self.setLayout(vbox)
+        for i, each in enumerate(items):
+            hbox = QHBoxLayout()
+            # hbox.addWidget()
+            b = QPushButton(_(each.name))
+            b.clicked.connect(self.select_item)
+            hbox.addWidget(b)
+            vbox.addLayout(hbox)
+
+    def select_item(self, index):
+        print(index)
+
+
+class ActionButton(QFrame):
+
+    def __init__(self, main_window):
+        super().__init__(main_window)
+
+        self.main_window = main_window
+        shadow = QGraphicsDropShadowEffect()
+        shadow.setBlurRadius(15)
+        shadow.setXOffset(0)
+        shadow.setYOffset(0)
+        self.setGraphicsEffect(shadow)
+
+        print(main_window.waterline)
+        self.move(1300, 210)
 
 
 class MainWindow(QWidget):
@@ -172,23 +254,30 @@ class MainWindow(QWidget):
         super().__init__()
 
         self.items = items
-
         self.stacked_layout = QStackedLayout()
-
-        vbox = QVBoxLayout()
-        vbox.setContentsMargins(0, 0, 0, 0)
-        vbox.setSpacing(0)
-        vbox.addWidget(TopSystemButtons(self), stretch=3)
-        vbox.addWidget(TopFrame(), stretch=15)
-        vbox.addSpacing(40)
-        vbox.addLayout(self.stacked_layout, stretch=40)
-        self.setLayout(vbox)
 
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
         self.setWindowTitle('Hospital Helper')
         dw = QDesktopWidget()
         w = dw.geometry().size().width() * 0.75
         self.resize(w, w * 0.6)
+
+        vbox = QVBoxLayout()
+        vbox.setContentsMargins(0, 0, 0, 0)
+        vbox.setSpacing(0)
+        self.setLayout(vbox)
+
+        vbox.addWidget(TopSystemButtons(self), stretch=3)
+
+        t = TopFrame(self)
+        vbox.addWidget(t, stretch=15)
+        self.waterline = self.height() - t.height()
+
+        vbox.addSpacing(50)
+        vbox.addLayout(self.stacked_layout, stretch=40)
+
+        # LeftMenu(self, items)
+        ActionButton(self)
 
         qr = self.frameGeometry()
         cp = dw.availableGeometry().center()
@@ -198,11 +287,12 @@ class MainWindow(QWidget):
         self._create_layout()
 
         self.i = 0
-        self.show()
 
-    def mousePressEvent(self, event):
-        self.i = (self.i + 1) % len(self.items)
-        self.stacked_layout.setCurrentIndex(self.i)
+        QShortcut(QKeySequence('Esc'), self).activated.connect(self.close)
+        self.show()
+    # def mouseReleaseEvent(self, event):
+    #     self.i = (self.i + 1) % len(self.items)
+    #     self.stacked_layout.setCurrentIndex(self.i)
 
     def _create_layout(self):
 
@@ -211,9 +301,9 @@ class MainWindow(QWidget):
             self.stacked_layout.addWidget(frame)
 
     def close(self, event=None):
-        QCoreApplication.instance().quit
+        QCoreApplication.instance().quit()
 
-    def mimnimize(self, event=None):
+    def minimize(self, event=None):
         self.setWindowState(Qt.WindowMinimized)
 
 
