@@ -40,7 +40,7 @@ TopSystemButtons QPushButton:pressed {
 Input {
     background-color: white;
     border: none;
-    border-bottom: 2px solid #45A0A3;
+    /*border-bottom: 2px solid #45A0A3;*/
     margin: 10px;
 }
 
@@ -48,7 +48,7 @@ Input QLineEdit {
     background-color: white;
     /*background-color: #EEEDEF;*/
     border: none;
-    border-bottom: 1px solid #737373;
+    border-bottom: 1px solid #45A0A3;
     /*margin: 0 10px 20px 10px;*/
     /*margin-bottom: 20px;*/
     /*margin-left: 10px;*/
@@ -63,4 +63,25 @@ Input QLabel {
     margin: 10px;
     /*margin-bottom: 20px;*/
     /*margin-left: 20px;*/
+}
+
+LeftMenu {
+    background-color: white;
+    /*border: 2px solid #45A0A3;*/
+    border-left: none;
+}
+
+LeftMenu QPushButton {
+    font-size: 25px;
+    border: none;
+    /*border-bottom: 1px solid #45A0A3;*/
+}
+
+ActionButton {
+    background-color: #FFEB3B;
+    border-radius:50px;
+    max-width:100px;
+    max-height:100px;
+    min-width:100px;
+    min-height:100px;
 }
