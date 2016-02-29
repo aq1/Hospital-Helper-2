@@ -9,6 +9,7 @@ TopFrame {
 }
 
 TopSystemButtons QPushButton {
+    outline: 0;
     background-color: #45A0A3;
     font-weight: bold;
     color: white;
