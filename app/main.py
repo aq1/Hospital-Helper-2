@@ -2,7 +2,7 @@
 
 import options
 
-from gui import gui
+from gui import main as gui
 from model import (db, logic, report,
                    exceptions, localization)
 

@@ -1,3 +1,7 @@
+* {
+    color: #212121;
+}
+
 AttributesFrame {
     font-size: 20px;
     background-color: #EEEDEF;
@@ -8,13 +12,27 @@ TopFrame {
     background-color: #58CACF;
 }
 
+SelectMenu QPushButton {
+    text-transform: uppercase;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    font-size: 23px;
+    background-color: #58CACF;
+    padding: 25px 25px;
+}
+
+SelectMenu QPushButton:hover {
+    background-color: rgba(1, 1, 1, 0.2);
+}
+
 TopSystemButtons QPushButton {
     outline: 0;
     background-color: #45A0A3;
     font-weight: bold;
     color: white;
     border: 1px solid #45A0A3;
-    padding: 5px 10px;
+    padding: 5px 20px;
     font-size: 25px;
 }
 
@@ -30,7 +48,7 @@ TopSystemButtons QLabel {
 }
 
 TopSystemButtons QPushButton:hover {
-    background-color: #327275;
+    background-color: rgba(1, 1, 1, 0.2);
 }
 
 
@@ -38,51 +56,51 @@ TopSystemButtons QPushButton:pressed {
     background-color: #1F484A;
 }
 
-Input {
+InputWidget {
     background-color: white;
     border: none;
     /*border-bottom: 2px solid #45A0A3;*/
     margin: 10px;
 }
 
-Input QLineEdit {
+InputWidget QLineEdit {
     background-color: white;
-    /*background-color: #EEEDEF;*/
     border: none;
     border-bottom: 1px solid #45A0A3;
-    /*margin: 0 10px 20px 10px;*/
-    /*margin-bottom: 20px;*/
-    /*margin-left: 10px;*/
     margin: 10px;
-    font-size: 25px;
+    font-size: 20px;
 }
 
-Input QLabel {
-    font-size: 25px;
+InputWidget QLabel {
+    font-size: 20px;
     background-color: white;
-    /*background-color: #EEEDEF;*/
     margin: 10px;
-    /*margin-bottom: 20px;*/
-    /*margin-left: 20px;*/
 }
 
 LeftMenu {
     background-color: white;
-    /*border: 2px solid #45A0A3;*/
     border-left: none;
 }
 
 LeftMenu QPushButton {
     font-size: 25px;
     border: none;
-    /*border-bottom: 1px solid #45A0A3;*/
 }
 
 ActionButton {
-    background-color: #FFEB3B;
-    border-radius:50px;
-    max-width:100px;
-    max-height:100px;
-    min-width:100px;
     min-height:100px;
+}
+
+SelectItemMenu {
+     background-color: white;
+}
+
+SelectItemMenu QPushButton {
+    border: none;
+    font-size: 20px;
+    padding: 10px 20px;
+}
+
+SelectItemMenu QPushButton:hover {
+    background-color: rgba(1, 1, 1, 0.2);
 }
