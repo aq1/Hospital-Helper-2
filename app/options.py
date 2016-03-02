@@ -266,7 +266,8 @@ INIT_STRUCTURE = """[{
 }]"""
 
 
-INIT_TRANSLATION = (
+# Order matters
+CONTROL_BUTTONS_LABELS = (
     {'sys': 'data', 'ru': 'Данные', 'en': 'Data'},
     {'sys': 'report', 'ru': 'Отчет', 'en': 'Report'},
     {'sys': 'db', 'ru': 'База', 'en': 'DB'},

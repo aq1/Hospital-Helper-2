@@ -9,6 +9,8 @@ from PyQt5.QtWidgets import (QWidget, QStackedLayout, QDesktopWidget,
 
 from PyQt5.QtGui import QKeySequence
 
+import options
+
 from gui.select_menu import SelectMenu, SelectItemMenu
 from gui.data_widget import DataWidget
 from gui.db_widget import DBWidget
@@ -20,7 +22,7 @@ from gui.top_system_buttons import TopSystemButtons
 
 class MainWindow(QWidget):
 
-    MENU_LABELS = 'data', 'report', 'base', 'options'
+    MENU_LABELS = [each['sys'] for each in options.CONTROL_BUTTONS_LABELS]
 
     def __init__(self, items):
         super().__init__()

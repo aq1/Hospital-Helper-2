@@ -60,3 +60,5 @@ target/
 *.db
 n.py
 dump.rdb
+*.*~
+

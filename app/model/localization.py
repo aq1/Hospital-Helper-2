@@ -64,5 +64,5 @@ class Localization:
                 if s:
                     cls.add_system_label(s)
 
-        for each in options.INIT_TRANSLATION:
+        for each in options.CONTROL_BUTTONS_LABELS:
             db.Translation.get_or_create(**each)
