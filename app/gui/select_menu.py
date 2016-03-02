@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import (QFrame, QPushButton, QHBoxLayout,
 
 class SelectMenu(QFrame):
 
-    BUTTON_SELECTED_QSS = "padding-bottom: 23px; border-bottom: 2px solid #FFEB3B;"
+    BUTTON_SELECTED_QSS = "color: white; padding-bottom: 23px; border-bottom: 2px solid #FFEB3B;"
 
     def __init__(self, main_window):
 
@@ -32,17 +32,22 @@ class SelectMenu(QFrame):
                 btn.enterEvent = functools.partial(
                     self.main_window.set_select_menu_item_visibility, False)
 
-            btn.clicked.connect(functools.partial(self.button_clicked, btn))
+            btn.clicked.connect(functools.partial(self.button_clicked, btn, i))
             hbox.addWidget(btn)
 
+        self.buttons[0].setText(_(main_window.items[0].name))
+        self.buttons[0].setFixedWidth(250)
         hbox.addStretch()
 
-    def button_clicked(self, btn, event=None):
+    def button_clicked(self, btn, index, event=None):
         for each in self.buttons:
             each.setStyleSheet('')
 
         btn.setStyleSheet(self.BUTTON_SELECTED_QSS)
-        self.main_window.select_menu_button_clicked(btn)
+        self.main_window.select_menu_button_clicked(index)
+
+    def set_item_label(self, text):
+        self.buttons[0].setText(_(text))
 
 
 class SelectItemMenu(QFrame):

@@ -63,3 +63,6 @@ class Localization:
                 s = item.get(l)
                 if s:
                     cls.add_system_label(s)
+
+        for each in options.INIT_TRANSLATION:
+            db.Translation.get_or_create(**each)

@@ -9,7 +9,7 @@ from PyQt5.QtWidgets import (QWidget, QStackedLayout, QDesktopWidget,
 
 from PyQt5.QtGui import QKeySequence
 
-from gui.select_menu import SelectItemMenu
+from gui.select_menu import SelectMenu, SelectItemMenu
 from gui.data_widget import DataWidget
 from gui.db_widget import DBWidget
 from gui.options_widget import OptionsWidget
@@ -80,6 +80,7 @@ class MainWindow(QWidget):
             self.select_menu.raise_()
 
     def select_item(self, index):
+        self.findChild(SelectMenu).set_item_label(self.items[index].name)
         self.frames[0].select_item(index)
         self.set_select_menu_item_visibility(False)
 
@@ -88,17 +89,28 @@ class MainWindow(QWidget):
         if not self.stack_index:
             self.set_select_menu_item_visibility(True)
 
-    def select_menu_button_clicked(self, btn):
-        for i, each in enumerate(self.MENU_LABELS):
-            if _(each) == btn.text():
-                if self.stacked_layout.currentIndex() == i == 0:
-                    self.set_select_menu_item_visibility(not self.select_menu.isVisible())
-                self.stacked_layout.setCurrentIndex(i)
+    def select_menu_button_clicked(self, index):
+        if self.stacked_layout.currentIndex() == index == 0:
+            self.set_select_menu_item_visibility(not self.select_menu.isVisible())
+        self.stacked_layout.setCurrentIndex(index)
 
     def _h(self, event):
         mods = event.modifiers()
         if mods & QtCore.Qt.ControlModifier and mods & QtCore.Qt.ShiftModifier:
             print('asd')
+
+    def input_changed(self, item):
+        # Well it doesnt look good, but i was never good with UI.
+        if self.items.index(item) == 0:
+            text = []
+            for i, key in enumerate(item.keys()):
+                if item[key]:
+                    text.append(str(item[key]))
+
+                if i == 2:
+                    break
+
+            self.findChild(TopFrame).set_label_text(' '.join(text))
 
     def keyPressEvent(self, event):
         t = QTimer()

@@ -19,17 +19,13 @@ INIT_STRUCTURE = """[{
         "name": "Отчество",
         "type": "str"
     }, {
-        "name": "Возраст",
-        "type": "str"
+        "name": "Возраст"
     }, {
-        "name": "Чсс",
-        "type": "str"
+        "name": "Чсс"
     }, {
-        "name": "Рост",
-        "type": "str"
+        "name": "Рост"
     }, {
-        "name": "Вес",
-        "type": "str"
+        "name": "Вес"
     }, {
         "name": "_ППТ",
         "calculation": "sqrt(Рост * Вес / 3600)"
@@ -269,6 +265,23 @@ INIT_STRUCTURE = """[{
     }]
 }]"""
 
+
+INIT_TRANSLATION = (
+    {'sys': 'data', 'ru': 'Данные', 'en': 'Data'},
+    {'sys': 'report', 'ru': 'Отчет', 'en': 'Report'},
+    {'sys': 'db', 'ru': 'База', 'en': 'DB'},
+    {'sys': 'options', 'ru': 'Настройки', 'en': 'Options'},
+    )
+
+
 DATABASE = 'data.db'
 
 CONCLUSION = 'Заключение: '
+
+TYPES = {
+    'str': str,
+    'float': float,
+    'int': int,
+    'list': list,
+    'tuple': tuple
+}

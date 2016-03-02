@@ -1,5 +1,3 @@
-# -*- coding: UTF-8 -*-
-
 import options
 
 from gui import main as gui

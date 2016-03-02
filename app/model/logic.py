@@ -1,5 +1,3 @@
-# -*- coding: UTF-8 -*-
-
 import sys
 import re
 import json
@@ -10,6 +8,7 @@ from collections import defaultdict
 
 import unidecode
 
+import options
 from model import exceptions, db
 
 
@@ -88,14 +87,21 @@ class Mediator:
     Also its Singleton and i'm not sure if you're ok with that.
     """
 
+    __instance = None
+
     def __new__(cls, obj=None):
-        if not hasattr(cls, 'instance'):
-            cls.instance = super(cls, cls).__new__(cls)
-        return cls.instance
+        if cls.__instance is None:
+            cls.__instance = super(cls, cls).__new__(cls)
+            cls.__instance.__initialized = False
+        return cls.__instance
 
     def __init__(self):
 
+        if self.__initialized:
+            return
+
         self.objects = {}
+        self.__initialized = True
 
     def __call__(self, obj):
         self.objects[obj.name] = obj
@@ -129,6 +135,7 @@ class CalculableObject(collections.OrderedDict):
     def __init__(self, name, verbose_name, group, args, parser, mediator, model=None):
         super().__init__()
 
+        self.types = self._create_types(args)
         self.name = name
         self.verbose_name = verbose_name
         self.group = group
@@ -153,6 +160,16 @@ class CalculableObject(collections.OrderedDict):
         if self.get(name) is None:
             raise AttributeError('No such attribute: {}'.format(name))
 
+        type_ = self.types[name]
+
+        try:
+            value = type_(value)
+        except ValueError:
+            return
+
+        if type_ is float:
+            value = round(value, 2)
+
         self[name] = value
 
     def _get(self, name):
@@ -163,8 +180,18 @@ class CalculableObject(collections.OrderedDict):
 
         return value
 
+    def _create_types(self, args):
+        types = options.TYPES
+
+        return {each['name']: types.get(each.get('type', 'float'), float)
+                for each in args}
+
     def _add_calculation(self, name, calculation):
         pass
+
+    def set(self, name, value):
+        # well, maybe i should remove it
+        self._set(name, value)
 
     def get_verbose_name(self):
         return _(self.verbose_name)

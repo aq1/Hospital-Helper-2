@@ -14,7 +14,7 @@ class DataWidget(QFrame):
         self.setLayout(self.stacked_layout)
 
         for item in items:
-            frame = AttributesFrame(main_window=self, item=item)
+            frame = AttributesFrame(main_window=main_window, item=item)
             self.stacked_layout.addWidget(frame)
 
     def select_item(self, index):

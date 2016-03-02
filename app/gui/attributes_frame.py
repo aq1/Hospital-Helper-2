@@ -16,9 +16,11 @@ class AttributesFrame(QWidget):
         """
 
         super().__init__()
-        print(item)
 
         self.main_window = main_window
+        self.item = item
+        self.inputs = []
+
         hbox = QHBoxLayout()
         self.setLayout(hbox)
         hbox.setSpacing(0)
@@ -38,7 +40,8 @@ class AttributesFrame(QWidget):
 
                 hbox.addLayout(vbox)
 
-            vbox.addWidget(InputWidget(arg_name))
+            self.inputs.append(InputWidget(self, arg_name))
+            vbox.addWidget(self.inputs[-1])
 
         try:
             vbox.addStretch()
@@ -46,3 +49,13 @@ class AttributesFrame(QWidget):
             pass
 
         hbox.addStretch(100)
+
+    def input_changed(self, label, value):
+        self.item.set(label, value)
+        self.item.calculate()
+
+        for each in self.inputs:
+            if label != each.label_text:
+                each.set_value(self.item[each.label_text])
+
+        self.main_window.input_changed(self.item)

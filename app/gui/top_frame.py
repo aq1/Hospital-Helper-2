@@ -25,7 +25,7 @@ class TopFrame(QFrame):
         hbox.setContentsMargins(0, 0, 0, 0)
         vbox.addLayout(hbox)
 
-        hbox.addWidget(QLabel('Иванов Иван Иванович'))
+        hbox.addWidget(QLabel())
         vbox.addStretch()
         vbox.addWidget(SelectMenu(main_window))
 
@@ -34,3 +34,6 @@ class TopFrame(QFrame):
         shadow.setXOffset(0)
         shadow.setYOffset(5)
         self.setGraphicsEffect(shadow)
+
+    def set_label_text(self, text):
+        self.findChild(QLabel).setText(text)
