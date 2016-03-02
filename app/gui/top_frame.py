@@ -1,4 +1,5 @@
-from PyQt5.QtWidgets import QFrame, QVBoxLayout, QGraphicsDropShadowEffect
+from PyQt5.QtWidgets import (QFrame, QVBoxLayout, QHBoxLayout, 
+                             QGraphicsDropShadowEffect, QLabel)
 
 from gui.select_menu import SelectMenu
 
@@ -17,6 +18,14 @@ class TopFrame(QFrame):
         vbox.setContentsMargins(0, 0, 0, 0)
         self.setLayout(vbox)
 
+        vbox.addStretch()
+        hbox = QHBoxLayout()
+        hbox.addSpacing(25)
+        hbox.setSpacing(0)
+        hbox.setContentsMargins(0, 0, 0, 0)
+        vbox.addLayout(hbox)
+
+        hbox.addWidget(QLabel('Иванов Иван Иванович'))
         vbox.addStretch()
         vbox.addWidget(SelectMenu(main_window))
 

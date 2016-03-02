@@ -12,6 +12,11 @@ TopFrame {
     background-color: #58CACF;
 }
 
+TopFrame QLabel {
+    color: #B2EBF2;
+    font-size: 60px;
+}
+
 SelectMenu QPushButton {
     text-transform: uppercase;
     color: white;

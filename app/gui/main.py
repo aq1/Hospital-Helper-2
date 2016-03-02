@@ -1,8 +1,9 @@
 import os
 import sys
+import functools
 
 from PyQt5 import QtCore
-from PyQt5.QtCore import QCoreApplication, Qt
+from PyQt5.QtCore import QCoreApplication, Qt, QTimer
 from PyQt5.QtWidgets import (QWidget, QStackedLayout, QDesktopWidget,
                              QVBoxLayout, QShortcut, QApplication)
 
@@ -91,13 +92,23 @@ class MainWindow(QWidget):
         for i, each in enumerate(self.MENU_LABELS):
             if _(each) == btn.text():
                 if self.stacked_layout.currentIndex() == i == 0:
-                    self.set_select_menu_item_visibility(True)
+                    self.set_select_menu_item_visibility(not self.select_menu.isVisible())
                 self.stacked_layout.setCurrentIndex(i)
 
+    def _h(self, event):
+        mods = event.modifiers()
+        if mods & QtCore.Qt.ControlModifier and mods & QtCore.Qt.ShiftModifier:
+            print('asd')
+
     def keyPressEvent(self, event):
-        if (event.modifiers() == Qt.ControlModifier and event.text() is ''):
-            self.set_select_menu_item_visibility(True)
-        super().keyPressEvent(event)
+        t = QTimer()
+        t.singleShot(200, functools.partial(self._h, event))
+        # mods = event.modifiers()
+        # if mods & QtCore.Qt.ControlModifier and mods & QtCore.Qt.ShiftModifier:
+        #     return
+        # if (event.modifiers() == Qt.ControlModifier and event.text() is ''):
+        #     self.set_select_menu_item_visibility(True)
+        # super().keyPressEvent(event)
 
     def keyReleaseEvent(self, event):
         if (event.text() is ''):
