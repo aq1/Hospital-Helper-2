@@ -24,10 +24,12 @@ class MainWindow(QWidget):
 
     MENU_LABELS = [each['sys'] for each in options.CONTROL_BUTTONS_LABELS]
 
-    def __init__(self, items):
+    def __init__(self, items, templates, db):
         super().__init__()
 
         self.items = items
+        self.templates = templates
+        self.db = db
 
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
         self.setWindowTitle('Hospital Helper')
@@ -45,7 +47,7 @@ class MainWindow(QWidget):
 
         t = TopFrame(self, items)
         vbox.addWidget(t, stretch=15)
-        self.waterline = self.height() - t.height()
+        self.waterline = t.y() + t.height()
 
         vbox.addSpacing(50)
         vbox.addLayout(self.stacked_layout, stretch=40)
@@ -68,12 +70,17 @@ class MainWindow(QWidget):
 
     def _create_layout(self):
         # Order matters
-        self.frames = [frame(self, self.items) for frame in (DataWidget,
-                                                             ReportWidget,
-                                                             DBWidget,
-                                                             OptionsWidget)]
+        self.frames = [DataWidget(self, self.items),
+                       ReportWidget(self, self.items, self.templates),
+                       DBWidget(self, self.db),
+                       OptionsWidget(self)]
+
         for frame in self.frames:
             self.stacked_layout.addWidget(frame)
+
+    def top_frame_resized(self, frame):
+        self.waterline = frame.y() + frame.height()
+        self.select_menu.move(self.width() * 0.1, self.waterline)
 
     def set_select_menu_item_visibility(self, value, event=None):
         # Event is triggered only on 'Data' tab
@@ -135,9 +142,9 @@ class MainWindow(QWidget):
         self.setWindowState(Qt.WindowMinimized)
 
 
-def init(items):
+def init(items, templates, db):
     app = QApplication(sys.argv)
     with open(os.path.join(os.path.dirname(__file__), 'style.qss'), 'r') as f:
         app.setStyleSheet(f.read())
-    mw = MainWindow(items)
+    mw = MainWindow(items, templates, db)
     sys.exit(app.exec_())

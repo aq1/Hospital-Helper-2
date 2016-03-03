@@ -7,6 +7,7 @@ import slugify
 from sqlalchemy import exc, UniqueConstraint
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm.session import sessionmaker
+from sqlalchemy.orm import relationship
 from sqlalchemy import create_engine
 from sqlalchemy import (Column, Integer, String, Float,
                         ForeignKey, Date, SmallInteger,
@@ -54,8 +55,10 @@ class Client(Base, Model):
     height = Column(SmallInteger, nullable=False, default=0)
     weight = Column(SmallInteger, nullable=False, default=0)
     examined = Column(Date, nullable=False, default=datetime.datetime.now)
-    doctor = Column(ForeignKey('doctor.id'), nullable=False)
     sent_by = Column(String, nullable=False, default='')
+
+    doctor_id = Column(ForeignKey('doctor.id'), nullable=False)
+    doctor = relationship('Doctor', backref='client')
 
 
 class Doctor(Base, Model):
@@ -63,7 +66,8 @@ class Doctor(Base, Model):
     __tablename__ = 'doctor'
 
     id = Column(Integer, primary_key=True)
-    hospital = Column(ForeignKey('hospital.id'))
+    hospital_id = Column(ForeignKey('hospital.id'))
+    hospital = relationship('Hospital', backref='doctor')
 
     name = Column(String, nullable=False, default='')
     surname = Column(String, nullable=False, default='')
@@ -86,9 +90,13 @@ class Report(Base, Model):
     __tablename__ = 'report'
 
     id = Column(Integer, primary_key=True)
-    client = Column(ForeignKey('client.id'))
     path = Column(String, nullable=False)
-    template = Column(ForeignKey('template.id'))
+
+    client_id = Column(ForeignKey('client.id'))
+    template_id = Column(ForeignKey('template.id'))
+
+    client = relationship('Client', backref='report')
+    template = relationship('Template', backref='report')
 
 
 class Group(Base, Model):
@@ -106,8 +114,9 @@ class Item(Base, Model):
     __tablename__ = 'item'
 
     id = Column(Integer, primary_key=True)
-    group = Column(ForeignKey('group.id'))
     name = Column(String, nullable=False)
+    group_id = Column(ForeignKey('group.id'))
+    group = relationship('Group', backref='item')
 
     __table_args__ = tuple(UniqueConstraint('group', 'name'))
 
@@ -120,10 +129,12 @@ class Template(Base, Model):
     __tablename__ = 'template'
 
     id = Column(Integer, primary_key=True)
-    item = Column(ForeignKey('item.id'))
     name = Column(String, nullable=False, default='')
     body = Column(Text, nullable=False, default='')
     conclusion = Column(Text, nullable=False, default='')
+
+    item_id = Column(ForeignKey('item.id'))
+    item = relationship('Item', backref='template')
 
     __table_args__ = tuple(UniqueConstraint('item', 'name'))
 
@@ -172,10 +183,6 @@ class ModelFactory:
         for rel in item.get('relations', []):
             fields[rel] = Column(
                 ForeignKey('{}.id'.format(rel)), nullable=False)
-
-        group, _ = Group.get_or_create(name=item.get('group', item['name']),
-                                       instant_flush=True)
-        Item.get_or_create(name=item['name'], group=group.id)
 
         try:
             return type('{}Model'.format(item['name']), (Base, ), fields)

@@ -1,7 +1,7 @@
 import options
 
 from gui import main as gui
-from model import (db, logic, report,
+from model import (db, logic, report, template,
                    exceptions, localization)
 
 
@@ -38,7 +38,12 @@ def init():
 
     localization.Localization.install('ru')
 
-    gui.init(items)
+    for i in items:
+        t, _ = db.Template.get_or_create(item_id=i.id, name='Норма %s' % i.name, body='Тело', conclusion='Заключение')
+    db.SESSION.flush()
+
+    templates = template.Template.get_list()
+    gui.init(items, templates, db=None)
 
     # for i in items:
     #     i.template = 'norma'

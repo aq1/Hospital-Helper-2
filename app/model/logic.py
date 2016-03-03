@@ -132,7 +132,7 @@ class Mediator:
 
 class CalculableObject(collections.OrderedDict):
 
-    def __init__(self, name, verbose_name, group, args, parser, mediator, model=None):
+    def __init__(self, name, verbose_name, group, args, parser, mediator, model=None, item=None):
         super().__init__()
 
         self.types = self._create_types(args)
@@ -143,7 +143,9 @@ class CalculableObject(collections.OrderedDict):
         self.model = model
         self.calculations = []
         self.template = None
-
+        if item:
+            self.id = item.id
+    
         for each in args:
             self[each['name']] = 0
             calculation = each.get('calculation')
@@ -219,8 +221,15 @@ class ObjectFactory:
     @classmethod
     def get_object(cls, info):
 
+        model = None
+        item = None
+        group = None
+
         if info.get('db'):
             model = cls.model_factory.get_model(info)
+            group, _ = db.Group.get_or_create(name=info.get('group', info['name']),
+                                              instant_flush=True)
+            item, _ = db.Item.get_or_create(name=info['name'], group=group, instant_flush=True)
 
         return CalculableObject(name=info['name'],
                                 verbose_name=info.get('verbose_name', info['name']),
@@ -228,4 +237,5 @@ class ObjectFactory:
                                 group=info.get('group', info['name']),
                                 parser=Parser(),
                                 mediator=Mediator(),
-                                model=model)
+                                model=model,
+                                item=item)

@@ -36,7 +36,7 @@ class SelectMenu(QFrame):
             hbox.addWidget(btn)
 
         self.buttons[0].setText(_(main_window.items[0].name))
-        self.buttons[0].setFixedWidth(250)
+        self.buttons[0].setFixedWidth(260)
         hbox.addStretch()
 
     def button_clicked(self, btn, index, event=None):
@@ -57,8 +57,8 @@ class SelectItemMenu(QFrame):
         super().__init__(main_window)
 
         self.main_window = main_window
-        self.resize(main_window.width() * 0.4, main_window.height() * 0.4)
-        self.move(100, 250)
+        self.resize(main_window.width() * 0.5, main_window.height() * 0.4)
+        self.move(100, main_window.waterline)
         self.hide()
 
         grid = QGridLayout()

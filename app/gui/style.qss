@@ -4,18 +4,18 @@
 }
 
 AttributesFrame {
-    font-size: 20px;
+    font-size: 12pt;
     background-color: #EEEDEF;
 }
 
 TopFrame {
-    font-size: 20px;
+    font-size: 12pt;
     background-color: #58CACF;
 }
 
 TopFrame QLabel {
     color: #B2EBF2;
-    font-size: 60px;
+    font-size: 35pt;
 }
 
 SelectMenu QPushButton {
@@ -23,7 +23,7 @@ SelectMenu QPushButton {
     color: #B2EBF2;
     padding: 5px 10px;
     border: none;
-    font-size: 23px;
+    font-size: 13pt;
     background-color: #58CACF;
     padding: 25px 25px;
 }
@@ -39,7 +39,7 @@ TopSystemButtons QPushButton {
     color: white;
     border: 1px solid #45A0A3;
     padding: 5px 20px;
-    font-size: 25px;
+    font-size: 15pt;
 }
 
 TopSystemButtons {
@@ -48,7 +48,7 @@ TopSystemButtons {
 
 TopSystemButtons QLabel {
     margin: 0;
-    font-size: 25px;
+    font-size: 15pt;
     background-color: #45A0A3;
     color: white;   
 }
@@ -74,11 +74,11 @@ InputWidget QLineEdit {
     border: none;
     border-bottom: 1px solid #45A0A3;
     margin: 10px;
-    font-size: 20px;
+    font-size: 12pt;
 }
 
 InputWidget QLabel {
-    font-size: 20px;
+    font-size: 12pt;
     background-color: white;
     margin: 10px;
 }
@@ -89,7 +89,7 @@ LeftMenu {
 }
 
 LeftMenu QPushButton {
-    font-size: 25px;
+    font-size: 15pt;
     border: none;
 }
 
@@ -103,7 +103,7 @@ SelectItemMenu {
 
 SelectItemMenu QPushButton {
     border: none;
-    font-size: 20px;
+    font-size: 12pt;
     padding: 10px 20px;
 }
 

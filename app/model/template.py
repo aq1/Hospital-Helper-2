@@ -1,4 +1,4 @@
-# -*- coding: UTF-8 -*-
+from collections import defaultdict
 
 from model import db, exceptions
 
@@ -43,3 +43,14 @@ class Template:
                    name=name,
                    body=template.body,
                    conclusion=template.conclusion)
+
+    @classmethod
+    def get_list(cls):
+
+        result = defaultdict(list)
+        templates = db.SESSION.query(db.Template).all()
+
+        for each in templates:
+            result[each.item.id].append(each)
+
+        return result

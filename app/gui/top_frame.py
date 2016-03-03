@@ -37,3 +37,6 @@ class TopFrame(QFrame):
 
     def set_label_text(self, text):
         self.findChild(QLabel).setText(text)
+
+    def resizeEvent(self, event):
+        self.main_window.top_frame_resized(self)

@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import QFrame, QHBoxLayout, QLabel
 
 class DBWidget(QFrame):
 
-    def __init__(self, main_window, *args):
+    def __init__(self, main_window, db):
 
         super().__init__()
         hbox = QHBoxLayout()
