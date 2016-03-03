@@ -1,3 +1,8 @@
+* {
+    color: #212121;
+    outline: 0;
+}
+
 AttributesFrame {
     font-size: 20px;
     background-color: #EEEDEF;
@@ -9,7 +14,6 @@ TopFrame {
 }
 
 TopSystemButtons QPushButton {
-    outline: 0;
     background-color: #45A0A3;
     font-weight: bold;
     color: white;

@@ -1,5 +1,6 @@
 # -*- coding: UTF-8 -*-
 
+import locale
 import json
 
 from model import db, logic, exceptions
@@ -9,12 +10,13 @@ import options
 class Localization:
 
     __translation = {}
+    DEFAULT_LANGUAGE = 'ru'
 
     @classmethod
     def install(cls, lang):
 
         if lang not in [c.name for c in db.Translation.__table__.columns]:
-            raise exceptions.NoSuchTranslation
+            raise exceptions.TranslationDoesNotExist
 
         cls.create_init_translation()
 
@@ -26,6 +28,20 @@ class Localization:
 
         import builtins
         builtins.__dict__['_'] = cls.get_text
+
+        import pprint
+        pprint.pprint(cls.__translation)
+
+    @classmethod
+    def install_default(cls):
+        cls.install(cls.DEFAULT_LANGUAGE)
+
+    @classmethod
+    def install_current_or_default(cls):
+        try:
+            cls.install(locale.getlocale()[0].split('_')[0])
+        except exceptions.TranslationDoesNotExist:
+            cls.install_default()
 
     @classmethod
     def get_text(cls, text):

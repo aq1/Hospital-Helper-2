@@ -38,7 +38,7 @@ def init():
     items = convert_structure_to_items(structure)
     db.create_db()
 
-    localization.Localization.install('ru')
+    localization.Localization.install_default()
 
     gui.init(items)
 
