@@ -20,63 +20,11 @@ from gui.top_frame import TopFrame
 from gui.top_system_buttons import TopSystemButtons
 
 
-class MainWindow(QWidget):
-
-    MENU_LABELS = [each['sys'] for each in options.CONTROL_BUTTONS_LABELS]
-
-    def __init__(self, items, templates, db):
-        super().__init__()
-
-        self.items = items
-        self.templates = templates
-        self.db = db
-
-        self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
-        self.setWindowTitle('Hospital Helper')
-        dw = QDesktopWidget()
-        w = dw.geometry().size().width() * 0.75
-        self.resize(w, w * 0.6)
-
-        self.stacked_layout = QStackedLayout()
-        vbox = QVBoxLayout()
-        vbox.setContentsMargins(0, 0, 0, 0)
-        vbox.setSpacing(0)
-        self.setLayout(vbox)
-
-        vbox.addWidget(TopSystemButtons(self), stretch=3)
-
-        t = TopFrame(self, items)
-        vbox.addWidget(t, stretch=15)
-        self.waterline = t.y() + t.height()
-
-        vbox.addSpacing(50)
-        vbox.addLayout(self.stacked_layout, stretch=40)
-
-        qr = self.frameGeometry()
-        cp = dw.availableGeometry().center()
-        qr.moveCenter(cp)
-        self.move(qr.topLeft())
-
-        self._create_layout()
-        self.select_menu = SelectItemMenu(self, items)
-
-        self._set_shortcuts()
-
-        self.show()
+class ActionsMixins:
 
     def _set_shortcuts(self):
         QShortcut(QKeySequence('Esc'), self).activated.connect(self.close)
         QShortcut(Qt.CTRL, self).activated.connect(self.close)
-
-    def _create_layout(self):
-        # Order matters
-        self.frames = [DataWidget(self, self.items),
-                       ReportWidget(self, self.items, self.templates),
-                       DBWidget(self, self.db),
-                       OptionsWidget(self)]
-
-        for frame in self.frames:
-            self.stacked_layout.addWidget(frame)
 
     def top_frame_resized(self, frame):
         self.waterline = frame.y() + frame.height()
@@ -100,7 +48,8 @@ class MainWindow(QWidget):
 
     def select_menu_button_clicked(self, index):
         if self.stacked_layout.currentIndex() == index == 0:
-            self.set_select_menu_item_visibility(not self.select_menu.isVisible())
+            self.set_select_menu_item_visibility(
+                not self.select_menu.isVisible())
         self.stacked_layout.setCurrentIndex(index)
 
     def _h(self, event):
@@ -140,6 +89,61 @@ class MainWindow(QWidget):
 
     def minimize(self, event=None):
         self.setWindowState(Qt.WindowMinimized)
+
+
+class MainWindow(QWidget, ActionsMixins):
+
+    MENU_LABELS = [each['sys'] for each in options.CONTROL_BUTTONS_LABELS]
+    TOP_MARGIN = 50
+
+    def __init__(self, items, templates, db):
+        super().__init__()
+
+        self.items = items
+        self.templates = templates
+        self.db = db
+
+        self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
+        self.setWindowTitle('Hospital Helper')
+        dw = QDesktopWidget()
+        w = dw.geometry().size().width() * 0.75
+        self.setFixedSize(w, w * 0.6)
+
+        self.stacked_layout = QStackedLayout()
+        vbox = QVBoxLayout()
+        vbox.setContentsMargins(0, 0, 0, 0)
+        vbox.setSpacing(0)
+        self.setLayout(vbox)
+
+        vbox.addWidget(TopSystemButtons(self), stretch=3)
+
+        t = TopFrame(self, items)
+        vbox.addWidget(t, stretch=15)
+        self.waterline = t.y() + t.height()
+
+        vbox.addLayout(self.stacked_layout, stretch=40)
+
+        qr = self.frameGeometry()
+        cp = dw.availableGeometry().center()
+        qr.moveCenter(cp)
+        self.move(qr.topLeft())
+
+        self._create_layout()
+        self.select_menu = SelectItemMenu(self, items)
+
+        self._set_shortcuts()
+
+        self.show()
+
+    def _create_layout(self):
+        # Order matters
+        self.frames = [DataWidget(self, self.items),
+                       ReportWidget(self, self.items, self.templates),
+                       DBWidget(self, self.db),
+                       OptionsWidget(self)]
+
+        for frame in self.frames:
+            self.stacked_layout.addWidget(frame)
 
 
 def init(items, templates, db):

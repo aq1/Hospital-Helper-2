@@ -24,7 +24,6 @@ class AttributesFrame(QWidget):
         hbox = QHBoxLayout()
         self.setLayout(hbox)
         hbox.setSpacing(0)
-        hbox.setContentsMargins(0, 0, 0, 0)
         hbox.addSpacing(25)
 
         rows = 5
@@ -35,6 +34,7 @@ class AttributesFrame(QWidget):
                 except NameError:
                     pass
                 vbox = QVBoxLayout()
+                vbox.addSpacing(main_window.TOP_MARGIN)
                 vbox.setSpacing(0)
                 vbox.setContentsMargins(0, 0, 0, 0)
 

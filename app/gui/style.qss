@@ -110,3 +110,14 @@ SelectItemMenu QPushButton {
 SelectItemMenu QPushButton:hover {
     background-color: rgba(1, 1, 1, 0.2);
 }
+
+ReportWidget QPushButton {
+    background-color: white;
+    border: none;
+    padding: 20px;
+    font-size: 12pt;
+}
+
+ReportWidget QPushButton:hover {
+    background-color: yellow;
+}

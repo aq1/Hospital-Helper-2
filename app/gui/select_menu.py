@@ -36,7 +36,7 @@ class SelectMenu(QFrame):
             hbox.addWidget(btn)
 
         self.buttons[0].setText(_(main_window.items[0].name))
-        self.buttons[0].setFixedWidth(260)
+        self.buttons[0].setFixedWidth(int(self.main_window.width() / 5.4))
         hbox.addStretch()
 
     def button_clicked(self, btn, index, event=None):
