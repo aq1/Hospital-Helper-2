@@ -26,7 +26,7 @@ class InputWidget(QFrame):
         hbox.addStretch()
 
         self.input.setAlignment(Qt.AlignRight)
-        self.input.setFixedWidth(200)
+        self.input.setFixedWidth(190)
         self.input.textEdited.connect(functools.partial(parent.input_changed, label_text))
 
         shadow = QGraphicsDropShadowEffect()

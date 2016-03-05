@@ -121,3 +121,7 @@ ReportWidget QPushButton {
 ReportWidget QPushButton:hover {
     background-color: yellow;
 }
+
+ReportWidget QWidget {
+    border: 1px solid red;
+}
