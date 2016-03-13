@@ -1,5 +1,3 @@
-# -*- coding: UTF-8 -*-
-
 import json
 
 from model import db, logic, exceptions

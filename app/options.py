@@ -1,6 +1,3 @@
-# -*- coding: UTF-8 -*-
-
-
 STRUCTURE_KEY = 'structure'
 
 INIT_STRUCTURE = """[{

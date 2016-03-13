@@ -34,7 +34,6 @@ class AttributesFrame(QWidget):
                 except NameError:
                     pass
                 vbox = QVBoxLayout()
-                vbox.addSpacing(main_window.TOP_MARGIN)
                 vbox.setSpacing(0)
                 vbox.setContentsMargins(0, 0, 0, 0)
 

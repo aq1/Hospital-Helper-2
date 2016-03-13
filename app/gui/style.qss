@@ -29,7 +29,7 @@ SelectMenu QPushButton {
 }
 
 SelectMenu QPushButton:hover {
-    background-color: rgba(1, 1, 1, 0.2);
+    background-color: rgba(0, 0, 0, 0.2);
 }
 
 TopSystemButtons QPushButton {
@@ -54,7 +54,7 @@ TopSystemButtons QLabel {
 }
 
 TopSystemButtons QPushButton:hover {
-    background-color: rgba(1, 1, 1, 0.2);
+    background-color: rgba(0, 0, 0, 0.2);
 }
 
 
@@ -108,20 +108,33 @@ SelectItemMenu QPushButton {
 }
 
 SelectItemMenu QPushButton:hover {
-    background-color: rgba(1, 1, 1, 0.2);
+    background-color: rgba(0, 0, 0, 0.2);
 }
 
-ReportWidget QPushButton {
+ReportWidget QFrame {
+    background-color: white;
+}
+
+ReportWidget QWidget {
+    /*border: 1px solid red;*/
+    font-size: 12pt;
+}
+
+ReportTypeSelectWidget QLabel {
+    padding: 12px;
+    font-weight: bold;
+    font-size: 13pt;
+}
+
+ReportTypeSelectWidget QPushButton {
+    text-align: left;
+    font-size: 12pt;
     background-color: white;
     border: none;
     padding: 20px;
     font-size: 12pt;
 }
 
-ReportWidget QPushButton:hover {
-    background-color: yellow;
-}
-
-ReportWidget QWidget {
-    border: 1px solid red;
+ReportTypeSelectWidget QPushButton:hover {
+    background-color: #B2EBF2;
 }
