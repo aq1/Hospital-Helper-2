@@ -1,5 +1,3 @@
-# -*- coding: UTF-8 -*-
-
 import datetime
 from collections import OrderedDict
 

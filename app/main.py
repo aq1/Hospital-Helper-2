@@ -1,9 +1,7 @@
-# -*- coding: UTF-8 -*-
-
 import options
 
-from gui import gui
-from model import (db, logic, report,
+from gui import main as gui
+from model import (db, logic, report, template,
                    exceptions, localization)
 
 
@@ -40,7 +38,13 @@ def init():
 
     localization.Localization.install_default()
 
-    gui.init(items)
+    for i in items:
+        for j in range(10):
+            t, _ = db.Template.get_or_create(item_id=i.id, name='%s %s' % (i.name, j), body='Тело', conclusion='Заключение')
+    db.SESSION.flush()
+
+    templates = template.Template.get_list()
+    gui.init(items, templates, db=None)
 
     # for i in items:
     #     i.template = 'norma'
