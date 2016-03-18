@@ -83,16 +83,6 @@ InputWidget QLabel {
     margin: 10px;
 }
 
-LeftMenu {
-    background-color: white;
-    border-left: none;
-}
-
-LeftMenu QPushButton {
-    font-size: 15pt;
-    border: none;
-}
-
 ActionButton {
     min-height:100px;
 }
@@ -122,8 +112,9 @@ ReportWidget QWidget {
 
 ReportTypeSelectWidget QLabel {
     padding: 12px;
-    font-weight: bold;
+    font-weight: 100;
     font-size: 13pt;
+    border-bottom: 3px solid #EEEDEF;
 }
 
 ReportTypeSelectWidget QPushButton {
@@ -137,4 +128,19 @@ ReportTypeSelectWidget QPushButton {
 
 ReportTypeSelectWidget QPushButton:hover {
     background-color: #B2EBF2;
+}
+
+ReportTypeSelectWidget QPushButton#selected {
+    color: red;
+}
+
+QScrollBar {
+    height: 0;
+    width: 0;
+    background-color: red;
+}
+
+QScrollArea {
+    border: 0px hidden red;
+    background-color: red;
 }

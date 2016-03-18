@@ -121,7 +121,7 @@ class MainWindow(QWidget, ActionsMixins):
         vbox.addWidget(t, stretch=15)
         self.waterline = t.y() + t.height()
 
-        vbox.addSpacing(self.TOP_MARGIN)
+        # vbox.addSpacing(self.TOP_MARGIN)
         vbox.addLayout(self.stacked_layout, stretch=40)
 
         qr = self.frameGeometry()
