@@ -35,6 +35,9 @@ class ReportTypeSelectWidget(QWidget):
         shadow.setYOffset(0)
         self.setGraphicsEffect(shadow)
 
+    def enterEvent(self, event):
+        print(event)
+
 
 class ReportWidget(QFrame):
 
@@ -106,7 +109,7 @@ class ReportWidget(QFrame):
         self.timer.start()
 
         for widget in self.reportWidgets:
-            widget.hide()
+            widget.show()
             for value in widget.item.values():
                 if value:
                     widget.show()
