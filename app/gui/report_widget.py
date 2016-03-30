@@ -43,9 +43,6 @@ class ReportTypeSelectWidget(QWidget):
 
     def _button_clicked(self, b, template):
         self.item.template = template
-        # for each in self.findChildren(QPushButton):
-            # each.setStyleSheet(self.NORMAL_BUTTON_STYLE)
-        # b.setStyleSheet(self.SELECTED_BTN_STYLE)
 
 
 class ReportWidget(QFrame):
