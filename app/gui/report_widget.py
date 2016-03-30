@@ -23,10 +23,10 @@ class ReportTypeSelectWidget(QWidget):
         self.setLayout(vbox)
         vbox.setSpacing(0)
         vbox.setContentsMargins(0, 0, 0, 0)
-        # self.setMinimumWidth(parent.width() * 0.1)
+        # self.setMinimumWidth(parent.width() * 0.3)
 
         l = QLabel(_(item.name))
-        # l.setAlignment(Qt.AlignCenter)
+        l.setAlignment(Qt.AlignCenter)
         vbox.addWidget(l)
         for templ in templates:
             b = QPushButton(_(templ.name))
@@ -67,6 +67,7 @@ class ReportWidget(QFrame):
             self.reportWidgets.append(r)
             hbox.addWidget(r)
 
+        hbox.addSpacing(10)
         hbox.addStretch()
         groupbox.setLayout(hbox)
         scroll = QScrollArea()
@@ -75,14 +76,17 @@ class ReportWidget(QFrame):
         # scroll.set
         scroll.setFixedWidth(main_window.width())
         scroll.setFixedHeight(self.height())
-        self.resizeEvent = lambda e: scroll.setFixedHeight(self.height())
+        scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        scroll.viewport().installEventFilter()
+        self.resizeEvent = lambda e: scroll.setFixedHeight(self.height() * 0.9)
 
         this_hbox = QHBoxLayout(self)
         this_hbox.addWidget(scroll)
 
     def showEvent(self, event):
         for widget in self.reportWidgets:
-            widget.hide()
+            widget.show()
             for value in widget.item.values():
                 if value:
                     widget.show()

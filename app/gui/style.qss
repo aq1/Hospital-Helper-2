@@ -101,9 +101,9 @@ SelectItemMenu QPushButton:hover {
     background-color: rgba(0, 0, 0, 0.2);
 }
 
-ReportWidget QFrame {
-    background-color: white;
-}
+/*ReportWidget QFrame {*/
+    /*background-color: white;*/
+/*}*/
 
 ReportWidget QWidget {
     /*border: 1px solid red;*/
@@ -134,13 +134,16 @@ ReportTypeSelectWidget QPushButton#selected {
     color: red;
 }
 
-QScrollBar {
-    height: 0;
-    width: 0;
-    background-color: red;
+/*ReportWidget QScrollBar {*/
+    /*height: 0;*/
+    /*width: 0;*/
+/*}*/
+
+ReportWidget QScrollArea {
+    outline: none;
+    border: 0px solid red;
 }
 
-QScrollArea {
-    border: 0px hidden red;
-    background-color: red;
+QGroupBox {
+    border: none;
 }
