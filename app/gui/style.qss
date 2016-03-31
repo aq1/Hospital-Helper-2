@@ -110,7 +110,35 @@ ReportWidget QWidget {
     font-size: 12pt;
 }
 
-ReportTypeSelectWidget QLabel {
+ReportObjectSelectWidget {
+    /* because of scroll layout */
+    /*margin-top: -10px;*/
+}
+
+ReportWidget QWidget {
+    border: none;
+    background-color: white;
+    margin: 0px;
+    padding: 0px;
+    /*background-color: white;*/
+}
+
+
+ReportWidget QRadioButton::indicator {
+    width: 0;
+    height: 0;
+}
+
+ReportWidget QRadioButton {
+    text-align: left;
+    padding: 10px;
+}
+
+ReportWidget QRadioButton:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+/*ReportTypeSelectWidget QLabel {
     padding: 12px;
     font-weight: 100;
     font-size: 13pt;
@@ -132,7 +160,7 @@ ReportTypeSelectWidget QPushButton:hover {
 
 ReportTypeSelectWidget QPushButton#selected {
     color: red;
-}
+}*/
 
 /*ReportWidget QScrollBar {*/
     /*height: 0;*/

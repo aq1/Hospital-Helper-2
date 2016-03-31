@@ -2,7 +2,7 @@ import functools
 
 from PyQt5.QtGui import QColor, QPalette
 from PyQt5.QtCore import Qt, QTimer
-from PyQt5.QtWidgets import (QWidget, QFrame, QLabel, QHBoxLayout,
+from PyQt5.QtWidgets import (QWidget, QFrame, QLabel, QHBoxLayout, QRadioButton,
                              QVBoxLayout, QPushButton, QGraphicsDropShadowEffect,
                              QLineEdit, QFormLayout, QStackedLayout, QScrollBar, QScroller,
                              QGroupBox, QScrollArea)
@@ -10,30 +10,76 @@ from PyQt5.QtWidgets import (QWidget, QFrame, QLabel, QHBoxLayout,
 
 class ReportTypeSelectWidget(QWidget):
 
-    SELECTED_BTN_STYLE = 'background-color: #58CACF; color: white;'
-    NORMAL_BUTTON_STYLE = 'background-color: white; color: #212121'
+    TEMPLATES_PER_LINE = 3
 
-    def __init__(self, parent, item, templates):
+    def __init__(self, parent, items, templates):
         super().__init__()
 
-        self.templates = templates
-        self.item = item
+        self.layout = QStackedLayout()
+        self.setLayout(self.layout)
 
+        for item in items:
+            self.layout.addWidget(self._create_and_get_scroll(templates[item.id]))
+
+    def _create_and_get_scroll(self, templates):
+        widget = QWidget()
+        groupbox = QGroupBox()
         vbox = QVBoxLayout()
-        self.setLayout(vbox)
         vbox.setSpacing(0)
         vbox.setContentsMargins(0, 0, 0, 0)
-        # self.setMinimumWidth(parent.width() * 0.3)
 
-        l = QLabel(_(item.name))
-        l.setAlignment(Qt.AlignCenter)
-        vbox.addWidget(l)
-        for templ in templates:
-            b = QPushButton(_(templ.name))
-            b.clicked.connect(functools.partial(self._button_clicked, b, templ))
-            vbox.addWidget(b)
+        for i, template in enumerate(templates):
+            if i % self.TEMPLATES_PER_LINE == 0:
+                hbox = QHBoxLayout()
+                vbox.addLayout(hbox)
 
+            b = QRadioButton(_(templates[i].name))
+            hbox.addWidget(b, stretch=33)
+        hbox.addStretch(66)
         vbox.addStretch()
+
+        groupbox.setLayout(vbox)
+        scroll = QScrollArea()
+        scroll.setWidget(groupbox)
+        scroll.setWidgetResizable(True)
+        scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        this_vbox = QVBoxLayout(widget)
+        this_vbox.addWidget(scroll)
+
+        return widget
+
+    def item_selected(self, index):
+        self.layout.setCurrentIndex(index)
+
+
+class ReportObjectSelectWidget(QFrame):
+
+    def __init__(self, parent, items):
+
+        super().__init__()
+
+        self.parent = parent
+        self.items = items
+
+        groupbox = QGroupBox()
+        vbox = QVBoxLayout()
+        vbox.setSpacing(0)
+        vbox.setContentsMargins(0, 0, 0, 0)
+        for i, item in enumerate(items):
+            b = QRadioButton(_(item.name))
+            b.toggled.connect(functools.partial(self._button_clicked, b, i))
+            vbox.addWidget(b)
+        vbox.addStretch()
+
+        groupbox.setLayout(vbox)
+        scroll = QScrollArea()
+        scroll.setWidget(groupbox)
+        scroll.setWidgetResizable(True)
+        scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        this_vbox = QVBoxLayout(self)
+        this_vbox.addWidget(scroll)
 
         shadow = QGraphicsDropShadowEffect()
         shadow.setBlurRadius(10)
@@ -41,8 +87,9 @@ class ReportTypeSelectWidget(QWidget):
         shadow.setYOffset(0)
         self.setGraphicsEffect(shadow)
 
-    def _button_clicked(self, b, template):
-        self.item.template = template
+    def _button_clicked(self, button, index):
+        button.setStyleSheet('background-color: red;')
+        self.parent.item_selected(index)
 
 
 class ReportWidget(QFrame):
@@ -53,37 +100,18 @@ class ReportWidget(QFrame):
 
         super().__init__()
 
-        self.main_window = main_window
-        self.reportWidgets = []
-        self.templates = templates
-
-        groupbox = QGroupBox()
         hbox = QHBoxLayout()
-        for item in items:
-            r = ReportTypeSelectWidget(self, item, templates[item.id])
-            self.reportWidgets.append(r)
-            hbox.addWidget(r)
+        self.setLayout(hbox)
 
-        hbox.addSpacing(10)
-        hbox.addStretch()
-        groupbox.setLayout(hbox)
-        scroll = QScrollArea()
-        scroll.setWidget(groupbox)
-        scroll.setWidgetResizable(True)
-        # scroll.set
-        scroll.setFixedWidth(main_window.width())
-        scroll.setFixedHeight(self.height())
-        scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        scroll.viewport().installEventFilter()
-        self.resizeEvent = lambda e: scroll.setFixedHeight(self.height() * 0.9)
+        self.templates_widget = ReportTypeSelectWidget(self, items, templates)
+        hbox.addWidget(ReportObjectSelectWidget(self, items), stretch=25)
+        hbox.addWidget(self.templates_widget, stretch=55)
 
-        this_hbox = QHBoxLayout(self)
-        this_hbox.addWidget(scroll)
+        shadow = QGraphicsDropShadowEffect()
+        shadow.setBlurRadius(10)
+        shadow.setXOffset(0)
+        shadow.setYOffset(0)
+        self.setGraphicsEffect(shadow)
 
-    def showEvent(self, event):
-        for widget in self.reportWidgets:
-            widget.show()
-            for value in widget.item.values():
-                if value:
-                    widget.show()
+    def item_selected(self, index):
+        self.templates_widget.item_selected(index)
