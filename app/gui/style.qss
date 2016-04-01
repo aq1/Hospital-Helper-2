@@ -111,6 +111,9 @@ ReportWidget QWidget {
     padding: 0px;
 }
 
+ReportWidget{
+    margin-top: 10px;
+}
 
 ReportWidget QRadioButton::indicator {
     width: 0;

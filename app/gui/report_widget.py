@@ -8,7 +8,7 @@ from PyQt5.QtWidgets import (QWidget, QFrame, QLabel, QHBoxLayout, QRadioButton,
                              QGroupBox, QScrollArea)
 
 
-class ReportTypeSelectWidget(QWidget):
+class ReportTypeSelectWidget(QFrame):
 
     TEMPLATES_PER_LINE = 3
 
@@ -118,6 +118,7 @@ class ReportObjectSelectWidget(QFrame):
         """
         self.items[item_index].template = template
         buttons = self.findChildren(QRadioButton)
+        buttons[item_index].setText('{} - {}'.format(_(self.items[item_index].name), _(template.name)))
         begin = self.indexes_to_show.index(item_index)
 
         for i in self.indexes_to_show[begin:] + self.indexes_to_show[:begin]:
