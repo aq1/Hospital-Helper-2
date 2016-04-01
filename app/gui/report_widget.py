@@ -36,7 +36,6 @@ class ReportTypeSelectWidget(QWidget):
             b = QRadioButton(_(templates[i].name))
             hbox.addWidget(b, stretch=33)
 
-        print(99 - hbox.count() * 33)
         hbox.addStretch(99 - hbox.count() * 33)
         vbox.addStretch()
 
