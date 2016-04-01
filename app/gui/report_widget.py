@@ -61,7 +61,7 @@ class ReportTypeSelectWidget(QWidget):
             self.item_selected(index)
 
     def show_event(self, event=None):
-        indexes_to_show = self.item_widget.show_templates_and_get_indexes()
+        indexes_to_show = self.item_widget.proceed_show_event_and_get_indexes()
         if not indexes_to_show:
             self.hide()
         else:
@@ -126,7 +126,7 @@ class ReportObjectSelectWidget(QFrame):
                 buttons[i].setChecked(True)
                 return i
 
-    def show_templates_and_get_indexes(self):
+    def proceed_show_event_and_get_indexes(self):
         """
         Show only items that has at least one value filled
         And return indexes of those items
@@ -145,7 +145,10 @@ class ReportObjectSelectWidget(QFrame):
                     break
 
         if self.indexes_to_show:
+            self.show()
             buttons[self.indexes_to_show[0]].setChecked(True)
+        else:
+            self.hide()
         return self.indexes_to_show
 
 
