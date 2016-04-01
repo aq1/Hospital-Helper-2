@@ -89,7 +89,6 @@ class ReportObjectSelectWidget(QFrame):
         self.setGraphicsEffect(shadow)
 
     def _button_clicked(self, button, index):
-        button.setStyleSheet('background-color: red;')
         self.parent.item_selected(index)
 
 

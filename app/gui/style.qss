@@ -65,7 +65,6 @@ TopSystemButtons QPushButton:pressed {
 InputWidget {
     background-color: white;
     border: none;
-    /*border-bottom: 2px solid #45A0A3;*/
     margin: 10px;
 }
 
@@ -101,18 +100,8 @@ SelectItemMenu QPushButton:hover {
     background-color: rgba(0, 0, 0, 0.2);
 }
 
-/*ReportWidget QFrame {*/
-    /*background-color: white;*/
-/*}*/
-
 ReportWidget QWidget {
-    /*border: 1px solid red;*/
     font-size: 12pt;
-}
-
-ReportObjectSelectWidget {
-    /* because of scroll layout */
-    /*margin-top: -10px;*/
 }
 
 ReportWidget QWidget {
@@ -120,7 +109,6 @@ ReportWidget QWidget {
     background-color: white;
     margin: 0px;
     padding: 0px;
-    /*background-color: white;*/
 }
 
 
@@ -134,38 +122,19 @@ ReportWidget QRadioButton {
     padding: 10px;
 }
 
+ReportWidget QRadioButton:checked {
+    background-color: #45A0A3;
+    color: white;
+}
+
+ReportWidget QRadioButton:checked:hover {
+    background-color: #3d8b8e;
+    color: white;
+}
+
 ReportWidget QRadioButton:hover {
     background-color: rgba(0, 0, 0, 0.1);
 }
-
-/*ReportTypeSelectWidget QLabel {
-    padding: 12px;
-    font-weight: 100;
-    font-size: 13pt;
-    border-bottom: 3px solid #EEEDEF;
-}
-
-ReportTypeSelectWidget QPushButton {
-    text-align: left;
-    font-size: 12pt;
-    background-color: white;
-    border: none;
-    padding: 20px;
-    font-size: 12pt;
-}
-
-ReportTypeSelectWidget QPushButton:hover {
-    background-color: #B2EBF2;
-}
-
-ReportTypeSelectWidget QPushButton#selected {
-    color: red;
-}*/
-
-/*ReportWidget QScrollBar {*/
-    /*height: 0;*/
-    /*width: 0;*/
-/*}*/
 
 ReportWidget QScrollArea {
     outline: none;
