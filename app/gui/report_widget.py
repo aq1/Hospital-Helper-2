@@ -12,16 +12,17 @@ class ReportTypeSelectWidget(QWidget):
 
     TEMPLATES_PER_LINE = 3
 
-    def __init__(self, parent, items, templates):
+    def __init__(self, item_widget, items, templates):
         super().__init__()
 
+        self.item_widget = item_widget
         self.layout = QStackedLayout()
         self.setLayout(self.layout)
 
-        for item in items:
-            self.layout.addWidget(self._create_and_get_scroll(templates[item.id]))
+        for i, item in enumerate(items):
+            self.layout.addWidget(self._create_and_get_scroll(i, templates[item.id]))
 
-    def _create_and_get_scroll(self, templates):
+    def _create_and_get_scroll(self, item_index, templates):
         widget = QWidget()
         groupbox = QGroupBox()
         vbox = QVBoxLayout()
@@ -34,6 +35,7 @@ class ReportTypeSelectWidget(QWidget):
                 vbox.addLayout(hbox)
 
             b = QRadioButton(_(templates[i].name))
+            b.clicked.connect(functools.partial(self._button_clicked, item_index, template))
             hbox.addWidget(b, stretch=33)
 
         hbox.addStretch(99 - hbox.count() * 33)
@@ -53,6 +55,11 @@ class ReportTypeSelectWidget(QWidget):
     def item_selected(self, index):
         self.layout.setCurrentIndex(index)
 
+    def _button_clicked(self, item_index, template):
+        index = self.item_widget.template_selected(item_index, template)
+        if index:
+            self.item_selected(index)
+
 
 class ReportObjectSelectWidget(QFrame):
 
@@ -69,6 +76,7 @@ class ReportObjectSelectWidget(QFrame):
         vbox.setContentsMargins(0, 0, 0, 0)
         for i, item in enumerate(items):
             b = QRadioButton(_(item.name))
+            b.setChecked(i == 0)
             b.toggled.connect(functools.partial(self._button_clicked, b, i))
             vbox.addWidget(b)
         vbox.addStretch()
@@ -91,6 +99,20 @@ class ReportObjectSelectWidget(QFrame):
     def _button_clicked(self, button, index):
         self.parent.item_selected(index)
 
+    def template_selected(self, item_index, template):
+        """
+        Returns index of the first item without template
+        that is placed after current item
+        """
+        self.items[item_index].template = template
+        for i, each in enumerate(self.items[item_index:] + self.items[:item_index], item_index):
+            if not each.template:
+                index = i % len(self.items)
+                buttons = self.findChildren(QRadioButton)
+                buttons[item_index].setChecked(False)
+                buttons[index].setChecked(True)
+                return index
+
 
 class ReportWidget(QFrame):
 
@@ -103,8 +125,9 @@ class ReportWidget(QFrame):
         hbox = QHBoxLayout()
         self.setLayout(hbox)
 
-        self.templates_widget = ReportTypeSelectWidget(self, items, templates)
-        hbox.addWidget(ReportObjectSelectWidget(self, items), stretch=25)
+        self.item_widget = ReportObjectSelectWidget(self, items)
+        self.templates_widget = ReportTypeSelectWidget(self.item_widget, items, templates)
+        hbox.addWidget(self.item_widget, stretch=25)
         hbox.addWidget(self.templates_widget, stretch=55)
 
         shadow = QGraphicsDropShadowEffect()
