@@ -24,13 +24,7 @@ class SelectMenu(QFrame):
 
         for i, btn in enumerate(self.buttons):
             if i == 0:
-                # Data button needs special action
-                btn.enterEvent = functools.partial(
-                    self.main_window.set_select_menu_item_visibility, True)
                 btn.setStyleSheet(self.BUTTON_SELECTED_QSS)
-            else:
-                btn.enterEvent = functools.partial(
-                    self.main_window.set_select_menu_item_visibility, False)
 
             btn.clicked.connect(functools.partial(self.button_clicked, btn, i))
             hbox.addWidget(btn)
@@ -58,7 +52,6 @@ class SelectItemMenu(QFrame):
 
         self.main_window = main_window
         self.resize(main_window.width() * 0.5, main_window.height() * 0.4)
-        self.move(100, main_window.waterline)
         self.hide()
 
         grid = QGridLayout()

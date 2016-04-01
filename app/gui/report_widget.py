@@ -21,6 +21,7 @@ class ReportTypeSelectWidget(QFrame):
 
         for i, item in enumerate(items):
             self.layout.addWidget(self._create_and_get_scroll(i, templates[item.id]))
+        self.layout.addWidget(QLabel())
 
     def _create_and_get_scroll(self, item_index, templates):
         widget = QWidget()
@@ -62,11 +63,10 @@ class ReportTypeSelectWidget(QFrame):
 
     def show_event(self, event=None):
         indexes_to_show = self.item_widget.proceed_show_event_and_get_indexes()
-        if not indexes_to_show:
-            self.hide()
-        else:
-            self.show()
+        if indexes_to_show:
             self.layout.setCurrentIndex(indexes_to_show[0])
+        else:
+            self.layout.setCurrentIndex(self.layout.count() - 1)
 
 
 class ReportObjectSelectWidget(QFrame):
@@ -78,6 +78,7 @@ class ReportObjectSelectWidget(QFrame):
         self.parent = parent
         self.items = items
         self.indexes_to_show = []
+        self.no_items_to_show_label = QLabel('Нет данных')
 
         groupbox = QGroupBox()
         vbox = QVBoxLayout()
@@ -88,6 +89,8 @@ class ReportObjectSelectWidget(QFrame):
             b.setChecked(i == 0)
             b.toggled.connect(functools.partial(self._button_clicked, b, i))
             vbox.addWidget(b)
+
+        vbox.addWidget(self.no_items_to_show_label)
         vbox.addStretch()
 
         groupbox.setLayout(vbox)
@@ -146,10 +149,10 @@ class ReportObjectSelectWidget(QFrame):
                     break
 
         if self.indexes_to_show:
-            self.show()
+            self.no_items_to_show_label.hide()
             buttons[self.indexes_to_show[0]].setChecked(True)
         else:
-            self.hide()
+            self.no_items_to_show_label.show()
         return self.indexes_to_show
 
 
@@ -168,6 +171,7 @@ class ReportWidget(QFrame):
         self.templates_widget = ReportTypeSelectWidget(self.item_widget, items, templates)
         hbox.addWidget(self.item_widget, stretch=25)
         hbox.addWidget(self.templates_widget, stretch=55)
+        hbox.addStretch(10)
 
         shadow = QGraphicsDropShadowEffect()
         shadow.setBlurRadius(10)

@@ -18,6 +18,7 @@ from gui.options_widget import OptionsWidget
 from gui.report_widget import ReportWidget
 from gui.top_frame import TopFrame
 from gui.top_system_buttons import TopSystemButtons
+from gui.action_button import ActionButton
 
 
 class ActionsMixins:
@@ -27,8 +28,9 @@ class ActionsMixins:
         QShortcut(Qt.CTRL, self).activated.connect(self.close)
 
     def top_frame_resized(self, frame):
+        self.action_button.raise_()
         self.waterline = frame.y() + frame.height()
-        self.select_menu.move(self.width() * 0.1, self.waterline)
+        self.select_menu.move(20, self.waterline)
 
     def set_select_menu_item_visibility(self, value, event=None):
         # Event is triggered only on 'Data' tab
@@ -48,8 +50,9 @@ class ActionsMixins:
 
     def select_menu_button_clicked(self, index):
         if self.stacked_layout.currentIndex() == index == 0:
-            self.set_select_menu_item_visibility(
-                not self.select_menu.isVisible())
+            self.set_select_menu_item_visibility(not self.select_menu.isVisible())
+        else:
+            self.set_select_menu_item_visibility(False)
         self.stacked_layout.setCurrentIndex(index)
 
     def _h(self, event):
@@ -108,6 +111,8 @@ class MainWindow(QWidget, ActionsMixins):
         dw = QDesktopWidget()
         w = dw.geometry().size().width() * 0.75
         self.setFixedSize(w, w * 0.6)
+
+        self.action_button = ActionButton(self)
 
         self.stacked_layout = QStackedLayout()
         vbox = QVBoxLayout()

@@ -3,6 +3,11 @@
     outline: none;
 }
 
+QRadioButton::indicator {
+    /*height: 0;*/
+    background-color: rgba(0, 0, 0, 0)
+}
+
 AttributesFrame {
     font-size: 12pt;
     background-color: #EEEDEF;
@@ -21,7 +26,6 @@ TopFrame QLabel {
 SelectMenu QPushButton {
     text-transform: uppercase;
     color: #B2EBF2;
-    padding: 5px 10px;
     border: none;
     font-size: 13pt;
     background-color: #58CACF;
@@ -30,6 +34,12 @@ SelectMenu QPushButton {
 
 SelectMenu QPushButton:hover {
     background-color: rgba(0, 0, 0, 0.2);
+}
+
+SelectMenu QPushButton:checked {
+    color: white;
+    padding-bottom: 23px;
+    border-bottom: 2px solid #FFEB3B;
 }
 
 TopSystemButtons QPushButton {
@@ -83,7 +93,14 @@ InputWidget QLabel {
 }
 
 ActionButton {
-    min-height:100px;
+    background-color: #FFEB3B;
+    border-style: solid;
+    border-width: #FFEB3B;
+    border-radius: 50px;
+    max-width: 100px;
+    max-height: 100px;
+    min-width: 100px;
+    min-height: 100px;
 }
 
 SelectItemMenu {
@@ -113,11 +130,6 @@ ReportWidget QWidget {
 
 ReportWidget{
     margin-top: 10px;
-}
-
-ReportWidget QRadioButton::indicator {
-    width: 0;
-    height: 0;
 }
 
 ReportWidget QRadioButton {
