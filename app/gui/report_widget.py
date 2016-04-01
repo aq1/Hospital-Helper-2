@@ -105,10 +105,11 @@ class ReportObjectSelectWidget(QFrame):
         that is placed after current item
         """
         self.items[item_index].template = template
+        buttons = self.findChildren(QRadioButton)
+        buttons[item_index].setText('{} - {}'.format(_(self.items[item_index].name), _(template.name)))
         for i, each in enumerate(self.items[item_index:] + self.items[:item_index], item_index):
             if not each.template:
                 index = i % len(self.items)
-                buttons = self.findChildren(QRadioButton)
                 buttons[item_index].setChecked(False)
                 buttons[index].setChecked(True)
                 return index
