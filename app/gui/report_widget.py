@@ -57,8 +57,16 @@ class ReportTypeSelectWidget(QWidget):
 
     def _button_clicked(self, item_index, template):
         index = self.item_widget.template_selected(item_index, template)
-        if index:
+        if index is not None:
             self.item_selected(index)
+
+    def show_event(self, event=None):
+        indexes_to_show = self.item_widget.show_templates_and_get_indexes()
+        if not indexes_to_show:
+            self.hide()
+        else:
+            self.show()
+            self.layout.setCurrentIndex(indexes_to_show[0])
 
 
 class ReportObjectSelectWidget(QFrame):
@@ -69,6 +77,7 @@ class ReportObjectSelectWidget(QFrame):
 
         self.parent = parent
         self.items = items
+        self.indexes_to_show = []
 
         groupbox = QGroupBox()
         vbox = QVBoxLayout()
@@ -103,16 +112,41 @@ class ReportObjectSelectWidget(QFrame):
         """
         Returns index of the first item without template
         that is placed after current item
+
+        FIXME: Too many index word.
+        Maybe i should better learn Qt or programming in general
         """
         self.items[item_index].template = template
         buttons = self.findChildren(QRadioButton)
-        buttons[item_index].setText('{} - {}'.format(_(self.items[item_index].name), _(template.name)))
-        for i, each in enumerate(self.items[item_index:] + self.items[:item_index], item_index):
-            if not each.template:
-                index = i % len(self.items)
+        begin = self.indexes_to_show.index(item_index)
+
+        for i in self.indexes_to_show[begin:] + self.indexes_to_show[:begin]:
+            if not self.items[i].template:
                 buttons[item_index].setChecked(False)
-                buttons[index].setChecked(True)
-                return index
+                buttons[i].setChecked(True)
+                return i
+
+    def show_templates_and_get_indexes(self):
+        """
+        Show only items that has at least one value filled
+        And return indexes of those items
+        FIXME: think of the better function name
+        """
+
+        self.indexes_to_show = []
+        buttons = self.findChildren(QRadioButton)
+        for i, item in enumerate(self.items):
+            buttons[i].hide()
+            buttons[i].setChecked(False)
+            for value in item.values():
+                if value:
+                    buttons[i].show()
+                    self.indexes_to_show.append(i)
+                    break
+
+        if self.indexes_to_show:
+            buttons[self.indexes_to_show[0]].setChecked(True)
+        return self.indexes_to_show
 
 
 class ReportWidget(QFrame):
@@ -139,3 +173,6 @@ class ReportWidget(QFrame):
 
     def item_selected(self, index):
         self.templates_widget.item_selected(index)
+
+    def showEvent(self, event):
+        self.templates_widget.show_event()
