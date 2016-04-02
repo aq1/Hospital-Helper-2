@@ -1,7 +1,7 @@
 import functools
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import (QFrame, QPushButton, QHBoxLayout,
+from PyQt5.QtWidgets import (QFrame, QPushButton, QHBoxLayout, QLabel,
                              QGridLayout, QGraphicsDropShadowEffect)
 
 
@@ -66,11 +66,17 @@ class SelectItemMenu(QFrame):
         grid.setContentsMargins(0, 0, 0, 0)
 
         cols = 3
+        self.hints_labels = []
         for i, item in enumerate(items):
             row, col = i // cols, i % cols
             b = QPushButton(_(item.name))
             b.clicked.connect(functools.partial(self.button_clicked, i))
             grid.addWidget(b, row, col)
+
+            l = QLabel(self.HINTS[i][0], self)
+            l.setAlignment(Qt.AlignCenter)
+            l.hide()
+            self.hints_labels.append(l)
 
         shadow = QGraphicsDropShadowEffect()
         shadow.setBlurRadius(20)
@@ -89,12 +95,13 @@ class SelectItemMenu(QFrame):
         self.main_window.set_select_menu_item_visibility(False)
 
     def toggle_hints(self, on):
-        for i, items in enumerate(zip(self.HINTS, self.findChildren(QPushButton))):
+        for i, item in enumerate(zip(self.hints_labels, self.findChildren(QPushButton))):
+            x = item[1].x() + item[1].width() - 80
+            item[0].move(x, item[1].y())
             if on:
-                text = '({}) '.format(items[0][0]) + _(self.items[i].name)
+                item[0].show()
             else:
-                text = _(self.items[i].name)
-            items[1].setText(text)
+                item[0].hide()
 
     def get_item_index_by_key(self, key):
         for i, hint in enumerate(self.HINTS):

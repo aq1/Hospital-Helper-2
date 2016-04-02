@@ -45,13 +45,6 @@ def init():
     templates = template.Template.get_list()
     gui.init(items, templates, db=None)
 
-    # for i in items:
-    #     i.template = 'norma'
-    #     i['npv'] = '12'
-
-    # r = report.Report(items, 1)
-    # document = r.render()
-    # document.save('hello.odt')
 
 if __name__ == '__main__':
     init()
