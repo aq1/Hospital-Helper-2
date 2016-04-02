@@ -32,6 +32,10 @@ SelectMenu QPushButton {
     padding: 25px 25px;
 }
 
+electMenu QPushButton:first-child {
+    color: red !important;
+}
+
 SelectMenu QPushButton:hover {
     background-color: rgba(0, 0, 0, 0.2);
 }
@@ -93,14 +97,29 @@ InputWidget QLabel {
 }
 
 ActionButton {
+    qproperty-icon: url('gui/static/icons/plus.png');
+    icon-size: 35px;
+    font-weight: bold;
     background-color: #FFEB3B;
     border-style: solid;
-    border-width: #FFEB3B;
     border-radius: 50px;
     max-width: 100px;
     max-height: 100px;
     min-width: 100px;
     min-height: 100px;
+}
+
+ActionButton::icon {
+    color: red;
+    background-color: red;
+}
+
+ActionButton:hover {
+    background-color: #F0DE41;
+}
+
+ActionButton:pressed {
+    background-color: #E0CE31;
 }
 
 SelectItemMenu {

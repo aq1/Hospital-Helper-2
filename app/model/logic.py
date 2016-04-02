@@ -145,7 +145,7 @@ class CalculableObject(collections.OrderedDict):
         self.template = None
         if item:
             self.id = item.id
-    
+
         for each in args:
             self[each['name']] = 0
             calculation = each.get('calculation')
@@ -159,6 +159,11 @@ class CalculableObject(collections.OrderedDict):
         return '{}: [{}]'.format(self.name, ', '.join(self.keys()))
 
     def _set(self, name, value):
+        """
+        If value is fucked up it will be set to default for it's type.
+        float -> 0.0
+        str -> ''
+        """
         if self.get(name) is None:
             raise AttributeError('No such attribute: {}'.format(name))
 
@@ -167,7 +172,7 @@ class CalculableObject(collections.OrderedDict):
         try:
             value = type_(value)
         except ValueError:
-            return
+            value = type_()
 
         if type_ is float:
             value = round(value, 2)

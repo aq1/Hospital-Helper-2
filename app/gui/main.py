@@ -28,9 +28,11 @@ class ActionsMixins:
         QShortcut(Qt.CTRL, self).activated.connect(self.close)
 
     def top_frame_resized(self, frame):
-        self.action_button.raise_()
+        abw = self.action_button.width()
         self.waterline = frame.y() + frame.height()
+        self.action_button.move(self.width() - abw * 1.5, self.waterline - self.action_button.height() / 2)
         self.select_menu.move(20, self.waterline)
+        self.action_button.raise_()
 
     def set_select_menu_item_visibility(self, value, event=None):
         # Event is triggered only on 'Data' tab
@@ -54,6 +56,7 @@ class ActionsMixins:
         else:
             self.set_select_menu_item_visibility(False)
         self.stacked_layout.setCurrentIndex(index)
+        self.action_button.raise_()
 
     def _h(self, event):
         mods = event.modifiers()
@@ -154,7 +157,7 @@ class MainWindow(QWidget, ActionsMixins):
 
 def init(items, templates, db):
     app = QApplication(sys.argv)
-    with open(os.path.join(os.path.dirname(__file__), 'style.qss'), 'r') as f:
+    with open(os.path.join(os.path.dirname(__file__), 'static', 'style.qss'), 'r') as f:
         app.setStyleSheet(f.read())
     mw = MainWindow(items, templates, db)
     sys.exit(app.exec_())
