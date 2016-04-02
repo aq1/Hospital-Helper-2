@@ -25,7 +25,6 @@ class ActionsMixins:
 
     def _set_shortcuts(self):
         QShortcut(QKeySequence('Esc'), self).activated.connect(self.close)
-        QShortcut(Qt.CTRL, self).activated.connect(self.close)
 
     def top_frame_resized(self, frame):
         abw = self.action_button.width()
@@ -77,18 +76,21 @@ class ActionsMixins:
             self.findChild(TopFrame).set_label_text(' '.join(text))
 
     def keyPressEvent(self, event):
-        t = QTimer()
-        t.singleShot(200, functools.partial(self._h, event))
-        # mods = event.modifiers()
-        # if mods & QtCore.Qt.ControlModifier and mods & QtCore.Qt.ShiftModifier:
-        #     return
-        # if (event.modifiers() == Qt.ControlModifier and event.text() is ''):
-        #     self.set_select_menu_item_visibility(True)
-        # super().keyPressEvent(event)
+        mods = event.modifiers()
+        if mods & QtCore.Qt.ControlModifier:
+            if event.text() is '':
+                self.set_select_menu_item_visibility(True)
+                self.select_menu.toggle_hints(True)
+            else:
+                try:
+                    self.select_item(self.select_menu.get_item_index_by_key(event.key()))
+                except (IndexError, TypeError):
+                    pass
 
     def keyReleaseEvent(self, event):
         if (event.text() is ''):
             self.set_select_menu_item_visibility(False)
+            self.select_menu.toggle_hints(False)
 
     def close(self, event=None):
         QCoreApplication.instance().quit()

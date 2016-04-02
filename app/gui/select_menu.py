@@ -1,5 +1,6 @@
 import functools
 
+from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (QFrame, QPushButton, QHBoxLayout,
                              QGridLayout, QGraphicsDropShadowEffect)
 
@@ -46,12 +47,17 @@ class SelectMenu(QFrame):
 
 class SelectItemMenu(QFrame):
 
+    HINTS = list(zip('12345qwertasdfgzxcvb'.upper(),
+                     (49, 50, 51, 52, 53, 81, 87, 69, 82, 84, 65, 83, 68, 70)))
+
     def __init__(self, main_window, items):
 
         super().__init__(main_window)
 
+        self._create_hints_list()
         self.main_window = main_window
-        self.resize(main_window.width() * 0.5, main_window.height() * 0.4)
+        self.items = items
+        self.resize(main_window.width() * 0.6, main_window.height() * 0.4)
         self.hide()
 
         grid = QGridLayout()
@@ -59,11 +65,12 @@ class SelectItemMenu(QFrame):
         grid.setSpacing(0)
         grid.setContentsMargins(0, 0, 0, 0)
 
-        rows = 5
+        cols = 3
         for i, item in enumerate(items):
+            row, col = i // cols, i % cols
             b = QPushButton(_(item.name))
             b.clicked.connect(functools.partial(self.button_clicked, i))
-            grid.addWidget(b, i % rows, i // rows)
+            grid.addWidget(b, row, col)
 
         shadow = QGraphicsDropShadowEffect()
         shadow.setBlurRadius(20)
@@ -71,8 +78,25 @@ class SelectItemMenu(QFrame):
         shadow.setYOffset(0)
         self.setGraphicsEffect(shadow)
 
+    def _create_hints_list(self):
+        self.HINTS = [(key, getattr(Qt, 'Key_{}'.format(key), -1))
+                      for key in '1234qwerasdfzxcv'.upper()]
+
     def button_clicked(self, index, event=None):
         self.main_window.select_item(index)
 
     def leaveEvent(self, event):
         self.main_window.set_select_menu_item_visibility(False)
+
+    def toggle_hints(self, on):
+        for i, items in enumerate(zip(self.HINTS, self.findChildren(QPushButton))):
+            if on:
+                text = '({}) '.format(items[0][0]) + _(self.items[i].name)
+            else:
+                text = _(self.items[i].name)
+            items[1].setText(text)
+
+    def get_item_index_by_key(self, key):
+        for i, hint in enumerate(self.HINTS):
+            if hint[1] == key:
+                return i
