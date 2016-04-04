@@ -26,6 +26,9 @@ class ActionsMixins:
     def _set_shortcuts(self):
         QShortcut(QKeySequence('Esc'), self).activated.connect(self.close)
 
+        for key, key_code in self.select_menu.HINTS:
+            QShortcut(QKeySequence('Ctrl+{}'.format(key)), self).activated.connect(functools.partial(self._shortcut_pressed, key_code))
+
     def top_frame_resized(self, frame):
         abw = self.action_button.width()
         self.waterline = frame.y() + frame.height()
@@ -79,6 +82,12 @@ class ActionsMixins:
 
             self.findChild(TopFrame).set_label_text(' '.join(text))
 
+    def _shortcut_pressed(self, key_code):
+        try:
+            self.select_item(self.select_menu.get_item_index_by_key(key_code))
+        except (IndexError, TypeError):
+            pass
+
     def keyPressEvent(self, event):
         mods = event.modifiers()
         if mods & QtCore.Qt.ControlModifier:
@@ -87,11 +96,11 @@ class ActionsMixins:
                 self.select_menu.toggle_hints(True)
             elif event.key() == Qt.Key_Return and self.stacked_layout.currentIndex() == 0:
                 self.findChild(SelectMenu).button_clicked(1)
-            else:
-                try:
-                    self.select_item(self.select_menu.get_item_index_by_key(event.key()))
-                except (IndexError, TypeError):
-                    pass
+            # else:
+            #     try:
+            #         self.select_item(self.select_menu.get_item_index_by_key(event.key()))
+            #     except (IndexError, TypeError):
+            #         pass
 
     def keyReleaseEvent(self, event):
         if (event.text() is ''):
