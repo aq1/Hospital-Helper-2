@@ -97,8 +97,8 @@ InputWidget QLabel {
 }
 
 ActionButton {
-    qproperty-icon: url('gui/static/icons/plus.png');
-    icon-size: 35px;
+    qproperty-icon: url('gui/static/icons/arrow.png');
+    icon-size: 30px;
     font-weight: bold;
     background-color: #FFEB3B;
     border-style: solid;

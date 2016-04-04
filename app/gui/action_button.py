@@ -20,15 +20,11 @@ class ActionButton(QPushButton):
         self.setGraphicsEffect(shadow)
 
         self.move(1300, 210)
-        self.clicked.connect(self._clicked)
 
-    def _clicked(self, event):
-
-        print('abc')
-        # self.set_icon('star')
-
-    def define_click(self, function):
-        self._clicked.connect(function)
-
-    def set_icon(self, icon):
+    def toggle_state(self, icon, function):
         self.setStyleSheet('qproperty-icon: url({})'.format(self.ICONS[icon]))
+        try:
+            self.clicked.disconnect()
+        except TypeError:
+            pass
+        self.clicked.connect(function)

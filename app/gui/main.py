@@ -55,7 +55,15 @@ class ActionsMixins:
         else:
             self.set_select_menu_item_visibility(False)
         self.stacked_layout.setCurrentIndex(index)
-        self.action_button.raise_()
+
+        icon, func = self.frames[index].ACTION_BTN_ICON, self.frames[index].action_btn_function
+
+        if icon and func:
+            self.action_button.toggle_state(icon, func)
+            self.action_button.show()
+            self.action_button.raise_()
+        else:
+            self.action_button.hide()
 
     def _h(self, event):
         mods = event.modifiers()
@@ -144,6 +152,8 @@ class MainWindow(QWidget, ActionsMixins):
 
         self._set_shortcuts()
 
+        self.select_menu_button_clicked(0)
+        self.set_select_menu_item_visibility(False)
         self.show()
 
     def _create_layout(self):

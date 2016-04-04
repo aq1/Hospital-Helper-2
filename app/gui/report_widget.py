@@ -159,6 +159,7 @@ class ReportObjectSelectWidget(QFrame):
 class ReportWidget(QFrame):
 
     LEFT_MARGIN = 25
+    ACTION_BTN_ICON = 'check'
 
     def __init__(self, main_window, items, templates):
 
@@ -184,3 +185,6 @@ class ReportWidget(QFrame):
 
     def showEvent(self, event):
         self.templates_widget.show_event()
+
+    def action_btn_function(self):
+        print('report')

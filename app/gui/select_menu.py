@@ -35,11 +35,13 @@ class SelectMenu(QFrame):
         hbox.addStretch()
 
     def button_clicked(self, btn, index, event=None):
+        self.main_window.select_menu_button_clicked(index)
+
+    def set_btn_style(self, index):
         for each in self.buttons:
             each.setStyleSheet('')
 
-        btn.setStyleSheet(self.BUTTON_SELECTED_QSS)
-        self.main_window.select_menu_button_clicked(index)
+        self.buttons[index].setStyleSheet(self.BUTTON_SELECTED_QSS)
 
     def set_item_label(self, text):
         self.buttons[0].setText(_(text))
