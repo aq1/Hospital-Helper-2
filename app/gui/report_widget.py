@@ -4,7 +4,7 @@ import functools
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (QWidget, QFrame, QLabel, QHBoxLayout, QRadioButton,
                              QVBoxLayout, QGraphicsDropShadowEffect, QStackedLayout,
-                             QGroupBox, QScrollArea)
+                             QGroupBox, QScrollArea, QGridLayout)
 
 from model import report
 
@@ -27,23 +27,19 @@ class ReportTypeSelectWidget(QFrame):
     def _create_and_get_scroll(self, item_index, templates):
         widget = QWidget()
         groupbox = QGroupBox()
-        vbox = QVBoxLayout()
-        vbox.setSpacing(0)
-        vbox.setContentsMargins(0, 0, 0, 0)
+        grid = QGridLayout()
+        grid.setSpacing(0)
+        grid.setContentsMargins(0, 0, 0, 0)
 
+        cols = 3
         for i, template in enumerate(templates):
-            if i % self.TEMPLATES_PER_LINE == 0:
-                hbox = QHBoxLayout()
-                vbox.addLayout(hbox)
+            row, col = i // cols, i % cols
 
             b = QRadioButton(_(templates[i].name))
             b.clicked.connect(functools.partial(self._button_clicked, item_index, template))
-            hbox.addWidget(b, stretch=33)
+            grid.addWidget(b, row, col)
 
-        hbox.addStretch(99 - hbox.count() * 33)
-        vbox.addStretch()
-
-        groupbox.setLayout(vbox)
+        groupbox.setLayout(grid)
         scroll = QScrollArea()
         scroll.setWidget(groupbox)
         scroll.setWidgetResizable(True)
@@ -192,5 +188,5 @@ class ReportWidget(QFrame):
     def action_btn_function(self):
         rep = report.Report([item for item in self.items if item.template], 1)
         document = rep.render(strict_mode=True)
-        document.save('/home/aq1/Documents/projects/drafts/Hospital-Helper-2/hello.odt')
-        subprocess.call(["xdg-open", '/home/aq1/Documents/projects/drafts/Hospital-Helper-2/hello.odt'])
+        document.save('/home/aq1/Documents/projects/Hospital-Helper-2/h.odt')
+        subprocess.call(["xdg-open", '/home/aq1/Documents/projects/Hospital-Helper-2/h.odt'])
