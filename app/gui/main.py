@@ -56,19 +56,15 @@ class ActionsMixins:
             self.set_select_menu_item_visibility(False)
         self.stacked_layout.setCurrentIndex(index)
 
-        icon, func = self.frames[index].ACTION_BTN_ICON, self.frames[index].action_btn_function
-
-        if icon and func:
+        try:
+            icon = self.frames[index].ACTION_BTN_ICON
+            func = self.frames[index].action_btn_function
+        except AttributeError:
+            self.action_button.hide()
+        else:
             self.action_button.toggle_state(icon, func)
             self.action_button.show()
             self.action_button.raise_()
-        else:
-            self.action_button.hide()
-
-    def _h(self, event):
-        mods = event.modifiers()
-        if mods & QtCore.Qt.ControlModifier and mods & QtCore.Qt.ShiftModifier:
-            print('asd')
 
     def input_changed(self, item):
         # Well it doesnt look good, but i was never good with UI.
@@ -89,6 +85,8 @@ class ActionsMixins:
             if event.text() is '':
                 self.set_select_menu_item_visibility(True)
                 self.select_menu.toggle_hints(True)
+            elif event.key() == Qt.Key_Return and self.stacked_layout.currentIndex() == 0:
+                self.findChild(SelectMenu).button_clicked(1)
             else:
                 try:
                     self.select_item(self.select_menu.get_item_index_by_key(event.key()))

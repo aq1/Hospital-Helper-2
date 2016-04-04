@@ -20,28 +20,28 @@ class SelectMenu(QFrame):
         self.setLayout(hbox)
 
         hbox.addSpacing(25)
-        self.buttons = [QPushButton(_(text))
-                        for text in main_window.MENU_LABELS]
 
-        for i, btn in enumerate(self.buttons):
+        self.buttons = []
+        for i, text in enumerate(main_window.MENU_LABELS):
+            btn = QPushButton(_(text))
+            self.buttons.append(btn)
             if i == 0:
                 btn.setStyleSheet(self.BUTTON_SELECTED_QSS)
 
-            btn.clicked.connect(functools.partial(self.button_clicked, btn, i))
+            btn.clicked.connect(functools.partial(self.button_clicked, i))
             hbox.addWidget(btn)
 
         self.buttons[0].setText(_(main_window.items[0].name))
         self.buttons[0].setFixedWidth(int(self.main_window.width() / 5))
         hbox.addStretch()
 
-    def button_clicked(self, btn, index, event=None):
-        self.main_window.select_menu_button_clicked(index)
-
-    def set_btn_style(self, index):
+    def button_clicked(self, index, event=None):
         for each in self.buttons:
             each.setStyleSheet('')
 
         self.buttons[index].setStyleSheet(self.BUTTON_SELECTED_QSS)
+
+        self.main_window.select_menu_button_clicked(index)
 
     def set_item_label(self, text):
         self.buttons[0].setText(_(text))
@@ -49,8 +49,7 @@ class SelectMenu(QFrame):
 
 class SelectItemMenu(QFrame):
 
-    HINTS = list(zip('12345qwertasdfgzxcvb'.upper(),
-                     (49, 50, 51, 52, 53, 81, 87, 69, 82, 84, 65, 83, 68, 70)))
+    HINTS = [(key, getattr(Qt, 'Key_{}'.format(key))) for key in '12345QWERTASDFGZXCVB']
 
     def __init__(self, main_window, items):
 
