@@ -1,11 +1,12 @@
+import subprocess
 import functools
 
-from PyQt5.QtGui import QColor, QPalette
-from PyQt5.QtCore import Qt, QTimer
+from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (QWidget, QFrame, QLabel, QHBoxLayout, QRadioButton,
-                             QVBoxLayout, QPushButton, QGraphicsDropShadowEffect,
-                             QLineEdit, QFormLayout, QStackedLayout, QScrollBar, QScroller,
+                             QVBoxLayout, QGraphicsDropShadowEffect, QStackedLayout,
                              QGroupBox, QScrollArea)
+
+from model import report
 
 
 class ReportTypeSelectWidget(QFrame):
@@ -165,6 +166,8 @@ class ReportWidget(QFrame):
 
         super().__init__()
 
+        self.items = items
+
         hbox = QHBoxLayout()
         self.setLayout(hbox)
 
@@ -187,4 +190,7 @@ class ReportWidget(QFrame):
         self.templates_widget.show_event()
 
     def action_btn_function(self):
-        print('report')
+        rep = report.Report([item for item in self.items if item.template], 1)
+        document = rep.render(strict_mode=True)
+        document.save('/home/aq1/Documents/projects/drafts/Hospital-Helper-2/hello.odt')
+        subprocess.call(["xdg-open", '/home/aq1/Documents/projects/drafts/Hospital-Helper-2/hello.odt'])

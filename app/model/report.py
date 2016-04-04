@@ -22,20 +22,10 @@ class Report:
         self.template_groups = OrderedDict()
 
         for item in items:
-            if item.template and any(item.values()):
-                self._add_item(item)
+            if not self.template_groups.get(item.group):
+                self.template_groups[item.group] = []
 
-    def _add_item(self, item):
-        db_item = db.SESSION.query(db.Item).filter(
-            db.Item.name == item.name).first()
-        template = db.SESSION.query(db.Template).filter(
-            db.Template.item == db_item.id, db.Template.name == item.template).first()
-
-        if not self.template_groups.get(item.group):
-            self.template_groups[item.group] = []
-
-        item.template = template
-        self.template_groups[item.group].append(item)
+            self.template_groups[item.group].append(item)
 
     def _get_header(self):
 

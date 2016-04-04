@@ -27,7 +27,8 @@ class ActionsMixins:
         QShortcut(QKeySequence('Esc'), self).activated.connect(self.close)
 
         for key, key_code in self.select_menu.HINTS:
-            QShortcut(QKeySequence('Ctrl+{}'.format(key)), self).activated.connect(functools.partial(self._shortcut_pressed, key_code))
+            QShortcut(QKeySequence('Ctrl+{}'.format(key)), self).activated.connect(
+                functools.partial(self._shortcut_pressed, key_code))
 
     def top_frame_resized(self, frame):
         abw = self.action_button.width()
@@ -96,11 +97,6 @@ class ActionsMixins:
                 self.select_menu.toggle_hints(True)
             elif event.key() == Qt.Key_Return and self.stacked_layout.currentIndex() == 0:
                 self.findChild(SelectMenu).button_clicked(1)
-            # else:
-            #     try:
-            #         self.select_item(self.select_menu.get_item_index_by_key(event.key()))
-            #     except (IndexError, TypeError):
-            #         pass
 
     def keyReleaseEvent(self, event):
         if (event.text() is ''):
