@@ -1,5 +1,25 @@
 STRUCTURE_KEY = 'structure'
 
+# Order matters
+CONTROL_BUTTONS_LABELS = (
+    {'sys': 'data', 'ru': 'Данные', 'en': 'Data'},
+    {'sys': 'report', 'ru': 'Отчет', 'en': 'Report'},
+    {'sys': 'db', 'ru': 'База', 'en': 'DB'},
+    {'sys': 'options', 'ru': 'Настройки', 'en': 'Options'},
+    )
+
+DATABASE = 'data.db'
+
+CONCLUSION = 'Заключение: '
+
+TYPES = {
+    'str': str,
+    'float': float,
+    'int': int,
+    'list': list,
+    'tuple': tuple
+}
+
 INIT_STRUCTURE = """[
     {
         "name": "Клиент",
@@ -492,25 +512,3 @@ INIT_STRUCTURE = """[
         ]
     }
 ]"""
-
-
-# Order matters
-CONTROL_BUTTONS_LABELS = (
-    {'sys': 'data', 'ru': 'Данные', 'en': 'Data'},
-    {'sys': 'report', 'ru': 'Отчет', 'en': 'Report'},
-    {'sys': 'db', 'ru': 'База', 'en': 'DB'},
-    {'sys': 'options', 'ru': 'Настройки', 'en': 'Options'},
-    )
-
-
-DATABASE = 'data.db'
-
-CONCLUSION = 'Заключение: '
-
-TYPES = {
-    'str': str,
-    'float': float,
-    'int': int,
-    'list': list,
-    'tuple': tuple
-}
