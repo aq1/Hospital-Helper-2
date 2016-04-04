@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import (QFrame, QPushButton, QHBoxLayout,
-                             QGraphicsDropShadowEffect)
+                             QGraphicsDropShadowEffect, QLabel)
 
 
 class TopSystemButtons(QFrame):
@@ -24,6 +24,9 @@ class TopSystemButtons(QFrame):
         minimize_button = QPushButton('_')
         minimize_button.clicked.connect(main_window.minimize)
 
+        self.title = QLabel('')
+        b.addWidget(self.title)
+        b.addSpacing(10)
         b.addWidget(minimize_button)
         b.addSpacing(1)
         b.addWidget(exit_button)
@@ -34,6 +37,9 @@ class TopSystemButtons(QFrame):
         shadow.setXOffset(0)
         shadow.setYOffset(5)
         self.setGraphicsEffect(shadow)
+
+    def set_title(self, title):
+        self.title.setText(title)
 
     def mousePressEvent(self, event):
         self.move_offset = event.pos()

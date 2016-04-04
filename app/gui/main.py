@@ -3,7 +3,7 @@ import sys
 import functools
 
 from PyQt5 import QtCore
-from PyQt5.QtCore import QCoreApplication, Qt, QTimer
+from PyQt5.QtCore import QCoreApplication, Qt
 from PyQt5.QtWidgets import (QWidget, QStackedLayout, QDesktopWidget,
                              QVBoxLayout, QShortcut, QApplication)
 
@@ -11,6 +11,7 @@ from PyQt5.QtGui import QKeySequence
 
 import options
 
+from gui.doctors_widget import DoctorsWidget
 from gui.select_menu import SelectMenu, SelectItemMenu
 from gui.data_widget import DataWidget
 from gui.db_widget import DBWidget
@@ -83,6 +84,13 @@ class ActionsMixins:
 
             self.findChild(TopFrame).set_label_text(' '.join(text))
 
+    def doctor_selected(self, doctor):
+        self.select_menu_button_clicked(0)
+        self.doctor = doctor
+        self.findChild(SelectMenu).show()
+        self._set_shortcuts()
+        self.top_sys_btns.set_title('{} {}. {}.'.format(doctor.surname, doctor.name[0], doctor.patronymic[0]))
+
     def _shortcut_pressed(self, key_code):
         try:
             self.select_item(self.select_menu.get_item_index_by_key(key_code))
@@ -121,6 +129,7 @@ class MainWindow(QWidget, ActionsMixins):
         self.items = items
         self.templates = templates
         self.db = db
+        self.doctor = None
 
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
         self.setWindowTitle('Hospital Helper')
@@ -136,11 +145,12 @@ class MainWindow(QWidget, ActionsMixins):
         vbox.setSpacing(0)
         self.setLayout(vbox)
 
-        vbox.addWidget(TopSystemButtons(self), stretch=3)
+        self.top_sys_btns = TopSystemButtons(self)
+        vbox.addWidget(self.top_sys_btns, stretch=3)
 
-        t = TopFrame(self, items)
-        vbox.addWidget(t, stretch=15)
-        self.waterline = t.y() + t.height()
+        self.top_frame = TopFrame(self, items)
+        vbox.addWidget(self.top_frame, stretch=15)
+        self.waterline = self.top_frame.y() + self.top_frame.height()
 
         # vbox.addSpacing(self.TOP_MARGIN)
         vbox.addLayout(self.stacked_layout, stretch=40)
@@ -151,12 +161,6 @@ class MainWindow(QWidget, ActionsMixins):
         self.move(qr.topLeft())
 
         self._create_layout()
-        self.select_menu = SelectItemMenu(self, items)
-
-        self._set_shortcuts()
-
-        self.select_menu_button_clicked(0)
-        self.set_select_menu_item_visibility(False)
         self.show()
 
     def _create_layout(self):
@@ -164,10 +168,16 @@ class MainWindow(QWidget, ActionsMixins):
         self.frames = [DataWidget(self, self.items),
                        ReportWidget(self, self.items, self.templates),
                        DBWidget(self, self.db),
-                       OptionsWidget(self)]
+                       OptionsWidget(self),
+                       DoctorsWidget(self)]
 
         for frame in self.frames:
             self.stacked_layout.addWidget(frame)
+
+        self.stacked_layout.setCurrentIndex(len(self.frames) - 1)
+        self.select_menu = SelectItemMenu(self, self.items)
+        self.findChild(SelectMenu).hide()
+        self.set_select_menu_item_visibility(False)
 
 
 def init(items, templates, db):
