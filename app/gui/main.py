@@ -174,10 +174,9 @@ class MainWindow(QWidget, ActionsMixins):
         for frame in self.frames:
             self.stacked_layout.addWidget(frame)
 
-        self.stacked_layout.setCurrentIndex(len(self.frames) - 1)
         self.select_menu = SelectItemMenu(self, self.items)
+        self.select_menu_button_clicked(len(self.frames) - 1)
         self.findChild(SelectMenu).hide()
-        self.set_select_menu_item_visibility(False)
 
 
 def init(items, templates, db):

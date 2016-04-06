@@ -10,12 +10,12 @@ from model import db, exceptions
 
 class Report:
 
-    def __init__(self, items, doctor_id):
+    def __init__(self, items, doctor):
 
-        self.doctor = db.SESSION.query(db.Doctor).get(doctor_id)
+        self.doctor = doctor
 
         if self.doctor:
-            self.hospital = db.SESSION.query(db.Hospital).get(self.doctor.hospital)
+            self.hospital = db.SESSION.query(db.Hospital).get(self.doctor.hospital_id)
         else:
             self.hospital = None
 

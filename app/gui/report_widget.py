@@ -162,6 +162,7 @@ class ReportWidget(QFrame):
 
         super().__init__()
 
+        self.main_window = main_window
         self.items = items
 
         hbox = QHBoxLayout()
@@ -186,7 +187,7 @@ class ReportWidget(QFrame):
         self.templates_widget.show_event()
 
     def action_btn_function(self):
-        rep = report.Report([item for item in self.items if item.template], 1)
+        rep = report.Report([item for item in self.items if item.template], self.main_window.doctor)
         document = rep.render(strict_mode=True)
         document.save('/home/aq1/Documents/projects/Hospital-Helper-2/h.odt')
         subprocess.call(["xdg-open", '/home/aq1/Documents/projects/Hospital-Helper-2/h.odt'])

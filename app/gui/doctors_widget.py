@@ -3,12 +3,14 @@ import functools
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (QFrame, QGroupBox, QVBoxLayout, QLabel,
                              QScrollArea, QRadioButton, QGraphicsDropShadowEffect,
-                             QHBoxLayout)
+                             QHBoxLayout, QPushButton)
 
 from model import db
 
 
 class DoctorsWidget(QFrame):
+
+    ACTION_BTN_ICON = 'check'
 
     def __init__(self, main_window):
 
@@ -22,19 +24,22 @@ class DoctorsWidget(QFrame):
         vbox.setSpacing(0)
         vbox.setContentsMargins(0, 0, 0, 0)
 
-        doctors = db.SESSION.query(db.Doctor).all()
+        self.doctors = db.SESSION.query(db.Doctor).all()
         hospitals = db.SESSION.query(db.Hospital).all()
 
         for hospital in hospitals:
-            vbox.addWidget(QLabel(hospital.name))
-            for doctor in doctors:
+            l = QLabel(hospital.name)
+            l.setAlignment(Qt.AlignCenter)
+            vbox.addWidget(l)
+            for doctor in self.doctors:
                 if doctor.hospital_id == hospital.id:
-                    fullname = '{} {}. {}.'.format(doctor.surname, doctor.name[0], doctor.patronymic[0])
+                    fullname = '{} {} {}'.format(doctor.surname, doctor.name, doctor.patronymic)
                     b = QRadioButton(fullname)
-                    b.clicked.connect(functools.partial(self._button_clicked, doctor))
+                    b.mouseDoubleClickEvent = (functools.partial(self._button_clicked, doctor))
                     vbox.addWidget(b)
 
         vbox.addStretch()
+        vbox.addWidget(QPushButton('Добавить'))
 
         groupbox.setLayout(vbox)
         scroll = QScrollArea()
@@ -53,5 +58,10 @@ class DoctorsWidget(QFrame):
         shadow.setYOffset(0)
         self.setGraphicsEffect(shadow)
 
-    def _button_clicked(self, doctor):
+    def _button_clicked(self, doctor, event):
         self.main_window.doctor_selected(doctor)
+
+    def action_btn_function(self):
+        for i, b in enumerate(self.findChildren(QRadioButton)):
+            if b.isChecked():
+                self.main_window.doctor_selected(self.doctors[i])
