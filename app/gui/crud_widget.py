@@ -1,4 +1,9 @@
-from PyQt5.QtWidgets import QFrame, QFormLayout, QLineEdit, QPushButton
+from PyQt5.QtWidgets import QFrame, QFormLayout, QLineEdit, QPushButton, QComboBox, QLabel
+
+# from sqlalchemy import (Column, Integer, String, Float, ForeignKey, Date, SmallInteger, Text)
+
+
+from model import db
 
 
 class CrudWidget(QFrame):
@@ -21,10 +26,31 @@ class CrudWidgetContent(QFrame):
         layout = QFormLayout()
         self.setLayout(layout)
         for col in base.__table__.columns:
-            layout.addRow(col.name, QLineEdit())
+            # self._get_row(col)
+            layout.addRow(*self._get_row(col))
         layout.addRow(QPushButton('3'), QPushButton('3'))
-
         self.p = parent
         self.show()
         self.raise_()
         self.move((parent.width() - self.width()) / 2, (parent.height() - self.height()) / 2)
+
+    def _get_row(self, column):
+        """
+        Default row for a form is QLabel, QLineEdit
+        But for foreign fields it's QComboBox
+        Maybe later I will add QCalendar for dates and etc.
+        """
+
+        if not column.foreign_keys:
+            return QLabel(_(column.name)), QLineEdit()
+
+        label = column.name
+        if label.endswith('_id'):
+            label = column.name[:-3]
+
+#       self.hospital = db.SESSION.query(db.Hospital).get(self.doctor.hospital_id)
+
+        table = db.Base.metadata.tables.get(column.foreign_keys)
+        options = db.SESSION.query()
+        #     return QLabel(_(column.name)), QComboBox()
+        # else:
