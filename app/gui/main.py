@@ -20,6 +20,7 @@ from gui.report_widget import ReportWidget
 from gui.top_frame import TopFrame
 from gui.top_system_buttons import TopSystemButtons
 from gui.action_button import ActionButton
+from gui.crud_widget import CrudWidget
 
 
 class ActionsMixins:
@@ -110,6 +111,12 @@ class ActionsMixins:
         if (event.text() is ''):
             self.set_select_menu_item_visibility(False)
             self.select_menu.toggle_hints(False)
+
+    def create_crud_widget(self, base, db_object=None):
+        cw = CrudWidget(self, base, db_object)
+        cw.show()
+        cw.move(0, self.top_sys_btns.height())
+        cw.raise_()
 
     def close(self, event=None):
         QCoreApplication.instance().quit()

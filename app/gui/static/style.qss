@@ -225,3 +225,11 @@ DoctorsWidget QRadioButton:checked:hover {
     background-color: #3d8b8e;
     color: white;
 }
+
+CrudWidget {
+    background-color: rgba(0, 0, 0, 0.3)
+}
+
+CrudWidget CrudWidgetContent {
+    background-color: white;
+}
