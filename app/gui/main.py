@@ -114,9 +114,6 @@ class ActionsMixins:
 
     def create_crud_widget(self, base, db_object=None):
         cw = CrudWidget(self, base, db_object)
-        cw.show()
-        cw.move(0, self.top_sys_btns.height())
-        cw.raise_()
 
     def close(self, event=None):
         QCoreApplication.instance().quit()
