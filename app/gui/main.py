@@ -112,8 +112,8 @@ class ActionsMixins:
             self.set_select_menu_item_visibility(False)
             self.select_menu.toggle_hints(False)
 
-    def create_crud_widget(self, base, db_object=None):
-        cw = CrudWidget(self, base, db_object)
+    def create_crud_widget(self, base, callback=None, db_object=None):
+        cw = CrudWidget(self, base, callback, db_object)
 
     def close(self, event=None):
         QCoreApplication.instance().quit()

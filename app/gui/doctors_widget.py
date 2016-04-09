@@ -41,7 +41,7 @@ class DoctorsWidget(QFrame):
         vbox.addStretch()
 
         b = QPushButton('Добавить')
-        b.clicked.connect(functools.partial(main_window.create_crud_widget, db.Doctor))
+        b.clicked.connect(functools.partial(main_window.create_crud_widget, db.Doctor, self.doctor_created))
         vbox.addWidget(b)
 
         groupbox.setLayout(vbox)
@@ -68,3 +68,6 @@ class DoctorsWidget(QFrame):
         for i, b in enumerate(self.findChildren(QRadioButton)):
             if b.isChecked():
                 self.main_window.doctor_selected(self.doctors[i])
+
+    def doctor_created(self, doctor):
+        print('hey')

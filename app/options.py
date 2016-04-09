@@ -6,7 +6,31 @@ CONTROL_BUTTONS_LABELS = (
     {'sys': 'report', 'ru': 'Отчет', 'en': 'Report'},
     {'sys': 'db', 'ru': 'База', 'en': 'DB'},
     {'sys': 'options', 'ru': 'Настройки', 'en': 'Options'},
-    )
+)
+
+TRANSLATION = (
+    {'sys': 'weight', 'ru': 'Вес'},
+    {'sys': 'doctor', 'ru': 'Врач'},
+    {'sys': 'key', 'ru': 'Ключ'},
+    {'sys': 'conclusion', 'ru': 'Заключение'},
+    {'sys': 'hr', 'ru': 'ЧСС'},
+    {'sys': 'date_of_birth', 'ru': 'Дата Рождения'},
+    {'sys': 'name', 'ru': 'Имя'},
+    {'sys': 'surname', 'ru': 'Фамилия'},
+    {'sys': 'patronymic', 'ru': 'Отчество'},
+    {'sys': 'group', 'ru': 'Группа'},
+    {'sys': 'height', 'ru': 'Высота'},
+    {'sys': 'header', 'ru': 'Заголовок'},
+    {'sys': 'client', 'ru': 'Клиент'},
+    {'sys': 'examined', 'ru': 'Осмотрен'},
+    {'sys': 'hospital', 'ru': 'Больница'},
+    {'sys': 'body', 'ru': 'Текст'},
+    {'sys': 'value', 'ru': 'Значение'},
+    {'sys': 'template', 'ru': 'Шаблон'},
+    {'sys': 'sent_by', 'ru': 'Направлен'},
+    {'sys': 'item', 'ru': 'Объект'},
+    {'sys': 'path', 'ru': 'Путь'},
+)
 
 DATABASE = 'data.db'
 
