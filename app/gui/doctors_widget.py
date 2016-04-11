@@ -40,9 +40,15 @@ class DoctorsWidget(QFrame):
 
         vbox.addStretch()
 
+        hbox = QHBoxLayout()
+        hbox.setContentsMargins(0, 0, 0, 0)
+        hbox.setSpacing(0)
         b = QPushButton('Добавить')
         b.clicked.connect(functools.partial(main_window.create_crud_widget, db.Doctor, self.doctor_created))
-        vbox.addWidget(b)
+        hbox.addStretch()
+        hbox.addWidget(b)
+        hbox.addStretch()
+        vbox.addLayout(hbox)
 
         groupbox.setLayout(vbox)
         scroll = QScrollArea()

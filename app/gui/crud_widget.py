@@ -1,3 +1,6 @@
+import functools
+
+from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (QWidget, QFrame, QFormLayout, QLineEdit, QPushButton, QHBoxLayout,
                              QComboBox, QLabel, QGraphicsDropShadowEffect, QVBoxLayout, QGroupBox, QScrollArea)
@@ -27,6 +30,7 @@ class CrudWidgetContent(QFrame):
         self.values = {}
         self.foreigns = {}
         self.model = model
+        self.parent = parent
 
         widget = QWidget()
         vbox = QVBoxLayout()
@@ -50,16 +54,18 @@ class CrudWidgetContent(QFrame):
             for w in row:
                 layout.addWidget(w)
 
-        self.setGraphicsEffect(self._get_shadow())
-
+        layout.addStretch()
         hbox = QHBoxLayout()
         hbox.addSpacing(30)
 
-        for l, n, f in zip((' Сохранить', ' Закрыть'), ('save', 'close'), (self._save, parent.deleteLater)):
+        for s, l, n, f in zip((QGraphicsDropShadowEffect(), QGraphicsDropShadowEffect()), (' Сохранить', ' Закрыть'), ('save', 'close'), (self._save, parent.deleteLater)):
             b = QPushButton(l)
             b.clicked.connect(f)
             b.setObjectName(n)
-            # b.setGraphicsEffect(self._get_shadow())
+            s.setBlurRadius(10)
+            s.setXOffset(0)
+            s.setYOffset(0)
+            b.setGraphicsEffect(s)
             hbox.addWidget(b)
 
         hbox.addStretch()
@@ -103,10 +109,28 @@ class CrudWidgetContent(QFrame):
                 foreign_model = relations.get(label).mapper.class_
                 items = db.SESSION.query(foreign_model).all()
                 self.foreigns[column.name] = items
-                items = [str(i) for i in items]
-                widget = QComboBox()
-                widget.addItems(items)
-                widget.currentIndexChanged.connect(self._check_input)
+                items_labels = [str(i) for i in items]
+                widget = QWidget()
+                widget.setStyleSheet('margin:0;')
+                combo_box = QComboBox()
+                combo_box.addItems(items_labels)
+                combo_box.currentIndexChanged.connect(self._check_input)
+                hbox = QHBoxLayout()
+                hbox.setContentsMargins(0, 0, 0, 0)
+                hbox.setSpacing(0)
+                hbox.addWidget(combo_box, stretch=95)
+                # hbox.addStretch()
+                b = QPushButton()
+                b.setObjectName('icon')
+                b.setIcon(QIcon('gui/static/icons/pencil_g.png'))
+                b.clicked.connect(functools.partial(self.open_crud, foreign_model, False, combo_box, items))
+                hbox.addWidget(b, stretch=2)
+                b = QPushButton()
+                b.setObjectName('icon')
+                b.setIcon(QIcon('gui/static/icons/plus.png'))
+                b.clicked.connect(functools.partial(self.open_crud, foreign_model, True, combo_box, items))
+                hbox.addWidget(b, stretch=2)
+                widget.setLayout(hbox)
             else:
                 widget = QLineEdit()
                 widget.textEdited.connect(self._check_input)
@@ -126,13 +150,17 @@ class CrudWidgetContent(QFrame):
         db.save(instance)
         self.callback(instance)
 
-    def _get_shadow(self):
-        shadow = QGraphicsDropShadowEffect()
-        shadow.setBlurRadius(10)
-        shadow.setXOffset(0)
-        shadow.setYOffset(0)
-        return shadow
-
     def _check_input(self):
         self.findChild(QPushButton, name='save').setDisabled(
             not all([each.text() for each in self.findChildren(QLineEdit)]))
+
+    def open_crud(self, model, new, combo_box, items):
+
+        item = None
+        if not new:
+            item = items[combo_box.currentIndex()]
+
+        CrudWidget(self.parent.main_window, model, self.object_created, item)
+
+    def object_created(self):
+        print('yo')
