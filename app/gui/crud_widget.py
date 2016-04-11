@@ -24,6 +24,9 @@ class CrudWidgetContent(QFrame):
         super().__init__(parent)
 
         self.callback = callback
+        self.values = {}
+        self.foreigns = {}
+        self.model = model
 
         widget = QWidget()
         vbox = QVBoxLayout()
@@ -98,7 +101,9 @@ class CrudWidgetContent(QFrame):
                 if label.endswith('_id'):
                     label = column.name[:-3]
                 foreign_model = relations.get(label).mapper.class_
-                items = [str(i) for i in db.SESSION.query(foreign_model).all()]
+                items = db.SESSION.query(foreign_model).all()
+                self.foreigns[column.name] = items
+                items = [str(i) for i in items]
                 widget = QComboBox()
                 widget.addItems(items)
                 widget.currentIndexChanged.connect(self._check_input)
@@ -106,10 +111,20 @@ class CrudWidgetContent(QFrame):
                 widget = QLineEdit()
                 widget.textEdited.connect(self._check_input)
 
+            widget.setObjectName(column.name)
             yield QLabel(_(label)), widget
 
     def _save(self, event=None):
-        self.callback('Fuck off')
+        kwargs = {}
+        for each in self.findChildren(QLineEdit):
+            kwargs[each.objectName()] = each.text()
+
+        for each in self.findChildren(QComboBox):
+            kwargs[each.objectName()] = self.foreigns[each.objectName()][each.currentIndex()].id
+
+        instance = self.model(**kwargs)
+        db.save(instance)
+        self.callback(instance)
 
     def _get_shadow(self):
         shadow = QGraphicsDropShadowEffect()

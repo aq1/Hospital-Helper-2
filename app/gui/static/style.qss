@@ -5,7 +5,6 @@
 }
 
 QRadioButton::indicator {
-    /*height: 0;*/
     background-color: rgba(0, 0, 0, 0)
 }
 
@@ -31,10 +30,6 @@ SelectMenu QPushButton {
     font-size: 13pt;
     background-color: #58CACF;
     padding: 25px 25px;
-}
-
-electMenu QPushButton:first-child {
-    color: red !important;
 }
 
 SelectMenu QPushButton:hover {
@@ -63,7 +58,7 @@ TopSystemButtons {
 
 TopSystemButtons QLabel {
     margin: 0;
-    font-size: 15pt;
+    font-size: 11pt;
     background-color: #45A0A3;
     color: white;   
 }
@@ -192,20 +187,19 @@ DoctorsWidget QScrollArea {
 }
 
 DoctorsWidget QLabel {
-    font-size: 13pt;
-    padding: 10px 5px;
-    margin: 10px 0;
-    /*border: 3px solid #58CACF;*/
+    font-size: 9pt;
+    color: rgba(0, 0, 0, 0.5);
     border-top: none;
     border-left: none;
     border-right: none;
 }
 
 DoctorsWidget QPushButton, DoctorsWidget QRadioButton {
+    padding: 15px;
+    padding-left: -20px;
+    vertical-align: middle;
     font-size: 12pt;
     background-color: white;
-    border: none;
-    padding: 10px;
 }
 
 DoctorsWidget QPushButton:hover, DoctorsWidget QRadioButton:hover {

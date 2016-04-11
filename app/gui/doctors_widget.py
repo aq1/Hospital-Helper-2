@@ -21,15 +21,15 @@ class DoctorsWidget(QFrame):
         groupbox = QGroupBox()
 
         vbox = QVBoxLayout()
-        vbox.setSpacing(0)
-        vbox.setContentsMargins(0, 0, 0, 0)
+        vbox.setSpacing(10)
+        vbox.setContentsMargins(30, 30, 10, 10)
 
         self.doctors = db.SESSION.query(db.Doctor).all()
         hospitals = db.SESSION.query(db.Hospital).all()
 
         for hospital in hospitals:
             l = QLabel(hospital.name)
-            l.setAlignment(Qt.AlignCenter)
+            # l.setAlignment(Qt.AlignCenter)
             vbox.addWidget(l)
             for doctor in self.doctors:
                 if doctor.hospital_id == hospital.id:

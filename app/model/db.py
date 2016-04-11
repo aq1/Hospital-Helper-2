@@ -217,4 +217,9 @@ def create_db():
     Base.metadata.create_all(engine)
 
 
+def save(instance):
+    SESSION.add(instance)
+    SESSION.flush()
+
+
 create_db()
