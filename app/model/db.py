@@ -55,20 +55,20 @@ class Client(Base, Model):
     examined = Column(Date, nullable=False, default=datetime.datetime.now)
     sent_by = Column(String, nullable=False, default='')
 
-    doctor_id = Column(ForeignKey('doctor.id'), nullable=False)
-    doctor = relationship('Doctor', backref='client')
+    user_id = Column(ForeignKey('user.id'), nullable=False)
+    user = relationship('User', backref='client')
 
     def __str__(self):
         return '{} {} {}'.format(self.surname, self.name, self.patronymic)
 
 
-class Doctor(Base, Model):
+class User(Base, Model):
 
-    __tablename__ = 'doctor'
+    __tablename__ = 'user'
 
     id = Column(Integer, primary_key=True)
-    hospital_id = Column(ForeignKey('hospital.id'))
-    hospital = relationship('Hospital', backref='doctor')
+    organization_id = Column(ForeignKey('organization.id'))
+    organization = relationship('Organization', backref='user')
 
     surname = Column(String, nullable=False, default='')
     name = Column(String, nullable=False, default='')
@@ -78,9 +78,9 @@ class Doctor(Base, Model):
         return '{} {} {}'.format(self.surname, self.name, self.patronymic)
 
 
-class Hospital(Base, Model):
+class Organization(Base, Model):
 
-    __tablename__ = 'hospital'
+    __tablename__ = 'organization'
 
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)

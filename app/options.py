@@ -10,7 +10,7 @@ CONTROL_BUTTONS_LABELS = (
 
 TRANSLATION = (
     {'sys': 'weight', 'ru': 'Вес'},
-    {'sys': 'doctor', 'ru': 'Врач'},
+    {'sys': 'user', 'ru': 'Врач'},
     {'sys': 'key', 'ru': 'Ключ'},
     {'sys': 'conclusion', 'ru': 'Заключение'},
     {'sys': 'hr', 'ru': 'ЧСС'},
@@ -23,7 +23,7 @@ TRANSLATION = (
     {'sys': 'header', 'ru': 'Заголовок'},
     {'sys': 'client', 'ru': 'Клиент'},
     {'sys': 'examined', 'ru': 'Осмотрен'},
-    {'sys': 'hospital', 'ru': 'Больница'},
+    {'sys': 'organization', 'ru': 'Больница'},
     {'sys': 'body', 'ru': 'Текст'},
     {'sys': 'value', 'ru': 'Значение'},
     {'sys': 'template', 'ru': 'Шаблон'},
@@ -51,7 +51,7 @@ INIT_STRUCTURE = """[
         "db": true,
         "group": "Клиент",
         "relations": [
-            "doctor"
+            "user"
         ],
         "args": [
             {

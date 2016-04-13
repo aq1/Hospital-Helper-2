@@ -8,7 +8,7 @@ from PyQt5.QtWidgets import (QFrame, QGroupBox, QVBoxLayout, QLabel,
 from model import db
 
 
-class DoctorsWidget(QFrame):
+class UsersWidget(QFrame):
 
     ACTION_BTN_ICON = 'check'
 
@@ -24,14 +24,14 @@ class DoctorsWidget(QFrame):
         self.vbox.setSpacing(10)
         self.vbox.setContentsMargins(30, 30, 10, 10)
 
-        self.doctors = db.SESSION.query(db.Doctor).all()
-        hospitals = db.SESSION.query(db.Hospital).all()
+        self.users = db.SESSION.query(db.User).all()
+        organizations = db.SESSION.query(db.Organization).all()
 
-        for hospital in hospitals:
-            self.vbox.addWidget(self._get_label(hospital))
-            for doctor in self.doctors:
-                if doctor.hospital_id == hospital.id:
-                    self.vbox.addWidget(self._get_radio_btn(doctor))
+        for organization in organizations:
+            self.vbox.addWidget(self._get_label(organization))
+            for user in self.users:
+                if user.organization_id == organization.id:
+                    self.vbox.addWidget(self._get_radio_btn(user))
 
         self.vbox.addStretch()
 
@@ -39,7 +39,7 @@ class DoctorsWidget(QFrame):
         hbox.setContentsMargins(0, 0, 0, 0)
         hbox.setSpacing(0)
         b = QPushButton('Добавить')
-        b.clicked.connect(functools.partial(main_window.create_crud_widget, db.Doctor, self.doctor_created))
+        b.clicked.connect(functools.partial(main_window.create_crud_widget, db.User, self.user_created))
         hbox.addStretch()
         hbox.addWidget(b)
         hbox.addStretch()
@@ -73,20 +73,20 @@ class DoctorsWidget(QFrame):
         l.setObjectName(str(item.id))
         return l
 
-    def _button_clicked(self, doctor, event):
-        self.main_window.doctor_selected(doctor)
+    def _button_clicked(self, user, event):
+        self.main_window.user_selected(user)
 
     def action_btn_function(self):
         for i, b in enumerate(self.findChildren(QRadioButton)):
             if b.isChecked():
-                self.main_window.doctor_selected(self.doctors[i])
+                self.main_window.user_selected(self.users[i])
 
-    def doctor_created(self, items):
+    def user_created(self, items):
         for item in items:
-            if isinstance(item, db.Hospital):
+            if isinstance(item, db.Organization):
                 self.vbox.insertWidget(0, self._get_label(item))
             else:
-                id_ = str(item.hospital_id)
+                id_ = str(item.organization_id)
                 for i in range(self.vbox.count()):
                     try:
                         widget_name = self.vbox.itemAt(i).widget().objectName()

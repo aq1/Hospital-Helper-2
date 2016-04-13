@@ -182,11 +182,11 @@ QGroupBox {
     border: none;
 }
 
-DoctorsWidget QScrollArea {
+UsersWidget QScrollArea {
     background-color: white;
 }
 
-DoctorsWidget QLabel {
+UsersWidget QLabel {
     font-size: 9pt;
     color: rgba(0, 0, 0, 0.5);
     border-top: none;
@@ -194,7 +194,7 @@ DoctorsWidget QLabel {
     border-right: none;
 }
 
-DoctorsWidget QRadioButton {
+UsersWidget QRadioButton {
     padding: 15px;
     padding-left: -20px;
     vertical-align: middle;
@@ -203,16 +203,16 @@ DoctorsWidget QRadioButton {
     border: none;
 }
 
-DoctorsWidget QRadioButton:hover {
+UsersWidget QRadioButton:hover {
     background-color: rgba(0, 0, 0, 0.2)
 }
 
-DoctorsWidget QRadioButton:checked {
+UsersWidget QRadioButton:checked {
     background-color: #45A0A3;
     color: white;
 }
 
-DoctorsWidget QRadioButton:checked:hover {
+UsersWidget QRadioButton:checked:hover {
     background-color: #3d8b8e;
     color: white;
 }
@@ -262,7 +262,7 @@ CrudWidgetContent QLabel#title {
     font-size: 16pt;
 }
 
-CrudWidgetContent QPushButton, DoctorsWidget QPushButton {
+CrudWidgetContent QPushButton, UsersWidget QPushButton {
     font-size: 12pt;
     padding: 10px 30px;
     color: white;
@@ -275,11 +275,11 @@ CrudWidgetContent QPushButton, DoctorsWidget QPushButton {
     border-width: 0;
 }
 
-CrudWidgetContent QPushButton:hover, DoctorsWidget QPushButton:hover {
+CrudWidgetContent QPushButton:hover, UsersWidget QPushButton:hover {
     background-color: #3B8689;
 }
 
-CrudWidgetContent QPushButton:pressed, DoctorsWidget QPushButton:pressed {
+CrudWidgetContent QPushButton:pressed, UsersWidget QPushButton:pressed {
     background-color: #1F484A;
 }
 

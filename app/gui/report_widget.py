@@ -187,7 +187,7 @@ class ReportWidget(QFrame):
         self.templates_widget.show_event()
 
     def action_btn_function(self):
-        rep = report.Report([item for item in self.items if item.template], self.main_window.doctor)
+        rep = report.Report([item for item in self.items if item.template], self.main_window.user)
         document = rep.render(strict_mode=True)
         document.save('/home/aq1/Documents/projects/Hospital-Helper-2/h.odt')
         subprocess.call(["xdg-open", '/home/aq1/Documents/projects/Hospital-Helper-2/h.odt'])

@@ -10,14 +10,14 @@ from model import db, exceptions
 
 class Report:
 
-    def __init__(self, items, doctor):
+    def __init__(self, items, user):
 
-        self.doctor = doctor
+        self.user = user
 
-        if self.doctor:
-            self.hospital = db.SESSION.query(db.Hospital).get(self.doctor.hospital_id)
+        if self.user:
+            self.organization = db.SESSION.query(db.Organization).get(self.user.organization_id)
         else:
-            self.hospital = None
+            self.organization = None
 
         self.template_groups = OrderedDict()
 
@@ -29,20 +29,20 @@ class Report:
 
     def _get_header(self):
 
-        if not self.hospital:
+        if not self.organization:
             return ''
         else:
-            return self.hospital.header
+            return self.organization.header
 
     def _get_footer(self):
 
-        if not self.doctor:
+        if not self.user:
             return ''
         else:
             return '{} {} {} {}'.format(datetime.datetime.now().strftime('%d.%m.%Y'),
-                                        self.doctor.surname,
-                                        self.doctor.name,
-                                        self.doctor.patronymic)
+                                        self.user.surname,
+                                        self.user.name,
+                                        self.user.patronymic)
 
     def render(self, strict_mode=False):
         document = OpenDocumentText()

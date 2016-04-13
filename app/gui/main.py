@@ -11,7 +11,7 @@ from PyQt5.QtGui import QKeySequence
 
 import options
 
-from gui.doctors_widget import DoctorsWidget
+from gui.users_widget import UsersWidget
 from gui.select_menu import SelectMenu, SelectItemMenu
 from gui.data_widget import DataWidget
 from gui.db_widget import DBWidget
@@ -85,12 +85,12 @@ class ActionsMixins:
 
             self.findChild(TopFrame).set_label_text(' '.join(text))
 
-    def doctor_selected(self, doctor):
+    def user_selected(self, user):
         self.select_menu_button_clicked(0)
-        self.doctor = doctor
+        self.user = user
         self.findChild(SelectMenu).show()
         self._set_shortcuts()
-        self.top_sys_btns.set_title('{} {}. {}.'.format(doctor.surname, doctor.name[0], doctor.patronymic[0]))
+        self.top_sys_btns.set_title('{} {}. {}.'.format(user.surname, user.name[0], user.patronymic[0]))
 
     def _shortcut_pressed(self, key_code):
         try:
@@ -133,7 +133,7 @@ class MainWindow(QWidget, ActionsMixins):
         self.items = items
         self.templates = templates
         self.db = db
-        self.doctor = None
+        self.user = None
 
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
         self.setWindowTitle('Hospital Helper')
@@ -173,7 +173,7 @@ class MainWindow(QWidget, ActionsMixins):
                        ReportWidget(self, self.items, self.templates),
                        DBWidget(self, self.db),
                        OptionsWidget(self),
-                       DoctorsWidget(self)]
+                       UsersWidget(self)]
 
         for frame in self.frames:
             self.stacked_layout.addWidget(frame)
