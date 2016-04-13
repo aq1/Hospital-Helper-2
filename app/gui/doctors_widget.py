@@ -20,25 +20,20 @@ class DoctorsWidget(QFrame):
 
         groupbox = QGroupBox()
 
-        vbox = QVBoxLayout()
-        vbox.setSpacing(10)
-        vbox.setContentsMargins(30, 30, 10, 10)
+        self.vbox = QVBoxLayout()
+        self.vbox.setSpacing(10)
+        self.vbox.setContentsMargins(30, 30, 10, 10)
 
         self.doctors = db.SESSION.query(db.Doctor).all()
         hospitals = db.SESSION.query(db.Hospital).all()
 
         for hospital in hospitals:
-            l = QLabel(hospital.name)
-            # l.setAlignment(Qt.AlignCenter)
-            vbox.addWidget(l)
+            self.vbox.addWidget(self._get_label(hospital))
             for doctor in self.doctors:
                 if doctor.hospital_id == hospital.id:
-                    fullname = '{} {} {}'.format(doctor.surname, doctor.name, doctor.patronymic)
-                    b = QRadioButton(fullname)
-                    b.mouseDoubleClickEvent = (functools.partial(self._button_clicked, doctor))
-                    vbox.addWidget(b)
+                    self.vbox.addWidget(self._get_radio_btn(doctor))
 
-        vbox.addStretch()
+        self.vbox.addStretch()
 
         hbox = QHBoxLayout()
         hbox.setContentsMargins(0, 0, 0, 0)
@@ -48,9 +43,9 @@ class DoctorsWidget(QFrame):
         hbox.addStretch()
         hbox.addWidget(b)
         hbox.addStretch()
-        vbox.addLayout(hbox)
+        self.vbox.addLayout(hbox)
 
-        groupbox.setLayout(vbox)
+        groupbox.setLayout(self.vbox)
         scroll = QScrollArea()
         scroll.setWidget(groupbox)
         scroll.setWidgetResizable(True)
@@ -67,6 +62,17 @@ class DoctorsWidget(QFrame):
         shadow.setYOffset(0)
         self.setGraphicsEffect(shadow)
 
+    def _get_radio_btn(self, item):
+        fullname = '{} {} {}'.format(item.surname, item.name, item.patronymic)
+        b = QRadioButton(fullname)
+        b.mouseDoubleClickEvent = (functools.partial(self._button_clicked, item))
+        return b
+
+    def _get_label(self, item):
+        l = QLabel(item.name)
+        l.setObjectName(str(item.id))
+        return l
+
     def _button_clicked(self, doctor, event):
         self.main_window.doctor_selected(doctor)
 
@@ -75,5 +81,19 @@ class DoctorsWidget(QFrame):
             if b.isChecked():
                 self.main_window.doctor_selected(self.doctors[i])
 
-    def doctor_created(self, doctor):
-        print('hey')
+    def doctor_created(self, items):
+        for item in items:
+            if isinstance(item, db.Hospital):
+                self.vbox.insertWidget(0, self._get_label(item))
+            else:
+                id_ = str(item.hospital_id)
+                for i in range(self.vbox.count()):
+                    try:
+                        widget_name = self.vbox.itemAt(i).widget().objectName()
+                    except AttributeError:
+                        continue
+
+                    if widget_name == id_:
+                        b = self._get_radio_btn(item)
+                        self.vbox.insertWidget(i + 1, b)
+                        break

@@ -31,6 +31,7 @@ class CrudWidgetContent(QFrame):
         self.foreigns = {}
         self.model = model
         self.parent = parent
+        self.created_items = []
 
         widget = QWidget()
         vbox = QVBoxLayout()
@@ -46,11 +47,11 @@ class CrudWidgetContent(QFrame):
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
 
-        l = QLabel(_(model.__table__.name))
+        l = QLabel(_(self.model.__table__.name))
         l.setObjectName('title')
         layout.addWidget(l)
 
-        for row in self._get_rows(model):
+        for row in self._get_rows(self.model):
             for w in row:
                 layout.addWidget(w)
 
@@ -58,7 +59,12 @@ class CrudWidgetContent(QFrame):
         hbox = QHBoxLayout()
         hbox.addSpacing(30)
 
-        for s, l, n, f in zip((QGraphicsDropShadowEffect(), QGraphicsDropShadowEffect()), (' Сохранить', ' Закрыть'), ('save', 'close'), (self._save, parent.deleteLater)):
+        args = ((QGraphicsDropShadowEffect(), QGraphicsDropShadowEffect()),
+                (' Сохранить', ' Закрыть'),
+                ('save', 'close'),
+                (self._save, self._close))
+
+        for s, l, n, f in zip(*args):
             b = QPushButton(l)
             b.clicked.connect(f)
             b.setObjectName(n)
@@ -86,8 +92,9 @@ class CrudWidgetContent(QFrame):
         self.show()
         self.raise_()
         self.setFixedWidth(groupbox.width() * 2)
-        self.setFixedHeight(parent.main_window.height() - 200)
-        self.move((parent.width() - self.width()) / 2, (parent.height() - self.height()) / 2)
+        self.setFixedHeight(self.parent.main_window.height() - 200)
+        self.move((self.parent.width() - self.width()) / 2, (self.parent.height() - self.height()) / 2)
+
         self._check_input()
 
     def _get_rows(self, model):
@@ -115,6 +122,7 @@ class CrudWidgetContent(QFrame):
                 combo_box = QComboBox()
                 combo_box.addItems(items_labels)
                 combo_box.currentIndexChanged.connect(self._check_input)
+                combo_box.setObjectName(column.name)
                 hbox = QHBoxLayout()
                 hbox.setContentsMargins(0, 0, 0, 0)
                 hbox.setSpacing(0)
@@ -134,9 +142,13 @@ class CrudWidgetContent(QFrame):
             else:
                 widget = QLineEdit()
                 widget.textEdited.connect(self._check_input)
+                widget.setObjectName(column.name)
 
-            widget.setObjectName(column.name)
             yield QLabel(_(label)), widget
+
+    def _close(self):
+        self.callback(self.created_items)
+        self.parent.deleteLater()
 
     def _save(self, event=None):
         kwargs = {}
@@ -148,19 +160,29 @@ class CrudWidgetContent(QFrame):
 
         instance = self.model(**kwargs)
         db.save(instance)
-        self.callback(instance)
+        self.created_items.append(instance)
+        self._close()
 
     def _check_input(self):
         self.findChild(QPushButton, name='save').setDisabled(
             not all([each.text() for each in self.findChildren(QLineEdit)]))
 
+    def _add_foreign_item(self, combo_box, items):
+        for item in items:
+            self.created_items.append(item)
+            combo_box.addItem(str(item))
+            self.foreigns[combo_box.objectName()].append(item)
+
     def open_crud(self, model, new, combo_box, items):
 
         item = None
         if not new:
-            item = items[combo_box.currentIndex()]
+            index = combo_box.currentIndex()
+            if index == -1:
+                return
+            item = items[index]
 
-        CrudWidget(self.parent.main_window, model, self.object_created, item)
-
-    def object_created(self):
-        print('yo')
+        CrudWidget(self.parent.main_window,
+                   model,
+                   functools.partial(self._add_foreign_item, combo_box),
+                   item)

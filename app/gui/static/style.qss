@@ -322,6 +322,6 @@ QScrollBar::handle {
 }
 
 QScrollBar::up-arrow, QScrollBar::down-arrow {
-    width: 0;
-    height: 0;
+    /*width: 0;*/
+    /*height: 0;*/
 }
