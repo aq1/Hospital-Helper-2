@@ -212,7 +212,7 @@ def test_calc_obj():
 #     height = Column(SmallInteger, nullable=False, default=0)
 #     weight = Column(SmallInteger, nullable=False, default=0)
 #     examined = Column(Date, nullable=False, default=datetime.datetime.now)
-#     doctor = Column(ForeignKey('doctor.id'), nullable=False)
+#     user = Column(ForeignKey('user.id'), nullable=False)
 #     sent_by = Column(String, nullable=False, default='')
 
 from sqlalchemy.ext.declarative import declarative_base

@@ -10,49 +10,39 @@ from model import db, exceptions
 
 class Report:
 
-    def __init__(self, items, doctor_id):
+    def __init__(self, items, user):
 
-        self.doctor = db.SESSION.query(db.Doctor).get(doctor_id)
+        self.user = user
 
-        if self.doctor:
-            self.hospital = db.SESSION.query(db.Hospital).get(self.doctor.hospital)
+        if self.user:
+            self.organization = db.SESSION.query(db.Organization).get(self.user.organization_id)
         else:
-            self.hospital = None
+            self.organization = None
 
         self.template_groups = OrderedDict()
 
         for item in items:
-            if item.template and any(item.values()):
-                self._add_item(item)
+            if not self.template_groups.get(item.group):
+                self.template_groups[item.group] = []
 
-    def _add_item(self, item):
-        db_item = db.SESSION.query(db.Item).filter(
-            db.Item.name == item.name).first()
-        template = db.SESSION.query(db.Template).filter(
-            db.Template.item == db_item.id, db.Template.name == item.template).first()
-
-        if not self.template_groups.get(item.group):
-            self.template_groups[item.group] = []
-
-        item.template = template
-        self.template_groups[item.group].append(item)
+            self.template_groups[item.group].append(item)
 
     def _get_header(self):
 
-        if not self.hospital:
+        if not self.organization:
             return ''
         else:
-            return self.hospital.header
+            return self.organization.header
 
     def _get_footer(self):
 
-        if not self.doctor:
+        if not self.user:
             return ''
         else:
             return '{} {} {} {}'.format(datetime.datetime.now().strftime('%d.%m.%Y'),
-                                        self.doctor.surname,
-                                        self.doctor.name,
-                                        self.doctor.patronymic)
+                                        self.user.surname,
+                                        self.user.name,
+                                        self.user.patronymic)
 
     def render(self, strict_mode=False):
         document = OpenDocumentText()

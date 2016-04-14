@@ -45,8 +45,8 @@ class Client(Base, Model):
     __tablename__ = 'client'
 
     id = Column(Integer, primary_key=True)
-    name = Column(String, nullable=False, default='')
     surname = Column(String, nullable=False, default='')
+    name = Column(String, nullable=False, default='')
     patronymic = Column(String, nullable=False, default='')
     date_of_birth = Column(Date)
     hr = Column(SmallInteger, nullable=False, default=0)
@@ -55,32 +55,41 @@ class Client(Base, Model):
     examined = Column(Date, nullable=False, default=datetime.datetime.now)
     sent_by = Column(String, nullable=False, default='')
 
-    doctor_id = Column(ForeignKey('doctor.id'), nullable=False)
-    doctor = relationship('Doctor', backref='client')
+    user_id = Column(ForeignKey('user.id'), nullable=False)
+    user = relationship('User', backref='client')
+
+    def __str__(self):
+        return '{} {} {}'.format(self.surname, self.name, self.patronymic)
 
 
-class Doctor(Base, Model):
+class User(Base, Model):
 
-    __tablename__ = 'doctor'
+    __tablename__ = 'user'
 
     id = Column(Integer, primary_key=True)
-    hospital_id = Column(ForeignKey('hospital.id'))
-    hospital = relationship('Hospital', backref='doctor')
+    organization_id = Column(ForeignKey('organization.id'))
+    organization = relationship('Organization', backref='user')
 
-    name = Column(String, nullable=False, default='')
     surname = Column(String, nullable=False, default='')
+    name = Column(String, nullable=False, default='')
     patronymic = Column(String, nullable=False, default='')
 
+    def __str__(self):
+        return '{} {} {}'.format(self.surname, self.name, self.patronymic)
 
-class Hospital(Base, Model):
 
-    __tablename__ = 'hospital'
+class Organization(Base, Model):
+
+    __tablename__ = 'organization'
 
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
     header = Column(Text, nullable=False, default='')
 
     __table_args__ = tuple(UniqueConstraint('name'))
+
+    def __str__(self):
+        return self.name
 
 
 class Report(Base, Model):
@@ -96,6 +105,9 @@ class Report(Base, Model):
     client = relationship('Client', backref='report')
     template = relationship('Template', backref='report')
 
+    def __str__(self):
+        return self.path
+
 
 class Group(Base, Model):
 
@@ -105,6 +117,9 @@ class Group(Base, Model):
     name = Column(String, nullable=False)
 
     __table_args__ = tuple(UniqueConstraint('name'))
+
+    def __str__(self):
+        return self.name
 
 
 class Item(Base, Model):
@@ -136,6 +151,9 @@ class Template(Base, Model):
 
     __table_args__ = tuple(UniqueConstraint('item', 'name'))
 
+    def __str__(self):
+        return '{} {}'.format(self.item.name, self.name)
+
 
 class KeyValue(Base, Model):
 
@@ -146,6 +164,9 @@ class KeyValue(Base, Model):
 
     __table_args__ = tuple(UniqueConstraint('key', 'value'))
 
+    def __str__(self):
+        return self.key
+
 
 class Translation(Base, Model):
 
@@ -154,6 +175,9 @@ class Translation(Base, Model):
     sys = Column(String, primary_key=True)
     ru = Column(String, nullable=False)
     en = Column(String, nullable=True)
+
+    def __str__(self):
+        return self.sys
 
 
 class ModelFactory:
@@ -191,6 +215,11 @@ class ModelFactory:
 
 def create_db():
     Base.metadata.create_all(engine)
+
+
+def save(instance):
+    SESSION.add(instance)
+    SESSION.flush()
 
 
 create_db()
