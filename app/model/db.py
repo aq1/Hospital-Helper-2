@@ -42,7 +42,8 @@ class Model:
 
 class Client(Base, Model):
 
-    __tablename__ = 'client'
+    # klient left here intentionally
+    __tablename__ = 'klient'
 
     id = Column(Integer, primary_key=True)
     surname = Column(String, nullable=False, default='')
@@ -56,7 +57,7 @@ class Client(Base, Model):
     sent_by = Column(String, nullable=False, default='')
 
     user_id = Column(ForeignKey('user.id'), nullable=False)
-    user = relationship('User', backref='client')
+    user = relationship('User', backref='klient')
 
     def __str__(self):
         return '{} {} {}'.format(self.surname, self.name, self.patronymic)
@@ -99,7 +100,7 @@ class Report(Base, Model):
     id = Column(Integer, primary_key=True)
     path = Column(String, nullable=False)
 
-    client_id = Column(ForeignKey('client.id'))
+    client_id = Column(ForeignKey('klient.id'))
     template_id = Column(ForeignKey('template.id'))
 
     client = relationship('Client', backref='report')
@@ -185,6 +186,8 @@ class ModelFactory:
     def __init__(self):
         self.default_type = 'float'
 
+        self.tables = Base.metadata.tables
+
         self.field_type_map = {
             'str': String,
             'float': Float,
@@ -193,6 +196,12 @@ class ModelFactory:
         }
 
     def get_model(self, item):
+
+        try:
+            return self.tables[item['name']]
+        except KeyError:
+            pass
+
         fields = {}
         fields['__tablename__'] = slugify.slugify(item['name'])
         fields['id'] = Column(Integer, primary_key=True)

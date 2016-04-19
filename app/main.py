@@ -43,7 +43,7 @@ def init():
     db.SESSION.flush()
 
     templates = template.Template.get_list()
-    gui.init(items, templates, db=None)
+    gui.init(items, templates)
 
 
 if __name__ == '__main__':

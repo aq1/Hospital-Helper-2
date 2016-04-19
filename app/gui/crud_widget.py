@@ -33,6 +33,9 @@ class CrudWidgetContent(QFrame):
         self.parent = parent
         self.created_items = []
 
+        self._create_layout()
+
+    def _create_layout(self):
         widget = QWidget()
         vbox = QVBoxLayout()
         vbox.setContentsMargins(30, 0, 0, 10)
@@ -93,7 +96,8 @@ class CrudWidgetContent(QFrame):
         self.raise_()
         self.setFixedWidth(groupbox.width() * 2)
         self.setFixedHeight(self.parent.main_window.height() - 200)
-        self.move((self.parent.width() - self.width()) / 2, (self.parent.height() - self.height()) / 2)
+        self.move((self.parent.width() - self.width()) / 2,
+                  (self.parent.height() - self.height()) / 2)
 
         self._check_input()
 
@@ -127,17 +131,13 @@ class CrudWidgetContent(QFrame):
                 hbox.setContentsMargins(0, 0, 0, 0)
                 hbox.setSpacing(0)
                 hbox.addWidget(combo_box, stretch=95)
-                # hbox.addStretch()
-                b = QPushButton()
-                b.setObjectName('icon')
-                b.setIcon(QIcon('gui/static/icons/pencil_g.png'))
-                b.clicked.connect(functools.partial(self.open_crud, foreign_model, False, combo_box, items))
-                hbox.addWidget(b, stretch=2)
-                b = QPushButton()
-                b.setObjectName('icon')
-                b.setIcon(QIcon('gui/static/icons/plus.png'))
-                b.clicked.connect(functools.partial(self.open_crud, foreign_model, True, combo_box, items))
-                hbox.addWidget(b, stretch=2)
+                for icon in ('pencil_g', 'plus'):
+                    b = QPushButton()
+                    b.setObjectName('icon')
+                    b.setIcon(QIcon('gui/static/icons/{}.png'.format(icon)))
+                    b.clicked.connect(functools.partial(
+                        self.open_crud, foreign_model, False, combo_box, items))
+                    hbox.addWidget(b, stretch=2)
                 widget.setLayout(hbox)
             else:
                 widget = QLineEdit()
@@ -156,7 +156,8 @@ class CrudWidgetContent(QFrame):
             kwargs[each.objectName()] = each.text()
 
         for each in self.findChildren(QComboBox):
-            kwargs[each.objectName()] = self.foreigns[each.objectName()][each.currentIndex()].id
+            kwargs[each.objectName()] = self.foreigns[each.objectName()][
+                each.currentIndex()].id
 
         instance = self.model(**kwargs)
         db.save(instance)
