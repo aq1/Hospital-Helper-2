@@ -127,12 +127,11 @@ class MainWindow(QWidget, ActionsMixins):
     MENU_LABELS = [each['sys'] for each in options.CONTROL_BUTTONS_LABELS]
     TOP_MARGIN = 50
 
-    def __init__(self, items, templates, db):
+    def __init__(self, items, templates):
         super().__init__()
 
         self.items = items
         self.templates = templates
-        self.db = db
         self.user = None
 
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
@@ -171,7 +170,7 @@ class MainWindow(QWidget, ActionsMixins):
         # Order matters
         self.frames = [DataWidget(self, self.items),
                        ReportWidget(self, self.items, self.templates),
-                       DBWidget(self, self.db),
+                       DBWidget(self),
                        OptionsWidget(self),
                        UsersWidget(self)]
 
@@ -183,9 +182,9 @@ class MainWindow(QWidget, ActionsMixins):
         self.findChild(SelectMenu).hide()
 
 
-def init(items, templates, db):
+def init(items, templates):
     app = QApplication(sys.argv)
     with open(os.path.join(os.path.dirname(__file__), 'static', 'style.qss'), 'r') as f:
         app.setStyleSheet(f.read())
-    mw = MainWindow(items, templates, db)
+    mw = MainWindow(items, templates)
     sys.exit(app.exec_())
