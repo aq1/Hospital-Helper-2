@@ -232,9 +232,10 @@ class ObjectFactory:
 
         if info.get('db'):
             model = cls.model_factory.get_model(info)
-            group, _ = db.Group.get_or_create(name=info.get('group', info['name']),
-                                              instant_flush=True)
-            item, _ = db.Item.get_or_create(name=info['name'], group=group, instant_flush=True)
+
+        group, _ = db.Group.get_or_create(name=info.get('group', info['name']),
+                                          instant_flush=True)
+        item, _ = db.Item.get_or_create(name=info['name'], group=group, instant_flush=True)
 
         return CalculableObject(name=info['name'],
                                 verbose_name=info.get('verbose_name', info['name']),

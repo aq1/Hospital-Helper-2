@@ -48,7 +48,6 @@ INIT_STRUCTURE = """[
     {
         "name": "Клиент",
         "verbose_name": "",
-        "db": true,
         "group": "Клиент",
         "relations": [
             "user"
@@ -88,7 +87,7 @@ INIT_STRUCTURE = """[
         "name": "Сердце",
         "db": true,
         "relations": [
-            "Клиент"
+            "client"
         ],
         "args": [
             {
@@ -141,7 +140,7 @@ INIT_STRUCTURE = """[
             },
             {
                 "name": "ИММЛЖ",
-                "calculation": "(0.8 * (1.04 * (sum((КДРЛЖ, МЖП, ЗСЛЖ)) ** 3) - КДРЛЖ ** 3) + 0.6) / Клиент._ППТ"
+                "calculation": "(0.8 * (1.04 * (sum((КДРЛЖ, МЖП, ЗСЛЖ)) ** 3) - КДРЛЖ ** 3) + 0.6) / client._ППТ"
             },
             {
                 "name": "ОТС",
@@ -154,7 +153,7 @@ INIT_STRUCTURE = """[
         "group": "Брюшная полость",
         "db": true,
         "relations": [
-            "Клиент"
+            "client"
         ],
         "args": [
             {
@@ -176,7 +175,7 @@ INIT_STRUCTURE = """[
         "group": "Брюшная полость",
         "db": true,
         "relations": [
-            "Клиент"
+            "client"
         ],
         "args": [
             {
@@ -203,7 +202,7 @@ INIT_STRUCTURE = """[
         "group": "Брюшная полость",
         "db": true,
         "relations": [
-            "Клиент"
+            "client"
         ],
         "args": [
             {
@@ -225,7 +224,7 @@ INIT_STRUCTURE = """[
         "group": "Брюшная полость",
         "db": true,
         "relations": [
-            "Клиент"
+            "client"
         ],
         "args": [
             {
@@ -246,7 +245,7 @@ INIT_STRUCTURE = """[
         "name": "Почки",
         "db": true,
         "relations": [
-            "Клиент"
+            "client"
         ],
         "args": [
             {
@@ -286,7 +285,7 @@ INIT_STRUCTURE = """[
         "verbose_name": "Щитовидная железа",
         "db": true,
         "relations": [
-            "Клиент"
+            "client"
         ],
         "args": [
             {
@@ -329,7 +328,7 @@ INIT_STRUCTURE = """[
         "verbose_name": "Предстательная железа",
         "db": true,
         "relations": [
-            "Клиент"
+            "client"
         ],
         "args": [
             {
@@ -352,7 +351,7 @@ INIT_STRUCTURE = """[
         "verbose_name": "Мочевой пузырь",
         "db": true,
         "relations": [
-            "Клиент"
+            "client"
         ],
         "args": [
             {
@@ -377,7 +376,7 @@ INIT_STRUCTURE = """[
         "name": "Гинекология",
         "db": true,
         "relations": [
-            "Клиент"
+            "client"
         ],
         "args": [
             {
@@ -434,7 +433,7 @@ INIT_STRUCTURE = """[
         "name": "Урология",
         "db": true,
         "relations": [
-            "Клиент"
+            "client"
         ],
         "args": [
             {
@@ -479,7 +478,7 @@ INIT_STRUCTURE = """[
         "name": "Образование",
         "db": true,
         "relations": [
-            "Клиент"
+            "client"
         ],
         "args": [
             {
@@ -506,7 +505,7 @@ INIT_STRUCTURE = """[
         "name": "Киста",
         "db": true,
         "relations": [
-            "Клиент"
+            "client"
         ],
         "args": [
             {

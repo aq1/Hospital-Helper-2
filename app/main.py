@@ -35,7 +35,7 @@ def init():
     items = convert_structure_to_items(structure)
     db.create_db()
 
-    localization.Localization.install_default()
+    localization.Localization.install('ru')
 
     for i in items:
         for j in range(25):

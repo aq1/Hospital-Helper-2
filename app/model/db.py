@@ -42,8 +42,8 @@ class Model:
 
 class Client(Base, Model):
 
-    # klient left here intentionally
-    __tablename__ = 'klient'
+    # client left here intentionally
+    __tablename__ = 'client'
 
     id = Column(Integer, primary_key=True)
     surname = Column(String, nullable=False, default='')
@@ -57,7 +57,7 @@ class Client(Base, Model):
     sent_by = Column(String, nullable=False, default='')
 
     user_id = Column(ForeignKey('user.id'), nullable=False)
-    user = relationship('User', backref='klient')
+    user = relationship('User', backref='client')
 
     def __str__(self):
         return '{} {} {}'.format(self.surname, self.name, self.patronymic)
@@ -100,7 +100,7 @@ class Report(Base, Model):
     id = Column(Integer, primary_key=True)
     path = Column(String, nullable=False)
 
-    client_id = Column(ForeignKey('klient.id'))
+    client_id = Column(ForeignKey('client.id'))
     template_id = Column(ForeignKey('template.id'))
 
     client = relationship('Client', backref='report')
