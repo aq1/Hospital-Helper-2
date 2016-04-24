@@ -325,3 +325,39 @@ QScrollBar::up-arrow, QScrollBar::down-arrow {
     /*width: 0;*/
     /*height: 0;*/
 }
+
+
+DBWidget {
+    margin-top: 20px;
+}
+
+DBWidget QWidget, DBWidget QFrame {
+    background-color: white;
+    font-size: 10pt;
+}
+
+DBWidget QLabel#header {
+    font-weight: bold;
+    border-bottom: 2px solid #DDDDDD;
+}
+
+DBWidget QLabel {
+    padding: 10px 10px;
+}
+
+DBWidget QScrollArea {
+    border: none;
+}
+
+DBWidget QPushButton {
+    border: none;
+    padding: 10px 25px;
+}
+
+DBWidget QPushButton:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+DBWidget QPushButton:pressed {
+    background-color: rgba(0, 0, 0, 0.2);
+}

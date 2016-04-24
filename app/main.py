@@ -48,3 +48,22 @@ def init():
 
 if __name__ == '__main__':
     init()
+
+    # x = db.SESSION.query(db.Client).filter(db.Client.id < 200).order_by(db.Client.id.desc()).limit(100)
+    # print(x[0].id, x[-1].id)
+    # for _ in range(5):
+        # c = db.Client(name='Иван', surname='Иванов', patronymic='Иванович', user_id=1, age=30)
+        # db.save(c)
+    # id = Column(Integer, primary_key=True)
+    # surname = Column(String, nullable=False, default='')
+    # name = Column(String, nullable=False, default='')
+    # patronymic = Column(String, nullable=False, default='')
+    # date_of_birth = Column(Date)
+    # hr = Column(SmallInteger, nullable=False, default=0)
+    # height = Column(SmallInteger, nullable=False, default=0)
+    # weight = Column(SmallInteger, nullable=False, default=0)
+    # examined = Column(Date, nullable=False, default=datetime.datetime.now)
+    # sent_by = Column(String, nullable=False, default='')
+
+    # user_id = Column(ForeignKey('user.id'), nullable=False)
+    # user = relationship('User', backref='klient')

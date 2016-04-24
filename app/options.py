@@ -10,6 +10,7 @@ CONTROL_BUTTONS_LABELS = (
 
 TRANSLATION = (
     {'sys': 'weight', 'ru': 'Вес'},
+    {'sys': 'age', 'ru': 'Возраст'},
     {'sys': 'user', 'ru': 'Врач'},
     {'sys': 'key', 'ru': 'Ключ'},
     {'sys': 'conclusion', 'ru': 'Заключение'},

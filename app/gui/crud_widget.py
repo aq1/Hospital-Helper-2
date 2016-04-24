@@ -131,12 +131,12 @@ class CrudWidgetContent(QFrame):
                 hbox.setContentsMargins(0, 0, 0, 0)
                 hbox.setSpacing(0)
                 hbox.addWidget(combo_box, stretch=95)
-                for icon in ('pencil_g', 'plus'):
+                for icon, new in zip(('pencil_g', 'plus'), (False, True)):
                     b = QPushButton()
                     b.setObjectName('icon')
                     b.setIcon(QIcon('gui/static/icons/{}.png'.format(icon)))
                     b.clicked.connect(functools.partial(
-                        self.open_crud, foreign_model, False, combo_box, items))
+                        self.open_crud, foreign_model, new, combo_box, items))
                     hbox.addWidget(b, stretch=2)
                 widget.setLayout(hbox)
             else:

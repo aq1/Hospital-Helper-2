@@ -49,7 +49,7 @@ class Client(Base, Model):
     surname = Column(String, nullable=False, default='')
     name = Column(String, nullable=False, default='')
     patronymic = Column(String, nullable=False, default='')
-    date_of_birth = Column(Date)
+    age = Column(Integer, nullable=False, default=0)
     hr = Column(SmallInteger, nullable=False, default=0)
     height = Column(SmallInteger, nullable=False, default=0)
     weight = Column(SmallInteger, nullable=False, default=0)
