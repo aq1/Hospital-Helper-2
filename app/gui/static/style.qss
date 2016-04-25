@@ -336,11 +336,6 @@ DBWidget QWidget, DBWidget QFrame {
     font-size: 10pt;
 }
 
-DBWidget QLabel#header {
-    font-weight: bold;
-    border-bottom: 2px solid #DDDDDD;
-}
-
 DBWidget QLabel {
     padding: 10px 10px;
 }
@@ -360,4 +355,17 @@ DBWidget QPushButton:hover {
 
 DBWidget QPushButton:pressed {
     background-color: rgba(0, 0, 0, 0.2);
+}
+
+DBWidget QLabel:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+DBWidget QLabel#header {
+    font-weight: bold;
+    border-bottom: 2px solid #DDDDDD;
+}
+
+DBWidget QLabel#header:hover {
+    background-color: white;
 }
