@@ -70,6 +70,9 @@ class DBWidget(QFrame):
 
         self.display_model()
 
+    def hideEvent(self, event):
+        self.items = None
+
     def display_model(self):
         self._clear_layout()
 
@@ -89,24 +92,6 @@ class DBWidget(QFrame):
 
     def _move(self, direction):
         index = max(self.current_items_index + self.ITEMS_PER_PAGE * direction, 0)
-        # if direction < 0:
-        #     quantity = (db.SESSION.query(self.model)
-        #                 .filter(self.model.id < self.items[0].id).count())
-        #     items = (db.SESSION.query(self.model)
-        #              .filter(self.model.id < self.items[0].id)
-        #              .order_by(self.model.id).offset(quantity - self.ITEMS_PER_PAGE))
-        # else:
-        #     items = (db.SESSION.query(self.model)
-        #              .filter(self.model.id > self.items[-1].id)
-        #              .order_by(self.model.id)
-        #              .limit(self.ITEMS_PER_PAGE))
-
-        # if not items.count():
-        #     return
-
-        # print(self.findChild(QScrollBar))
-        # self.findChild(QScrollBar).setValue(0)
-        # self.items = items
         if index >= self.items.count():
             return
 

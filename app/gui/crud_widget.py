@@ -2,8 +2,9 @@ import functools
 
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import (QWidget, QFrame, QFormLayout, QLineEdit, QPushButton, QHBoxLayout,
-                             QComboBox, QLabel, QGraphicsDropShadowEffect, QVBoxLayout, QGroupBox, QScrollArea)
+from PyQt5.QtWidgets import (QWidget, QFrame, QLineEdit, QPushButton, QHBoxLayout,
+                             QComboBox, QLabel, QGraphicsDropShadowEffect, QVBoxLayout,
+                             QGroupBox, QScrollArea)
 
 from model import db
 
@@ -57,7 +58,8 @@ class CrudWidgetContent(QFrame):
 
     def _get_controls_layout(self, layout):
         hbox = QHBoxLayout()
-        hbox.addSpacing(30)
+        hbox.setContentsMargins(0, 0, 0, 0)
+        hbox.setSpacing(0)
 
         args = ((QGraphicsDropShadowEffect(), QGraphicsDropShadowEffect()),
                 (' Сохранить', ' Закрыть'),
@@ -73,14 +75,13 @@ class CrudWidgetContent(QFrame):
             s.setYOffset(0)
             b.setGraphicsEffect(s)
             hbox.addWidget(b)
-
         hbox.addStretch()
         return hbox
 
     def _create_layout(self):
         layout = QVBoxLayout()
         self.setLayout(layout)
-        layout.setContentsMargins(30, 30, 30, 0)
+        layout.setContentsMargins(30, 10, 30, 10)
         layout.setSpacing(0)
 
         l = QLabel(_(self.model.__table__.name))
@@ -132,7 +133,7 @@ class CrudWidgetContent(QFrame):
             b.setObjectName('icon')
             b.setIcon(QIcon('gui/static/icons/{}.png'.format(icon)))
             b.clicked.connect(functools.partial(
-                self.open_crud, foreign_model, new, combo_box, items))
+                self.open_crud, foreign_model, new, combo_box))
             hbox.addWidget(b, stretch=2)
         widget.setLayout(hbox)
         return label, widget
@@ -155,6 +156,8 @@ class CrudWidgetContent(QFrame):
                 widget = QLineEdit()
                 widget.textEdited.connect(self._check_input)
                 widget.setObjectName(column.name)
+                if self.item:
+                    widget.setText(getattr(self.item, column.name, ''))
 
             yield QLabel(_(label)), widget
 
@@ -171,9 +174,12 @@ class CrudWidgetContent(QFrame):
             kwargs[each.objectName()] = self.foreigns[each.objectName()][
                 each.currentIndex()].id
 
-        instance = self.model(**kwargs)
-        db.save(instance)
-        self.created_items.append(instance)
+        if self.item:
+            self.item.update(**kwargs)
+        else:
+            self.item = self.model(**kwargs)
+        db.save(self.item)
+        self.created_items.append(self.item)
         self._close()
 
     def _check_input(self):
@@ -182,18 +188,29 @@ class CrudWidgetContent(QFrame):
 
     def _add_foreign_item(self, combo_box, items):
         for item in items:
-            self.created_items.append(item)
-            combo_box.addItem(str(item))
-            self.foreigns[combo_box.objectName()].append(item)
+            created = True
+            for i, each in enumerate(self.foreigns[combo_box.objectName()]):
+                if each.id == item.id:
+                    self.foreigns[combo_box.objectName()][i] = item
+                    combo_box.removeItem(i)
+                    combo_box.insertItem(i, str(item))
+                    combo_box.setCurrentIndex(i)
+                    created = False
+                    break
+            if created:
+                self.created_items.append(item)
+                combo_box.addItem(str(item))
+                self.foreigns[combo_box.objectName()].append(item)
+                combo_box.setCurrentIndex(combo_box.count() - 1)
 
-    def open_crud(self, model, new, combo_box, items):
+    def open_crud(self, model, new, combo_box):
 
         item = None
         if not new:
             index = combo_box.currentIndex()
             if index == -1:
                 return
-            item = items[index]
+            item = self.foreigns[combo_box.objectName()][index]
         CrudWidget(self.parent.main_window,
                    model,
                    functools.partial(self._add_foreign_item, combo_box),

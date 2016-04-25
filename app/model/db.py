@@ -39,6 +39,10 @@ class Model:
 
         return inst, True
 
+    def update(self, **kwargs):
+        for k, v in kwargs.items():
+            setattr(self, k, v)
+
 
 class Client(Base, Model):
 
