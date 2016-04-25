@@ -88,15 +88,16 @@ class DBWidget(QFrame):
         if direction < 0:
             items = (db.SESSION.query(self.model)
                      .filter(self.model.id < self.items[0].id)
-                     .order_by(self.model.id.desc())
-                     .limit(self.ITEMS_PER_PAGE))
+                     .order_by(self.model.id)[-self.ITEMS_PER_PAGE:])
+            quantity = len(items)
         else:
             items = (db.SESSION.query(self.model)
                      .filter(self.model.id > self.items[-1].id)
                      .order_by(self.model.id)
                      .limit(self.ITEMS_PER_PAGE))
+            quantity = items.count()
 
-        if not items.count():
+        if not quantity:
             return
 
         self.items = items
