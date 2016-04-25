@@ -10,19 +10,19 @@ from model import db
 
 class CrudWidget(QFrame):
 
-    def __init__(self, main_window, model, callback=None, item=None):
+    def __init__(self, main_window, model, callback=None, db_object=None):
         super().__init__(main_window)
         self.setFixedSize(main_window.size())
         self.show()
         self.main_window = main_window
         self.move(0, main_window.top_sys_btns.height())
         self.raise_()
-        CrudWidgetContent(self, model, callback, item)
+        CrudWidgetContent(self, model, callback, db_object)
 
 
 class CrudWidgetContent(QFrame):
 
-    def __init__(self, parent, model, callback, item=None):
+    def __init__(self, parent, model, callback, db_object=None):
 
         super().__init__(parent)
 
@@ -30,32 +30,35 @@ class CrudWidgetContent(QFrame):
         self.values = {}
         self.foreigns = {}
         self.model = model
-        self.item = item
         self.parent = parent
         self.created_items = []
 
         self._create_layout()
 
-    def _get_scrollable(self, layout):
+    def _create_layout(self):
         widget = QWidget()
+        vbox = QVBoxLayout()
+        vbox.setContentsMargins(30, 0, 0, 10)
+        vbox.setSpacing(0)
+        self.setLayout(vbox)
+        vbox.addWidget(widget)
 
         groupbox = QGroupBox()
-        groupbox.setLayout(layout)
-        scroll = QScrollArea()
-        scroll.setWidget(groupbox)
-        scroll.setWidgetResizable(True)
-        scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 
-        this_vbox = QVBoxLayout(widget)
-        this_vbox.addWidget(scroll)
-        this_vbox.setContentsMargins(0, 0, 0, 0)
-        this_vbox.setSpacing(0)
+        layout = QVBoxLayout()
+        # layout.setContentsMargins(30, 10, 10, 10)
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
-        return widget
 
-    def _get_controls_layout(self, layout):
+        l = QLabel(_(self.model.__table__.name))
+        l.setObjectName('title')
+        layout.addWidget(l)
+
+        for row in self._get_rows(self.model):
+            for w in row:
+                layout.addWidget(w)
+
+        layout.addStretch()
         hbox = QHBoxLayout()
         hbox.addSpacing(30)
 
@@ -75,67 +78,28 @@ class CrudWidgetContent(QFrame):
             hbox.addWidget(b)
 
         hbox.addStretch()
-        return hbox
+        vbox.addLayout(hbox)
 
-    def _create_layout(self):
-        layout = QVBoxLayout()
-        self.setLayout(layout)
-        layout.setContentsMargins(30, 30, 30, 0)
-        layout.setSpacing(0)
+        groupbox.setLayout(layout)
+        scroll = QScrollArea()
+        scroll.setWidget(groupbox)
+        scroll.setWidgetResizable(True)
+        # scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 
-        l = QLabel(_(self.model.__table__.name))
-        l.setObjectName('title')
-        layout.addWidget(l)
-
-        scrollable = QVBoxLayout()
-        for row in self._get_rows(self.model):
-            for w in row:
-                scrollable.addWidget(w)
-
-        scrollable = self._get_scrollable(scrollable)
-
-        controls_layout = self._get_controls_layout(layout)
-
-        layout.addWidget(scrollable)
-        layout.addLayout(controls_layout)
+        this_vbox = QVBoxLayout(widget)
+        this_vbox.addWidget(scroll)
+        this_vbox.setContentsMargins(30, 10, 10, 10)
+        this_vbox.setSpacing(0)
 
         self.show()
         self.raise_()
-        # self.setFixedWidth(groupbox.width() * 2)
-        # self.setFixedHeight(self.parent.main_window.height() - 200)
+        self.setFixedWidth(groupbox.width() * 2)
+        self.setFixedHeight(self.parent.main_window.height() - 200)
         self.move((self.parent.width() - self.width()) / 2,
                   (self.parent.height() - self.height()) / 2)
 
         self._check_input()
-
-    def _get_combobox(self, column, relations):
-
-        label = column.name
-        if label.endswith('_id'):
-            label = label[:-3]
-        foreign_model = relations.get(label).mapper.class_
-        items = db.SESSION.query(foreign_model).all()
-        self.foreigns[column.name] = items
-        items_labels = [str(i) for i in items]
-        widget = QWidget()
-        widget.setStyleSheet('margin:0;')
-        combo_box = QComboBox()
-        combo_box.addItems(items_labels)
-        combo_box.currentIndexChanged.connect(self._check_input)
-        combo_box.setObjectName(column.name)
-        hbox = QHBoxLayout()
-        hbox.setContentsMargins(0, 0, 0, 0)
-        hbox.setSpacing(0)
-        hbox.addWidget(combo_box, stretch=95)
-        for icon, new in zip(('pencil_g', 'plus'), (False, True)):
-            b = QPushButton()
-            b.setObjectName('icon')
-            b.setIcon(QIcon('gui/static/icons/{}.png'.format(icon)))
-            b.clicked.connect(functools.partial(
-                self.open_crud, foreign_model, new, combo_box, items))
-            hbox.addWidget(b, stretch=2)
-        widget.setLayout(hbox)
-        return label, widget
 
     def _get_rows(self, model):
         """
@@ -144,14 +108,38 @@ class CrudWidgetContent(QFrame):
         Maybe later I will add QCalendar for dates and etc.
         """
 
+        relations = model.__mapper__.relationships
         for column in model.__table__.columns:
             if column.name == 'id':
                 continue
 
+            label = column.name
             if column.foreign_keys:
-                label, widget = self._get_combobox(column, model.__mapper__.relationships)
+                if label.endswith('_id'):
+                    label = column.name[:-3]
+                foreign_model = relations.get(label).mapper.class_
+                items = db.SESSION.query(foreign_model).all()
+                self.foreigns[column.name] = items
+                items_labels = [str(i) for i in items]
+                widget = QWidget()
+                widget.setStyleSheet('margin:0;')
+                combo_box = QComboBox()
+                combo_box.addItems(items_labels)
+                combo_box.currentIndexChanged.connect(self._check_input)
+                combo_box.setObjectName(column.name)
+                hbox = QHBoxLayout()
+                hbox.setContentsMargins(0, 0, 0, 0)
+                hbox.setSpacing(0)
+                hbox.addWidget(combo_box, stretch=95)
+                for icon, new in zip(('pencil_g', 'plus'), (False, True)):
+                    b = QPushButton()
+                    b.setObjectName('icon')
+                    b.setIcon(QIcon('gui/static/icons/{}.png'.format(icon)))
+                    b.clicked.connect(functools.partial(
+                        self.open_crud, foreign_model, new, combo_box, items))
+                    hbox.addWidget(b, stretch=2)
+                widget.setLayout(hbox)
             else:
-                label = column.name
                 widget = QLineEdit()
                 widget.textEdited.connect(self._check_input)
                 widget.setObjectName(column.name)
