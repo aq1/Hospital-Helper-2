@@ -86,18 +86,18 @@ class DBWidget(QFrame):
 
     def _move(self, direction):
         if direction < 0:
+            quantity = (db.SESSION.query(self.model)
+                        .filter(self.model.id < self.items[0].id).count())
             items = (db.SESSION.query(self.model)
                      .filter(self.model.id < self.items[0].id)
-                     .order_by(self.model.id)[-self.ITEMS_PER_PAGE:])
-            quantity = len(items)
+                     .order_by(self.model.id).offset(quantity - self.ITEMS_PER_PAGE))
         else:
             items = (db.SESSION.query(self.model)
                      .filter(self.model.id > self.items[-1].id)
                      .order_by(self.model.id)
                      .limit(self.ITEMS_PER_PAGE))
-            quantity = items.count()
 
-        if not quantity:
+        if not items.count():
             return
 
         self.items = items
