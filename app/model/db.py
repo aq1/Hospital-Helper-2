@@ -43,6 +43,14 @@ class Model:
         for k, v in kwargs.items():
             setattr(self, k, v)
 
+    def save(self):
+        SESSION.add(self)
+        SESSION.flush()
+
+    def delete(self):
+        SESSION.delete(self)
+        SESSION.flush()
+
 
 class Client(Base, Model):
 
@@ -73,7 +81,7 @@ class User(Base, Model):
 
     id = Column(Integer, primary_key=True)
     organization_id = Column(ForeignKey('organization.id'))
-    organization = relationship('Organization', backref='user')
+    organization = relationship('Organization', backref='user', cascade="save-update, merge, delete")
 
     surname = Column(String, nullable=False, default='')
     name = Column(String, nullable=False, default='')
@@ -228,11 +236,6 @@ class ModelFactory:
 
 def create_db():
     Base.metadata.create_all(engine)
-
-
-def save(instance):
-    SESSION.add(instance)
-    SESSION.flush()
 
 
 create_db()

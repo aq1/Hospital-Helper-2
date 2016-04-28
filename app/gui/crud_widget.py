@@ -178,7 +178,7 @@ class CrudWidgetContent(QFrame):
             self.item.update(**kwargs)
         else:
             self.item = self.model(**kwargs)
-        db.save(self.item)
+        self.item.save()
         self.created_items.append(self.item)
         self._close()
 

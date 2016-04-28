@@ -51,9 +51,9 @@ if __name__ == '__main__':
 
     # x = db.SESSION.query(db.Client).filter(db.Client.id < 200).order_by(db.Client.id.desc()).limit(100)
     # print(x[0].id, x[-1].id)
-    # for _ in range(5):
+    # for _ in range(512):
         # c = db.Client(name='Иван', surname='Иванов', patronymic='Иванович', user_id=1, age=30)
-        # db.save(c)
+        # c.save()
     # id = Column(Integer, primary_key=True)
     # surname = Column(String, nullable=False, default='')
     # name = Column(String, nullable=False, default='')

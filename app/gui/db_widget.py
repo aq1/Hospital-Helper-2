@@ -12,7 +12,7 @@ from model import db
 class DBWidget(QFrame):
 
     # ACTION_BTN_ICON = 'plus'
-    ITEMS_PER_PAGE = 100
+    ITEMS_PER_PAGE = 50
 
     def __init__(self, main_window):
 

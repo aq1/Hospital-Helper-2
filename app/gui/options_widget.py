@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QFrame, QHBoxLayout, QLabel
+from PyQt5.QtWidgets import QFrame, QHBoxLayout, QLabel, QGridLayout
 
 
 class OptionsWidget(QFrame):
@@ -6,6 +6,5 @@ class OptionsWidget(QFrame):
     def __init__(self, main_window, *args):
 
         super().__init__()
-        hbox = QHBoxLayout()
-        self.setLayout(hbox)
-        hbox.addWidget(QLabel('Options widget'))
+        layout = QGridLayout()
+        self.setLayout(layout)
