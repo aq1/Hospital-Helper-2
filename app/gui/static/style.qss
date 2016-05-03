@@ -369,3 +369,7 @@ DBWidget QLabel#header {
 DBWidget QLabel#header:hover {
     background-color: white;
 }
+
+OptionsWidget QTextEdit {
+    font-size: 10pt;
+}

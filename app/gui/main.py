@@ -171,7 +171,7 @@ class MainWindow(QWidget, ActionsMixins):
         self.frames = [DataWidget(self, self.items),
                        ReportWidget(self, self.items, self.templates),
                        DBWidget(self),
-                       OptionsWidget(self),
+                       OptionsWidget(self, self.items),
                        UsersWidget(self)]
 
         for frame in self.frames:
