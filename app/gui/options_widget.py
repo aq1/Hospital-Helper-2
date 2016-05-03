@@ -1,10 +1,59 @@
 import unidecode
 import functools
 
-from PyQt5.Qt import QColor
+from PyQt5.Qt import QColor, QKeySequence, Qt, QTextCursor
 from PyQt5.QtWidgets import (QFrame, QHBoxLayout, QLabel, QGridLayout,
                              QStackedLayout, QVBoxLayout, QPushButton,
                              QTextEdit, QWidget)
+
+
+class TemplateTextEdit(QTextEdit):
+
+    def keyPressEvent(self, event):
+
+        pos = self.textCursor().position()
+        key = event.key()
+        text = self.toPlainText()
+
+        if self.textColor().getRgb()[:-1] != (0, 0, 0):
+            if key == Qt.Key_Backspace and pos != 0:
+                print('b')
+                self._remove_attribute(pos - 1)
+            if key == Qt.Key_Delete and pos != len(text):
+                print('d')
+                self._remove_attribute(pos)
+
+        self.setTextBackgroundColor(QColor(255, 255, 255))
+        self.setTextColor(QColor(0, 0, 0))
+
+        super().keyPressEvent(event)
+
+    def _remove_attribute(self, pos):
+
+        text = self.toPlainText()
+        text_length = len(text)
+
+        begin, end = pos, pos
+        while begin > 0:
+            if text[begin] == '{':
+                break
+            begin -= 1
+
+        while end < text_length:
+            if text[end] == '}':
+                break
+            end += 1
+
+        c = self.textCursor()
+        c.setPosition(begin)
+        c.setPosition(end + 1, QTextCursor.KeepAnchor)
+        self.setTextCursor(c)
+
+    def insert_attribute(self, name):
+        self.setTextBackgroundColor(QColor(31, 72, 74))
+        self.setTextColor(QColor(255, 255, 255))
+        self.insertPlainText('{{{}}}'.format(_(name)))
+        self.setFocus()
 
 
 class TemplateWidget(QFrame):
@@ -36,7 +85,7 @@ class TemplateWidget(QFrame):
 
         for name in self.item.keys():
             b = QPushButton(name)
-            b.clicked.connect(functools.partial(self._add_attribute, name))
+            b.clicked.connect(functools.partial(self.template_text_edit.insert_attribute, name))
             vbox.addWidget(b)
         vbox.addStretch()
 
@@ -55,28 +104,15 @@ class TemplateWidget(QFrame):
 
     def _get_text_layout(self):
         layout = QVBoxLayout()
-        self.template_text_edit = QTextEdit()
+        self.template_text_edit = TemplateTextEdit()
         self.conclusion_text_edit = QTextEdit()
 
         self.template_text_edit.setPlaceholderText('Шаблон')
         self.conclusion_text_edit.setPlaceholderText('Заключение')
 
-        self.template_text_edit.textChanged.connect(self._f)
-
         layout.addWidget(self.template_text_edit, stretch=80)
         layout.addWidget(self.conclusion_text_edit, stretch=20)
         return layout
-
-    def _f(self):
-        self.template_text_edit.setTextBackgroundColor(QColor(255, 255, 255))
-        self.template_text_edit.setTextColor(QColor(0, 0, 0))
-
-    def _add_attribute(self, name):
-        self.template_text_edit.setTextBackgroundColor(QColor(31, 72, 74))
-        self.template_text_edit.setTextColor(QColor(255, 255, 255))
-        self.template_text_edit.insertPlainText('{{{}}}'.format(_(name)))
-        self.template_text_edit.setFocus()
-        # self.template_text_edit.insertHtml('<span style="color: red">{{{}}}</span>'.format(_(name)))
 
     def _close(self, event):
         pass
