@@ -308,6 +308,10 @@ CrudWidgetContent QPushButton#close {
     qproperty-icon: url('gui/static/icons/close.png');
 }
 
+CrudWidgetContent QPushButton#delete {
+    qproperty-icon: url('gui/static/icons/delete.png');
+}
+
 QScrollBar:vertical {
   border-width: 0;
   background-color: white;

@@ -75,6 +75,18 @@ class CrudWidgetContent(QFrame):
             s.setYOffset(0)
             b.setGraphicsEffect(s)
             hbox.addWidget(b)
+
+        if self.item:
+            b = QPushButton('Удалить')
+            b.setObjectName('delete')
+            b.clicked.connect(self._delete)
+            s = QGraphicsDropShadowEffect()
+            s.setBlurRadius(10)
+            s.setXOffset(0)
+            s.setYOffset(0)
+            b.setGraphicsEffect(s)
+            hbox.addWidget(b)
+
         hbox.addStretch()
         return hbox
 
@@ -160,6 +172,10 @@ class CrudWidgetContent(QFrame):
                     widget.setText(getattr(self.item, column.name, ''))
 
             yield QLabel(_(label)), widget
+
+    def _delete(self):
+        db.delete(self.item)
+        self._close()
 
     def _close(self):
         self.callback(self.created_items)

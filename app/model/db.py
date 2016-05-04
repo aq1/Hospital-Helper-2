@@ -235,4 +235,8 @@ def save(instance):
     SESSION.flush()
 
 
+def delete(instance):
+    SESSION.delete(instance)
+    SESSION.flush()
+
 create_db()
