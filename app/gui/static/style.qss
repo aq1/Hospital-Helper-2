@@ -377,3 +377,18 @@ DBWidget QLabel#header:hover {
 OptionsWidget QTextEdit {
     font-size: 10pt;
 }
+
+TemplateWidget QPushButton {
+    font-size: 10pt;
+    padding: 10px 5px;
+    border: none;
+    background-color: white;
+}
+
+TemplateWidget QPushButton:hover {
+    background-color: rgba(0, 0, 0, 0.1)
+}
+
+TemplateWidget QPushButton:pressed {
+    background-color: rgba(0, 0, 0, 0.2)
+}

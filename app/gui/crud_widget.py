@@ -1,11 +1,10 @@
 import functools
 
 from PyQt5.QtGui import QIcon
-from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (QWidget, QFrame, QLineEdit, QPushButton, QHBoxLayout,
-                             QComboBox, QLabel, QGraphicsDropShadowEffect, QVBoxLayout,
-                             QGroupBox, QScrollArea)
+                             QComboBox, QLabel, QVBoxLayout, QGroupBox, QScrollArea)
 
+from gui import utils
 from model import db
 
 
@@ -37,54 +36,27 @@ class CrudWidgetContent(QFrame):
 
         self._create_layout()
 
-    def _get_scrollable(self, layout):
-        widget = QWidget()
-
-        groupbox = QGroupBox()
-        groupbox.setLayout(layout)
-        scroll = QScrollArea()
-        scroll.setWidget(groupbox)
-        scroll.setWidgetResizable(True)
-        scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-
-        this_vbox = QVBoxLayout(widget)
-        this_vbox.addWidget(scroll)
-        this_vbox.setContentsMargins(0, 0, 0, 0)
-        this_vbox.setSpacing(0)
-        layout.setContentsMargins(0, 0, 0, 0)
-        layout.setSpacing(0)
-        return widget
-
     def _get_controls_layout(self, layout):
         hbox = QHBoxLayout()
         hbox.setContentsMargins(0, 0, 0, 0)
         hbox.setSpacing(0)
 
-        args = ((QGraphicsDropShadowEffect(), QGraphicsDropShadowEffect()),
-                (' Сохранить', ' Закрыть'),
+        args = ((' Сохранить', ' Закрыть'),
                 ('save', 'close'),
                 (self._save, self._close))
 
-        for s, l, n, f in zip(*args):
+        for l, n, f in zip(*args):
             b = QPushButton(l)
             b.clicked.connect(f)
             b.setObjectName(n)
-            s.setBlurRadius(10)
-            s.setXOffset(0)
-            s.setYOffset(0)
-            b.setGraphicsEffect(s)
+            b.setGraphicsEffect(utils.get_shadow())
             hbox.addWidget(b)
 
         if self.item:
             b = QPushButton('Удалить')
             b.setObjectName('delete')
             b.clicked.connect(self._delete)
-            s = QGraphicsDropShadowEffect()
-            s.setBlurRadius(10)
-            s.setXOffset(0)
-            s.setYOffset(0)
-            b.setGraphicsEffect(s)
+            b.setGraphicsEffect(utils.get_shadow())
             hbox.addWidget(b)
 
         hbox.addStretch()
@@ -105,7 +77,7 @@ class CrudWidgetContent(QFrame):
             for w in row:
                 scrollable.addWidget(w)
 
-        scrollable = self._get_scrollable(scrollable)
+        scrollable = utils.get_scrollable(scrollable)
 
         controls_layout = self._get_controls_layout(layout)
 
