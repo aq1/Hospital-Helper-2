@@ -42,8 +42,7 @@ def init():
             t, _ = db.Template.get_or_create(item_id=i.id, name='%s %s' % (i.name, j), body='Тело', conclusion='Заключение')
     db.SESSION.flush()
 
-    templates = template.Template.get_list()
-    gui.init(items, templates)
+    gui.init(items)
 
 
 if __name__ == '__main__':

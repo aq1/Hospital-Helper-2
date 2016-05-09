@@ -7,6 +7,7 @@ from PyQt5.QtWidgets import (QWidget, QFrame, QLabel, QHBoxLayout, QRadioButton,
                              QGroupBox, QScrollArea, QGridLayout)
 
 from model import report
+from gui import utils
 
 
 class ReportTypeSelectWidget(QFrame):
@@ -99,11 +100,7 @@ class ReportObjectSelectWidget(QFrame):
         this_vbox = QVBoxLayout(self)
         this_vbox.addWidget(scroll)
 
-        shadow = QGraphicsDropShadowEffect()
-        shadow.setBlurRadius(10)
-        shadow.setXOffset(0)
-        shadow.setYOffset(0)
-        self.setGraphicsEffect(shadow)
+        self.setGraphicsEffect(utils.get_shadow())
 
     def _button_clicked(self, button, index):
         self.parent.item_selected(index)
@@ -174,11 +171,7 @@ class ReportWidget(QFrame):
         hbox.addWidget(self.templates_widget, stretch=55)
         hbox.addStretch(10)
 
-        shadow = QGraphicsDropShadowEffect()
-        shadow.setBlurRadius(10)
-        shadow.setXOffset(0)
-        shadow.setYOffset(0)
-        self.setGraphicsEffect(shadow)
+        self.setGraphicsEffect(utils.get_shadow())
 
     def item_selected(self, index):
         self.templates_widget.item_selected(index)

@@ -45,7 +45,7 @@ class Template:
                    conclusion=template.conclusion)
 
     @classmethod
-    def get_list(cls):
+    def get_all(cls):
 
         result = defaultdict(list)
         templates = db.SESSION.query(db.Template).all()

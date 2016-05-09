@@ -5,6 +5,8 @@ from PyQt5.QtWidgets import (QFrame, QHBoxLayout, QLabel, QGridLayout,
                              QStackedLayout, QVBoxLayout, QPushButton,
                              QTextEdit, QWidget, QGroupBox, QScrollArea)
 
+from model import template
+
 from gui import utils
 
 
@@ -73,7 +75,7 @@ class TemplateTextEdit(QTextEdit):
         self.setFocus()
 
 
-class TemplateWidget(QFrame):
+class SingleTemplateWidget(QFrame):
 
     """
     Single item template.
@@ -156,13 +158,13 @@ class TemplateWidget(QFrame):
         pass
 
 
-class TemplateOptionsWidget(QFrame):
+class TemplateWidget(QFrame):
 
     """
     Contains menu with the list of items with templates.
     """
 
-    def __init__(self, items, templates):
+    def __init__(self, items):
         super().__init__()
 
         self.layout = QStackedLayout()
@@ -170,7 +172,7 @@ class TemplateOptionsWidget(QFrame):
 
         self.layout.addWidget(self._get_menu(items, templates))
         for item in items:
-            self.layout.addWidget(TemplateWidget(item, self))
+            self.layout.addWidget(SingleTemplateWidget(item, self))
 
     def _get_menu(self, items, templates):
         layout = QVBoxLayout()
@@ -200,30 +202,3 @@ class TemplateOptionsWidget(QFrame):
             layout.addWidget(utils.get_scrollable(grid))
 
         return layout
-
-
-class OptionsWidget(QFrame):
-
-    """
-    Widget holds menu with all options.
-    """
-
-    def __init__(self, main_window, items, templates, *args):
-
-        super().__init__()
-
-        self.items = items
-        self.templates = templates
-
-        layout = QStackedLayout()
-        self.setLayout(layout)
-        layout.addWidget(self._get_menu_layout())
-
-    def _get_menu_layout(self):
-
-        grid = QGridLayout()
-        grid.addWidget(TemplateOptionsWidget(self.items, self.templates), 0, 0)
-
-        widget = QWidget()
-        widget.setLayout(grid)
-        return widget

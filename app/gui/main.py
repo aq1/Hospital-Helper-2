@@ -16,7 +16,7 @@ from gui.select_menu import SelectMenu, SelectItemMenu
 from gui.data_widget import DataWidget
 from gui.db_widget import DBWidget
 from gui.options_widget import OptionsWidget
-from gui.report_widget import ReportWidget
+from gui.template_widget import TemplateWidget
 from gui.top_frame import TopFrame
 from gui.top_system_buttons import TopSystemButtons
 from gui.action_button import ActionButton
@@ -127,11 +127,10 @@ class MainWindow(QWidget, ActionsMixins):
     MENU_LABELS = [each['sys'] for each in options.CONTROL_BUTTONS_LABELS]
     TOP_MARGIN = 50
 
-    def __init__(self, items, templates):
+    def __init__(self, items):
         super().__init__()
 
         self.items = items
-        self.templates = templates
         self.user = None
 
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
@@ -169,9 +168,9 @@ class MainWindow(QWidget, ActionsMixins):
     def _create_layout(self):
         # Order matters
         self.frames = [DataWidget(self, self.items),
-                       ReportWidget(self, self.items, self.templates),
+                       TemplateWidget(self, self.items),
                        DBWidget(self),
-                       OptionsWidget(self, self.items),
+                       # OptionsWidget(self, self.items),
                        UsersWidget(self)]
 
         for frame in self.frames:
@@ -186,5 +185,5 @@ def init(items, templates):
     app = QApplication(sys.argv)
     with open(os.path.join(os.path.dirname(__file__), 'static', 'style.qss'), 'r') as f:
         app.setStyleSheet(f.read())
-    mw = MainWindow(items, templates)
+    mw = MainWindow(items)
     sys.exit(app.exec_())
