@@ -181,7 +181,7 @@ class MainWindow(QWidget, ActionsMixins):
         self.findChild(SelectMenu).hide()
 
 
-def init(items, templates):
+def init(items):
     app = QApplication(sys.argv)
     with open(os.path.join(os.path.dirname(__file__), 'static', 'style.qss'), 'r') as f:
         app.setStyleSheet(f.read())

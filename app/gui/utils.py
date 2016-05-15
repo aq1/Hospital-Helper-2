@@ -28,3 +28,8 @@ def get_shadow():
     shadow.setXOffset(0)
     shadow.setYOffset(0)
     return shadow
+
+
+def clear_layout(layout):
+    for i in reversed(range(layout.count())):
+        layout.itemAt(i).widget().setParent(None)

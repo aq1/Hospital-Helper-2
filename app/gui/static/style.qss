@@ -383,21 +383,21 @@ OptionsWidget QTextEdit:focus {
 }
 
 
-TemplateOptionsWidget QPushButton {
+TemplateWidget QPushButton {
     font-size: 10pt;
     padding: 10px 5px;
     border: none;
     background-color: white;
 }
 
-TemplateOptionsWidget QPushButton:hover {
+TemplateWidget QPushButton:hover {
     background-color: rgba(0, 0, 0, 0.1)
 }
 
-TemplateOptionsWidget QPushButton:pressed {
+TemplateWidget QPushButton:pressed {
     background-color: rgba(0, 0, 0, 0.2)
 }
 
-TemplateOptionsWidget TemplateWidget QScrollArea {
+TemplateWidget QScrollArea {
     background-color: white;
 }
