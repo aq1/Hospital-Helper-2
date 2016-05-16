@@ -1,7 +1,7 @@
 import options
 
 from gui import main as gui
-from model import (db, logic, template, exceptions, localization)
+from model import (db, logic, exceptions, localization)
 
 
 def convert_structure_to_items(structure):

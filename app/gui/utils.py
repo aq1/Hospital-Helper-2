@@ -36,4 +36,4 @@ def clear_layout(layout):
         try:
             item.widget().setParent(None)
         except AttributeError:
-            print(item)
+            pass

@@ -374,11 +374,16 @@ DBWidget QLabel#header:hover {
     background-color: white;
 }
 
-OptionsWidget QTextEdit {
+TemplateWidget QTextEdit {
     font-size: 10pt;
 }
 
-OptionsWidget QTextEdit:focus {
+TemplateWidget QLineEdit {
+    font-size: 10pt;
+    padding: 10px 0;    
+}
+
+TemplateWidget QTextEdit:focus {
     border: 1px solid #DDDDDD;
 }
 
@@ -405,7 +410,10 @@ TemplateWidget QScrollArea {
 
 TemplateWidget QRadioButton {
     text-align: left;
-    padding: 10px;
+    font-size: 10pt;
+    padding: 10px 5px;
+    border: none;
+    background-color: white;
 }
 
 TemplateWidget QRadioButton:checked {
@@ -420,4 +428,8 @@ TemplateWidget QRadioButton:checked:hover {
 
 TemplateWidget QRadioButton:hover {
     background-color: rgba(0, 0, 0, 0.1);
+}
+
+TemplateWidget QLabel {
+    font-size: 11pt;
 }

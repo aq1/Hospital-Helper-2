@@ -4,9 +4,9 @@ from PyQt5.Qt import QColor, Qt, QTextCursor
 from PyQt5.QtWidgets import (QFrame, QHBoxLayout, QLabel, QGridLayout,
                              QStackedLayout, QVBoxLayout, QPushButton,
                              QTextEdit, QWidget, QGroupBox, QScrollArea,
-                             QRadioButton)
+                             QRadioButton, QLineEdit)
 
-from model import template
+from model import template as template_module
 
 from gui import utils
 
@@ -79,20 +79,18 @@ class TemplateTextEdit(QTextEdit):
 class TemplateEditingWidget(QFrame):
 
     """
-    Single item template.
+    Widget for editing the tempate.
     """
 
-    def __init__(self, template=None):
+    def __init__(self, close_func):
 
         super().__init__()
-        return
-        self.item = item
-        self.template = template
 
+        self.name_text_edit = None
         self.template_text_edit = None
         self.conclusion_text_edit = None
-
-        self._close = self._get_close_func(parent)
+        self.controls_layout = QVBoxLayout()
+        self._close = close_func
 
         layout = QHBoxLayout()
         self.setLayout(layout)
@@ -100,35 +98,19 @@ class TemplateEditingWidget(QFrame):
         layout.addLayout(self._get_text_layout(), stretch=80)
         layout.addWidget(self._get_control_layout(), stretch=20)
 
-    def _get_close_func(self, parent):
-
-        def _close():
-            parent.layout.setCurrentIndex(0)
-
-        return _close
-
     def _get_control_layout(self):
         widget = QWidget()
         vbox = QVBoxLayout()
         widget.setLayout(vbox)
         vbox.setContentsMargins(0, 0, 0, 0)
-        vbox.setSpacing(0)
+        # vbox.setSpacing(0)
 
-        scrollable_vbox = QVBoxLayout()
-        scrollable_vbox.setContentsMargins(0, 0, 0, 0)
-        scrollable_vbox.setSpacing(0)
-
-        for name in self.item.keys():
-            b = QPushButton(_(name))
-            b.clicked.connect(functools.partial(self.template_text_edit.insert_attribute, name))
-            scrollable_vbox.addWidget(b)
-
-        scrollable_vbox = utils.get_scrollable(scrollable_vbox)
-        vbox.addWidget(scrollable_vbox)
-        vbox.addStretch()
+        scrollable_vbox = utils.get_scrollable(self.controls_layout)
+        vbox.addWidget(scrollable_vbox, stretch=80)
+        # vbox.addSpacing(20)
 
         buttons_layout = QHBoxLayout()
-        vbox.addLayout(buttons_layout)
+        vbox.addLayout(buttons_layout, stretch=20)
 
         b = QPushButton('Назад')
         b.clicked.connect(self._close)
@@ -145,15 +127,37 @@ class TemplateEditingWidget(QFrame):
         layout = QVBoxLayout()
         self.template_text_edit = TemplateTextEdit()
         self.conclusion_text_edit = QTextEdit()
+        self.name_text_edit = QLineEdit()
 
-        self.template_text_edit.setPlaceholderText('Шаблон')
-        self.conclusion_text_edit.setPlaceholderText('Заключение')
+        for w, p, s in zip(self._get_all_text_fields(),
+                           ('Имя', 'Шаблон', 'Заключение'),
+                           (5, 80, 15)):
+            w.setPlaceholderText(p)
+            w.setGraphicsEffect(utils.get_shadow())
+            layout.addWidget(w, stretch=s)
 
-        self.conclusion_text_edit.setGraphicsEffect(utils.get_shadow())
-
-        layout.addWidget(self.template_text_edit, stretch=80)
-        layout.addWidget(self.conclusion_text_edit, stretch=20)
         return layout
+
+    def _get_all_text_fields(self):
+        return self.name_text_edit, self.template_text_edit, self.conclusion_text_edit
+
+    def _show(self, item, template=None):
+        for name in item.keys():
+            b = QPushButton(_(name))
+            b.clicked.connect(functools.partial(self.template_text_edit.insert_attribute, name))
+            self.controls_layout.addWidget(b)
+
+        if not template:
+            return
+
+        for w, t in zip(self._get_all_text_fields(),
+                        (template.name, template.body, template.conclusion)):
+            w.setText(t)
+
+    def hideEvent(self, event):
+        for w in (self._get_all_text_fields()):
+            w.setText('')
+        utils.clear_layout(self.controls_layout)
 
     def _save(self, event):
         pass
@@ -165,64 +169,113 @@ class TemplateWidget(QFrame):
     Contains menu with the list of items with templates.
     """
 
-    def __init__(self, parent, items, filter_):
+    def __init__(self, parent, items, widget_for_select):
         super().__init__()
 
+        self.parent = parent
         self.items = items
-        self.filter = filter_
+        self.visible_items = []
+        self.widget_for_select = widget_for_select
         self.layout = QStackedLayout()
-        self.setLayout(self.layout)
         self.menu_layout = QVBoxLayout()
         self.templates_layout = QStackedLayout()
-        self.template_editing_widget = TemplateEditingWidget()
+        self.template_editing_widget = TemplateEditingWidget(lambda: self.layout.setCurrentIndex(0))
+        self.ACTION_BTN_ICON = ['plus', 'check'][widget_for_select]
+        self._template_clicked = [self._template_selected_for_editing,
+                                  self._template_selected_for_report][widget_for_select]
+
+        self.setLayout(self.layout)
 
         self.layout.addWidget(self._get_static_widgets())
         self.layout.addWidget(self.template_editing_widget)
 
     def _get_static_widgets(self):
         hbox = QHBoxLayout()
-        hbox.addWidget(utils.get_scrollable(self.menu_layout), stretch=20)
-        hbox.addLayout(self.templates_layout, stretch=80)
-        hbox.addStretch()
+        hbox.addWidget(utils.get_scrollable(self.menu_layout), stretch=30)
+        hbox.addLayout(self.templates_layout, stretch=70)
+        # hbox.addStretch(10)
         widget = QWidget()
         widget.setLayout(hbox)
         widget.setGraphicsEffect(utils.get_shadow())
         return widget
 
     def _iterate_items(self):
-        if not self.filter:
+        if not self.widget_for_select:
             return self.items
 
+        items = []
         for item in self.items:
             for value in item.values():
                 if value:
-                    yield item
+                    items.append(item)
+
+        return items
 
     def showEvent(self, event):
+        self.visible_items = self._iterate_items()
+        self.parent.action_button.show()
         self._show_menu()
         self._show_templates()
 
     def hideEvent(self, event):
         utils.clear_layout(self.menu_layout)
         utils.clear_layout(self.templates_layout)
+        self.layout.setCurrentIndex(0)
 
     def _show_menu(self):
-        for i, item in enumerate(self._iterate_items()):
-            b = QRadioButton(_(item.name))
+        items = self.visible_items
+        for i, item in enumerate(items):
+            b = QRadioButton(self._get_button_name(item))
             b.setChecked(i == 0)
             b.clicked.connect(functools.partial(self.templates_layout.setCurrentIndex, i))
+            b.setObjectName('menu_button')
             self.menu_layout.addWidget(b)
+
+        if not items:
+            self.menu_layout.addStretch()
+            l = QLabel('Чтобы создать отчет\nначните заполнять данные')
+            l.setAlignment(Qt.AlignCenter)
+            self.menu_layout.addWidget(l)
 
         self.menu_layout.addStretch()
 
     def _show_templates(self):
         cols = 3
-        templates = template.Template.get_all()
+        templates = template_module.Template.get_all()
 
-        for item in self._iterate_items():
+        for j, item in enumerate(self.visible_items):
             grid = QGridLayout()
             for i, each in enumerate(templates[item.id]):
                 row, col = i // cols, i % cols
                 b = QRadioButton(each.name)
+                b.setChecked(item.template == each)
+                b.clicked.connect(functools.partial(self._template_clicked, j, each))
                 grid.addWidget(b, row, col)
             self.templates_layout.addWidget(utils.get_scrollable(grid))
+
+    def _template_selected_for_report(self, index, template):
+        self.visible_items[index].template = template
+        buttons = self.findChildren(QRadioButton, name='menu_button')
+        buttons[index].setText(self._get_button_name(self.visible_items[index]))
+        for i in range(len(self.visible_items)):
+            ind = (i + index) % len(self.visible_items)
+            if not self.visible_items[ind].template:
+                self.templates_layout.setCurrentIndex(ind)
+                buttons[ind].setChecked(True)
+                buttons[index].setChecked(False)
+                return
+
+    def _template_selected_for_editing(self, index, template=None):
+        self.layout.setCurrentIndex(1)
+        self.parent.action_button.hide()
+        self.template_editing_widget._show(self.items[index], template)
+
+    def _get_button_name(self, item):
+
+        if item.template:
+            return '{} - {}'.format(_(item.name), item.template.name)
+        else:
+            return _(item.name)
+
+    def action_btn_function(self):
+        pass

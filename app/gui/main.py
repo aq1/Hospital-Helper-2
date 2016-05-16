@@ -168,9 +168,9 @@ class MainWindow(QWidget, ActionsMixins):
     def _create_layout(self):
         # Order matters
         self.frames = [DataWidget(self, self.items),
-                       TemplateWidget(self, self.items, filter_=True),
+                       TemplateWidget(self, self.items, widget_for_select=True),
                        DBWidget(self),
-                       # OptionsWidget(self, self.items),
+                       OptionsWidget(self, self.items),
                        UsersWidget(self)]
 
         for frame in self.frames:
