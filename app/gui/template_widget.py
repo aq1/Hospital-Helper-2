@@ -165,7 +165,7 @@ class TemplateWidget(QFrame):
     Contains menu with the list of items with templates.
     """
 
-    def __init__(self, parent, items, filter_=True):
+    def __init__(self, parent, items, filter_):
         super().__init__()
 
         self.items = items
@@ -199,18 +199,17 @@ class TemplateWidget(QFrame):
                     yield item
 
     def showEvent(self, event):
-        print('jey', self.menu_layout.children())
         self._show_menu()
         self._show_templates()
 
     def hideEvent(self, event):
-        print(self.menu_layout.children())
         utils.clear_layout(self.menu_layout)
         utils.clear_layout(self.templates_layout)
 
     def _show_menu(self):
         for i, item in enumerate(self._iterate_items()):
             b = QRadioButton(_(item.name))
+            b.setChecked(i == 0)
             b.clicked.connect(functools.partial(self.templates_layout.setCurrentIndex, i))
             self.menu_layout.addWidget(b)
 
