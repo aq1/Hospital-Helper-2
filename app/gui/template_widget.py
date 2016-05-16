@@ -165,10 +165,11 @@ class TemplateWidget(QFrame):
     Contains menu with the list of items with templates.
     """
 
-    def __init__(self, parent, items):
+    def __init__(self, parent, items, filter_=True):
         super().__init__()
 
         self.items = items
+        self.filter = filter_
         self.layout = QStackedLayout()
         self.setLayout(self.layout)
         self.menu_layout = QVBoxLayout()
@@ -188,72 +189,41 @@ class TemplateWidget(QFrame):
         widget.setGraphicsEffect(utils.get_shadow())
         return widget
 
+    def _iterate_items(self):
+        if not self.filter:
+            return self.items
+
+        for item in self.items:
+            for value in item.values():
+                if value:
+                    yield item
+
     def showEvent(self, event):
+        print('jey', self.menu_layout.children())
         self._show_menu()
         self._show_templates()
 
     def hideEvent(self, event):
+        print(self.menu_layout.children())
         utils.clear_layout(self.menu_layout)
         utils.clear_layout(self.templates_layout)
 
     def _show_menu(self):
-        for i, item in enumerate(self.items):
-            b = QPushButton(_(item.name))
+        for i, item in enumerate(self._iterate_items()):
+            b = QRadioButton(_(item.name))
             b.clicked.connect(functools.partial(self.templates_layout.setCurrentIndex, i))
             self.menu_layout.addWidget(b)
+
+        self.menu_layout.addStretch()
 
     def _show_templates(self):
         cols = 3
         templates = template.Template.get_all()
 
-        for item in self.items:
+        for item in self._iterate_items():
             grid = QGridLayout()
             for i, each in enumerate(templates[item.id]):
                 row, col = i // cols, i % cols
                 b = QRadioButton(each.name)
                 grid.addWidget(b, row, col)
             self.templates_layout.addWidget(utils.get_scrollable(grid))
-
-    def template_selected(self, item_index, template):
-        """
-        Returns index of the first item without template
-        that is placed after current item
-
-        FIXME: Too many index word.
-        Maybe i should better learn Qt or programming in general
-        """
-        self.items[item_index].template = template
-        buttons = self.findChildren(QRadioButton)
-        buttons[item_index].setText('{} - {}'.format(_(self.items[item_index].name), _(template.name)))
-        begin = self.indexes_to_show.index(item_index)
-
-        for i in self.indexes_to_show[begin:] + self.indexes_to_show[:begin]:
-            if not self.items[i].template:
-                buttons[item_index].setChecked(False)
-                buttons[i].setChecked(True)
-                return i
-
-    def proceed_show_event_and_get_indexes(self):
-        """
-        Show only items that has at least one value filled
-        And return indexes of those items
-        FIXME: think of the better function name
-        """
-
-        self.indexes_to_show = []
-        buttons = self.findChildren(QRadioButton)
-        for i, item in enumerate(self.items):
-            buttons[i].hide()
-            buttons[i].setChecked(False)
-            for value in item.values():
-                if value:
-                    buttons[i].show()
-                    self.indexes_to_show.append(i)
-                    break
-
-        if self.indexes_to_show:
-            self.no_items_to_show_label.hide()
-            buttons[self.indexes_to_show[0]].setChecked(True)
-        else:
-            self.no_items_to_show_label.show()
-        return self.indexes_to_show

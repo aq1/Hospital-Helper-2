@@ -32,4 +32,8 @@ def get_shadow():
 
 def clear_layout(layout):
     for i in reversed(range(layout.count())):
-        layout.itemAt(i).widget().setParent(None)
+        item = layout.takeAt(i)
+        try:
+            item.widget().setParent(None)
+        except AttributeError:
+            print(item)

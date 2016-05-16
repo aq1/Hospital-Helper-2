@@ -401,3 +401,23 @@ TemplateWidget QPushButton:pressed {
 TemplateWidget QScrollArea {
     background-color: white;
 }
+
+
+TemplateWidget QRadioButton {
+    text-align: left;
+    padding: 10px;
+}
+
+TemplateWidget QRadioButton:checked {
+    background-color: #45A0A3;
+    color: white;
+}
+
+TemplateWidget QRadioButton:checked:hover {
+    background-color: #3d8b8e;
+    color: white;
+}
+
+TemplateWidget QRadioButton:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
