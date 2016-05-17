@@ -181,6 +181,7 @@ class TemplateWidget(QFrame):
         self.templates_layout = QStackedLayout()
         self.template_editing_widget = TemplateEditingWidget(lambda: self.layout.setCurrentIndex(0))
         self.ACTION_BTN_ICON = ['plus', 'check'][widget_for_select]
+        self.action_btn_function = [self._create_template, self._create_report][widget_for_select]
         self._template_clicked = [self._template_selected_for_editing,
                                   self._template_selected_for_report][widget_for_select]
 
@@ -215,6 +216,7 @@ class TemplateWidget(QFrame):
     def showEvent(self, event):
         self.visible_items = self._iterate_items()
         self.main_window.action_button.show()
+        self.main_window.action_button.raise_()
         self._show_menu()
         self._show_templates()
 
@@ -271,12 +273,16 @@ class TemplateWidget(QFrame):
         self.main_window.action_button.hide()
         self.template_editing_widget._show(self.items[index], template)
 
+    def _create_template(self):
+        print('yo', self.menu_layout.currentIndex())
+        self._template_selected_for_editing(self.menu_layout.currentIndex())
+
+    def _create_report(self):
+        print('report!')
+
     def _get_button_name(self, item):
 
         if item.template:
             return '{} - {}'.format(_(item.name), item.template.name)
         else:
             return _(item.name)
-
-    def action_btn_function(self):
-        pass

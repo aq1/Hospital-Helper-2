@@ -21,12 +21,8 @@ class UsersWidget(QFrame):
 
         self.content_layout = QVBoxLayout()
         self._update_content()
-        # self.content_layout.setSpacing(10)
-        # self.content_layout.setContentsMargins(30, 30, 10, 10)
 
         vbox = QVBoxLayout()
-        # vbox.setSpacing(0)
-        # vbox.setContentsMargins(0, 0, 0, 0)
         vbox.addWidget(utils.get_scrollable(self.content_layout))
 
         hbox = QHBoxLayout()

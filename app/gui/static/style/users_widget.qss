@@ -6,7 +6,7 @@ UsersWidget QLabel {
     margin-left: 10px;
     margin-top: 10px;
     margin-bottom: 10px;
-    font-size: 11pt;
+    font-size: 9pt;
     color: rgba(0, 0, 0, 0.5);
     border-top: none;
     border-left: none;
@@ -17,7 +17,7 @@ UsersWidget QRadioButton {
     padding: 15px;
     padding-left: -10px;
     vertical-align: middle;
-    font-size: 13pt;
+    font-size: 11pt;
     background-color: white;
     border: none;
     text-align: left;
