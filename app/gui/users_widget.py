@@ -6,6 +6,7 @@ from PyQt5.QtWidgets import (QFrame, QGroupBox, QVBoxLayout, QLabel,
                              QHBoxLayout, QPushButton)
 
 from model import db
+from gui import utils
 
 
 class UsersWidget(QFrame):
@@ -18,49 +19,49 @@ class UsersWidget(QFrame):
 
         self.main_window = main_window
 
-        groupbox = QGroupBox()
+        self.content_layout = QVBoxLayout()
+        self._update_content()
+        # self.content_layout.setSpacing(10)
+        # self.content_layout.setContentsMargins(30, 30, 10, 10)
 
-        self.vbox = QVBoxLayout()
-        self.vbox.setSpacing(10)
-        self.vbox.setContentsMargins(30, 30, 10, 10)
+        vbox = QVBoxLayout()
+        # vbox.setSpacing(0)
+        # vbox.setContentsMargins(0, 0, 0, 0)
+        vbox.addWidget(utils.get_scrollable(self.content_layout))
 
+        hbox = QHBoxLayout()
+        hbox.addStretch(25)
+        hbox.addLayout(vbox, stretch=50)
+        hbox.addStretch(25)
+        self.setLayout(hbox)
+
+        control_layout = QHBoxLayout()
+        control_layout.setContentsMargins(0, 0, 0, 0)
+        control_layout.setSpacing(0)
+        b = QPushButton('Добавить')
+        b.clicked.connect(functools.partial(main_window.create_crud_widget, db.User, self._update_content))
+        control_layout.addStretch()
+        control_layout.addWidget(b)
+        control_layout.addStretch()
+        vbox.addLayout(control_layout)
+        self.setGraphicsEffect(utils.get_shadow())
+
+    def _update_content(self, *args):
+        utils.clear_layout(self.content_layout)
         self.users = db.SESSION.query(db.User).all()
         organizations = db.SESSION.query(db.Organization).all()
 
         for organization in organizations:
-            self.vbox.addWidget(self._get_label(organization))
+            self.content_layout.addWidget(self._get_label(organization))
             for user in self.users:
                 if user.organization_id == organization.id:
-                    self.vbox.addWidget(self._get_radio_btn(user))
+                    self.content_layout.addWidget(self._get_radio_btn(user))
 
-        self.vbox.addStretch()
-
-        hbox = QHBoxLayout()
-        hbox.setContentsMargins(0, 0, 0, 0)
-        hbox.setSpacing(0)
-        b = QPushButton('Добавить')
-        b.clicked.connect(functools.partial(main_window.create_crud_widget, db.User, self.user_created))
-        hbox.addStretch()
-        hbox.addWidget(b)
-        hbox.addStretch()
-        self.vbox.addLayout(hbox)
-
-        groupbox.setLayout(self.vbox)
-        scroll = QScrollArea()
-        scroll.setWidget(groupbox)
-        scroll.setWidgetResizable(True)
-        scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        this_vbox = QHBoxLayout(self)
-        this_vbox.addStretch(25)
-        this_vbox.addWidget(scroll, stretch=50)
-        this_vbox.addStretch(25)
-
-        shadow = QGraphicsDropShadowEffect()
-        shadow.setBlurRadius(10)
-        shadow.setXOffset(0)
-        shadow.setYOffset(0)
-        self.setGraphicsEffect(shadow)
+        if not self.users:
+            l = QLabel('Создайте пользователей\nдля начала работы')
+            l.setAlignment(Qt.AlignCenter)
+            self.content_layout.addWidget(l)
+        self.content_layout.addStretch()
 
     def _get_radio_btn(self, item):
         fullname = '{} {} {}'.format(item.surname, item.name, item.patronymic)
@@ -80,20 +81,3 @@ class UsersWidget(QFrame):
         for i, b in enumerate(self.findChildren(QRadioButton)):
             if b.isChecked():
                 self.main_window.user_selected(self.users[i])
-
-    def user_created(self, items):
-        for item in items:
-            if isinstance(item, db.Organization):
-                self.vbox.insertWidget(0, self._get_label(item))
-            else:
-                id_ = str(item.organization_id)
-                for i in range(self.vbox.count()):
-                    try:
-                        widget_name = self.vbox.itemAt(i).widget().objectName()
-                    except AttributeError:
-                        continue
-
-                    if widget_name == id_:
-                        b = self._get_radio_btn(item)
-                        self.vbox.insertWidget(i + 1, b)
-                        break

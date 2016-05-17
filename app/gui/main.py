@@ -183,7 +183,15 @@ class MainWindow(QWidget, ActionsMixins):
 
 def init(items):
     app = QApplication(sys.argv)
-    with open(os.path.join(os.path.dirname(__file__), 'static', 'style.qss'), 'r') as f:
-        app.setStyleSheet(f.read())
+
+    style = []
+    style_dir = os.path.join(options.STATIC_DIR, 'style')
+    for f in os.listdir(style_dir):
+        if not f.endswith('.qss'):
+            continue
+        with open(os.path.join(style_dir, f), 'r') as qss:
+            style.append(qss.read())
+    app.setStyleSheet('\n'.join(style))
+
     mw = MainWindow(items)
     sys.exit(app.exec_())

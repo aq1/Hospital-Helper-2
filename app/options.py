@@ -1,3 +1,6 @@
+import os
+
+
 STRUCTURE_KEY = 'structure'
 
 # Order matters
@@ -36,6 +39,8 @@ TRANSLATION = (
 DATABASE = 'data.db'
 
 CONCLUSION = 'Заключение: '
+
+STATIC_DIR = os.path.join(os.path.dirname(__file__), 'gui', 'static')
 
 TYPES = {
     'str': str,

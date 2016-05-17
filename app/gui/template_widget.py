@@ -169,10 +169,10 @@ class TemplateWidget(QFrame):
     Contains menu with the list of items with templates.
     """
 
-    def __init__(self, parent, items, widget_for_select):
+    def __init__(self, main_window, items, widget_for_select):
         super().__init__()
 
-        self.parent = parent
+        self.main_window = main_window
         self.items = items
         self.visible_items = []
         self.widget_for_select = widget_for_select
@@ -208,12 +208,13 @@ class TemplateWidget(QFrame):
             for value in item.values():
                 if value:
                     items.append(item)
+                    break
 
         return items
 
     def showEvent(self, event):
         self.visible_items = self._iterate_items()
-        self.parent.action_button.show()
+        self.main_window.action_button.show()
         self._show_menu()
         self._show_templates()
 
@@ -267,7 +268,7 @@ class TemplateWidget(QFrame):
 
     def _template_selected_for_editing(self, index, template=None):
         self.layout.setCurrentIndex(1)
-        self.parent.action_button.hide()
+        self.main_window.action_button.hide()
         self.template_editing_widget._show(self.items[index], template)
 
     def _get_button_name(self, item):
