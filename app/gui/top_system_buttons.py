@@ -10,8 +10,8 @@ class TopSystemButtons(QFrame):
     def __init__(self, main_window):
         super().__init__()
 
-        self.main_window = main_window
         self.move_offset = None
+        self.mouseMoveEvent = self._get_move_function(main_window)
 
         b = QHBoxLayout()
         b.addStretch()
@@ -32,11 +32,19 @@ class TopSystemButtons(QFrame):
         b.addWidget(exit_button)
         self.setLayout(b)
 
-        shadow = QGraphicsDropShadowEffect()
-        shadow.setBlurRadius(20)
-        shadow.setXOffset(0)
-        shadow.setYOffset(5)
-        self.setGraphicsEffect(shadow)
+    def _get_move_function(self, main_window):
+
+        def _f(event):
+            if not self.move_offset:
+                return
+
+            x = event.globalX()
+            y = event.globalY()
+            x_w = self.move_offset.x()
+            y_w = self.move_offset.y()
+            main_window.move(x - x_w, y - y_w)
+
+        return _f
 
     def set_title(self, title):
         self.title.setText(title)
@@ -49,13 +57,3 @@ class TopSystemButtons(QFrame):
         This prevents window from moving when buttons pressed
         """
         self.move_offset = None
-
-    def mouseMoveEvent(self, event):
-        if not self.move_offset:
-            return
-
-        x = event.globalX()
-        y = event.globalY()
-        x_w = self.move_offset.x()
-        y_w = self.move_offset.y()
-        self.main_window.move(x - x_w, y - y_w)

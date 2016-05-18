@@ -7,6 +7,7 @@ from PyQt5.QtWidgets import (QFrame, QGroupBox, QVBoxLayout, QLabel,
 
 from model import db
 from gui import utils
+from gui.crud_widget import CrudWidget
 
 
 class UsersWidget(QFrame):
@@ -35,12 +36,15 @@ class UsersWidget(QFrame):
         control_layout.setContentsMargins(0, 0, 0, 0)
         control_layout.setSpacing(0)
         b = QPushButton('Добавить')
-        b.clicked.connect(functools.partial(main_window.create_crud_widget, db.User, self._update_content))
+        b.clicked.connect(functools.partial(self.create_crud_widget, db.User, self._update_content))
         control_layout.addStretch()
         control_layout.addWidget(b)
         control_layout.addStretch()
         vbox.addLayout(control_layout)
         self.setGraphicsEffect(utils.get_shadow())
+
+    def create_crud_widget(self, base, callback=None, db_object=None):
+        CrudWidget(self, base, callback, db_object)
 
     def _update_content(self, *args):
         utils.clear_layout(self.content_layout)

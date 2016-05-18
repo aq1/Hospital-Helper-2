@@ -3,6 +3,8 @@ import os
 
 from PyQt5.QtWidgets import QGraphicsDropShadowEffect, QPushButton
 
+from gui import utils
+
 
 class ActionButton(QPushButton):
 
@@ -12,14 +14,12 @@ class ActionButton(QPushButton):
     def __init__(self, main_window):
         super().__init__(main_window)
 
-        self.main_window = main_window
-        shadow = QGraphicsDropShadowEffect()
-        shadow.setBlurRadius(15)
-        shadow.setXOffset(0)
-        shadow.setYOffset(0)
-        self.setGraphicsEffect(shadow)
+        self.setGraphicsEffect(utils.get_shadow())
+        main_window.communication.resized.connect(self._move)
 
-        self.move(1300, 210)
+    def _move(self, width, waterline):
+        self.move(width - self.width() * 1.5, waterline - self.height() / 2)
+        self.raise_()
 
     def toggle_state(self, icon, function):
         self.setStyleSheet('qproperty-icon: url({})'.format(self.ICONS[icon]))

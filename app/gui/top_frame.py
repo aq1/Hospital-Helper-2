@@ -1,7 +1,10 @@
-from PyQt5.QtWidgets import (QFrame, QVBoxLayout, QHBoxLayout, 
-                             QGraphicsDropShadowEffect, QLabel)
+import functools
 
+from PyQt5.QtWidgets import (QFrame, QVBoxLayout, QHBoxLayout, QLabel)
+
+from gui.top_system_buttons import TopSystemButtons
 from gui.select_menu import SelectMenu
+from gui import utils
 
 
 class TopFrame(QFrame):
@@ -12,12 +15,12 @@ class TopFrame(QFrame):
     def __init__(self, main_window, items):
         super().__init__()
 
-        self.main_window = main_window
         vbox = QVBoxLayout()
         vbox.setSpacing(0)
         vbox.setContentsMargins(0, 0, 0, 0)
         self.setLayout(vbox)
 
+        vbox.addWidget(TopSystemButtons(main_window))
         vbox.addStretch()
         hbox = QHBoxLayout()
         hbox.addSpacing(25)
@@ -27,16 +30,11 @@ class TopFrame(QFrame):
 
         hbox.addWidget(QLabel())
         vbox.addStretch()
-        vbox.addWidget(SelectMenu(main_window))
+        vbox.addWidget(SelectMenu(main_window, items))
 
-        shadow = QGraphicsDropShadowEffect()
-        shadow.setBlurRadius(20)
-        shadow.setXOffset(0)
-        shadow.setYOffset(5)
-        self.setGraphicsEffect(shadow)
+        self.resizeEvent = functools.partial(main_window.top_frame_resized, self)
+
+        self.setGraphicsEffect(utils.get_shadow())
 
     def set_label_text(self, text):
         self.findChild(QLabel).setText(text)
-
-    def resizeEvent(self, event):
-        self.main_window.top_frame_resized(self)
