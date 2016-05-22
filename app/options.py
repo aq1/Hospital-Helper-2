@@ -36,11 +36,12 @@ TRANSLATION = (
     {'sys': 'path', 'ru': 'Путь'},
 )
 
-DATABASE = 'data.db'
+BASE_DIR = os.path.dirname(__file__)
+DATABASE = os.path.join(BASE_DIR, 'data.db')
 
 CONCLUSION = 'Заключение: '
 
-STATIC_DIR = os.path.join(os.path.dirname(__file__), 'gui', 'static')
+STATIC_DIR = os.path.join(BASE_DIR, 'gui', 'static')
 
 TYPES = {
     'str': str,

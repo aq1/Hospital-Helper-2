@@ -172,12 +172,12 @@ class TemplateWidget(QFrame):
     def __init__(self, main_window, items, widget_for_select):
         super().__init__()
 
+        self.main_window = main_window
         self.items = items
         self.visible_items = []
         self.widget_for_select = widget_for_select
         self.layout = QStackedLayout()
         self.menu_layout = QVBoxLayout()
-        self.showEvent = self._get_show_event(main_window)
         self.templates_layout = QStackedLayout()
         self.template_editing_widget = TemplateEditingWidget(lambda: self.layout.setCurrentIndex(0))
         self.ACTION_BTN_ICON = ['plus', 'check'][widget_for_select]
@@ -213,14 +213,12 @@ class TemplateWidget(QFrame):
 
         return items
 
-    def _get_show_event(self, main_window):
-        def show_event(event):
-            self.visible_items = self._iterate_items()
-            self._show_menu()
-            self._show_templates()
-            main_window.communication.action_button_toggle.emit(True, self.ACTION_BTN_ICON, self.action_btn_function)
-
-        return show_event
+    def showEvent(self, event):
+        self.visible_items = self._iterate_items()
+        self.main_window.action_button.show()
+        self.main_window.action_button.raise_()
+        self._show_menu()
+        self._show_templates()
 
     def hideEvent(self, event):
         utils.clear_layout(self.menu_layout)
@@ -272,7 +270,7 @@ class TemplateWidget(QFrame):
 
     def _template_selected_for_editing(self, index, template=None):
         self.layout.setCurrentIndex(1)
-        # self.main_window.action_button.hide()
+        self.main_window.action_button.hide()
         self.template_editing_widget._show(self.items[index], template)
 
     def _create_template(self):

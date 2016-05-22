@@ -8,7 +8,6 @@ from gui import utils
 
 
 class TopFrame(QFrame):
-
     """
     Top Frame with decorative elements
     """
@@ -21,8 +20,7 @@ class TopFrame(QFrame):
         vbox.setContentsMargins(0, 0, 0, 0)
         self.setLayout(vbox)
 
-        top_system_buttons = TopSystemButtons(main_window)
-        vbox.addWidget(top_system_buttons)
+        vbox.addWidget(TopSystemButtons(main_window))
         vbox.addStretch()
         hbox = QHBoxLayout()
         hbox.addSpacing(25)
@@ -36,6 +34,6 @@ class TopFrame(QFrame):
         vbox.addWidget(SelectMenu(main_window, items))
 
         main_window.communication.input_changed_signal.connect(l.setText)
-        self.resizeEvent = functools.partial(main_window.resized, self, top_system_buttons)
+        self.resizeEvent = functools.partial(main_window.top_frame_resized, self)
 
         self.setGraphicsEffect(utils.get_shadow())

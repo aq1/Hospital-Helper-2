@@ -26,6 +26,7 @@ QScrollBar::handle {
 }
 
 ActionButton {
+    qproperty-icon: url('gui/static/icons/arrow.png');
     icon-size: 30px;
     font-weight: bold;
     background-color: #FFEB3B;

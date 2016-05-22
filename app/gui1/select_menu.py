@@ -1,15 +1,13 @@
 import functools
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import (QWidget, QFrame, QPushButton, QHBoxLayout, QLabel,
+from PyQt5.QtWidgets import (QFrame, QPushButton, QHBoxLayout, QLabel,
                              QGridLayout, QGraphicsDropShadowEffect)
-
-import options
 
 from gui import utils
 
 
-class SelectMenu(QWidget):
+class SelectMenu(QFrame):
 
     BUTTON_SELECTED_QSS = "color: white; padding-bottom: 23px; border-bottom: 2px solid #FFEB3B;"
 
@@ -17,26 +15,23 @@ class SelectMenu(QWidget):
 
         super().__init__()
         self.hide()
-
         hbox = QHBoxLayout()
         hbox.setSpacing(0)
         hbox.setContentsMargins(0, 0, 0, 0)
         self.setLayout(hbox)
-        hbox.addSpacing(25)
 
+        hbox.addSpacing(25)
         main_window.communication.user_selected.connect(self._show)
-        main_window.communication.menu_btn_clicked.connect(self._item_selected)
+        main_window.communication.menu_item_selected.connect(self._item_selected)
 
         self.buttons = []
-        labels = [each['sys'] for each in options.CONTROL_BUTTONS_LABELS]
-
-        for i, text in enumerate(labels):
+        for i, text in enumerate(main_window.MENU_LABELS):
             btn = QPushButton(_(text))
             self.buttons.append(btn)
             if i == 0:
                 btn.setStyleSheet(self.BUTTON_SELECTED_QSS)
 
-            btn.clicked.connect(functools.partial(main_window.communication.menu_btn_clicked.emit, i))
+            btn.clicked.connect(functools.partial(main_window.communication.menu_item_selected.emit, i))
             hbox.addWidget(btn)
 
         SelectItemMenu(main_window, self, items)
@@ -75,21 +70,21 @@ class SelectItemMenu(QFrame):
         main_window.communication.set_select_item_visibility.connect(self.set_visible)
         main_window.communication.ctrl_hotkey.connect(self._show_with_hints)
         main_window.communication.resized.connect(self._move)
-        main_window.communication.shortcut_pressed.connect(self._select_for_shortcut)
 
         grid = QGridLayout()
         self.setLayout(grid)
         grid.setSpacing(0)
         grid.setContentsMargins(0, 0, 0, 0)
 
-        self._btn_clicked_func = self._get_btn_clicked_func(main_window, select_menu)
-
         cols = 3
         self.hints_labels = []
         for i, item in enumerate(items):
             row, col = i // cols, i % cols
             b = QPushButton(_(item.name))
-            b.clicked.connect(functools.partial(self._btn_clicked_func, i))
+
+            b.clicked.connect(functools.partial(select_menu.set_item_label, _(item.name)))
+            b.clicked.connect(functools.partial(main_window.communication.item_selected.emit, i))
+            b.clicked.connect(self.hide)
             grid.addWidget(b, row, col)
 
             l = QLabel(self.HINTS[i][0], self)
@@ -105,15 +100,6 @@ class SelectItemMenu(QFrame):
     def _create_hints_list(self):
         self.HINTS = [(key, getattr(Qt, 'Key_{}'.format(key), -1))
                       for key in '1234qwerasdfzxcv'.upper()]
-
-    def _get_btn_clicked_func(self, main_window, select_menu):
-
-        def _btn_clicked(index):
-            select_menu.set_item_label(_(self.items[index].name))
-            main_window.communication.item_selected.emit(index)
-            self.hide()
-
-        return _btn_clicked
 
     def toggle_visibility(self):
         self.setVisible(self.isHidden())
@@ -134,14 +120,10 @@ class SelectItemMenu(QFrame):
                 item[0].show()
             else:
                 item[0].hide()
-            self.set_visible(is_visible)
+        self.setVisible(is_visible)
+        self.raise_()
 
-    def _select_for_shortcut(self, key):
-        index = self._get_item_index_by_key(key)
-        if index is not None:
-            self._btn_clicked_func(index)
-
-    def _get_item_index_by_key(self, key):
+    def get_item_index_by_key(self, key):
         for i, hint in enumerate(self.HINTS):
-            if hint[0] == key:
+            if hint[1] == key:
                 return i

@@ -2,16 +2,14 @@
 import os
 
 from PyQt5.QtWidgets import QPushButton
-from PyQt5.QtGui import QIcon
 
-import options
 from gui import utils
 
 
 class ActionButton(QPushButton):
 
-    ICONS = {each.split('.')[0]: os.path.join(options.STATIC_DIR, 'icons', each)
-             for each in os.listdir(os.path.join(options.STATIC_DIR, 'icons'))}
+    ICONS = {each.split('.')[0]: 'gui/static/icons/{}'.format(each)
+             for each in os.listdir(os.path.join(os.path.dirname(__file__), 'static', 'icons'))}
 
     def __init__(self, main_window):
         super().__init__(main_window)
@@ -26,11 +24,12 @@ class ActionButton(QPushButton):
         self.raise_()
 
     def toggle_state(self, is_visible, icon, function):
+        print('wtf')
         if not is_visible:
             self.hide()
             return
 
-        self.setIcon(QIcon(self.ICONS[icon]))
+        self.setStyleSheet('qproperty-icon: url({})'.format(self.ICONS[icon]))
         try:
             self.clicked.disconnect()
         except TypeError:

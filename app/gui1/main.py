@@ -11,62 +11,48 @@ from PyQt5.QtGui import QKeySequence, QPixmap
 
 import options
 
-from gui.top_frame import TopFrame
 from gui.users_widget import UsersWidget
+from gui.select_menu import SelectMenu, SelectItemMenu
 from gui.data_widget import DataWidget
 from gui.db_widget import DBWidget
 from gui.options_widget import OptionsWidget
 from gui.template_widget import TemplateWidget
+from gui.top_frame import TopFrame
 from gui.action_button import ActionButton
-# from gui.crud_widget import CrudWidget
+from gui.crud_widget import CrudWidget
 
 
 class Communication(QObject):
 
-    user_selected = pyqtSignal(object)
-    menu_btn_clicked = pyqtSignal(int)
-    input_changed_signal = pyqtSignal(str)
-    resized = pyqtSignal(float, float, float)
-    set_select_item_visibility = pyqtSignal(bool)
-    item_selected = pyqtSignal(int)
     toggle_select_item = pyqtSignal()
+    resized = pyqtSignal(float, float)
+    set_select_item_visibility = pyqtSignal(bool)
     ctrl_hotkey = pyqtSignal(bool)
-    shortcut_pressed = pyqtSignal(str)
-    action_button_toggle = pyqtSignal(bool, str, object)
+    menu_button_clicked = pyqtSignal(int)
+    user_selected = pyqtSignal(object)
+    item_selected = pyqtSignal(int)
+    menu_item_selected = pyqtSignal(int)
+    input_changed_signal = pyqtSignal(str)
 
 
 class MainWindow(QWidget):
+
+    MENU_LABELS = [each['sys'] for each in options.CONTROL_BUTTONS_LABELS]
 
     def __init__(self, items):
         super().__init__()
 
         self.items = items
         self.user = None
+
         self.communication = Communication()
-        self.frames_layout = QStackedLayout()
-        self.data_frame_index = None
+        self.communication.menu_item_selected.connect(self.menu_item_selected)
 
-        self._init_gui()
-
-    def _init_gui(self):
         self._set_sys_attributes()
-        self._create_layout()
-        self.communication.menu_btn_clicked.connect(self.menu_btn_clicked)
-        self.show()
 
-    def _create_layout(self):
-        vbox = QVBoxLayout()
-        vbox.setContentsMargins(0, 0, 0, 0)
-        vbox.setSpacing(0)
-        self.setLayout(vbox)
-
-        ActionButton(self)
-        vbox.addWidget(TopFrame(self, self.items), stretch=15)
-        vbox.addLayout(self.frames_layout, stretch=40)
-        self._add_frames()
-        self.show()
-
-    def _add_frames(self):
+        # self.action_button = ActionButton(self)
+        self.stacked_layout = QStackedLayout()
+        # Order matters
         frames = [
             DataWidget(self, self.items),
             TemplateWidget(self, self.items, widget_for_select=True),
@@ -78,9 +64,18 @@ class MainWindow(QWidget):
         for i, frame in enumerate(frames):
             if isinstance(frame, DataWidget):
                 self.data_frame_index = i
-            self.frames_layout.addWidget(frame)
+            self.stacked_layout.addWidget(frame)
 
-        self.frames_layout.setCurrentIndex(len(frames) - 1)
+        self.stacked_layout.setCurrentIndex(len(frames) - 1)
+        vbox = QVBoxLayout()
+        vbox.setContentsMargins(0, 0, 0, 0)
+        vbox.setSpacing(0)
+        self.setLayout(vbox)
+
+        top_frame = TopFrame(self, items)
+        vbox.addWidget(top_frame, stretch=15)
+        vbox.addLayout(self.stacked_layout, stretch=40)
+        self.show()
 
     def _set_sys_attributes(self):
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
@@ -93,13 +88,29 @@ class MainWindow(QWidget):
         qr.moveCenter(cp)
         self.move(qr.topLeft())
 
-    def menu_btn_clicked(self, index):
-        if self.frames_layout.currentIndex() == index == self.data_frame_index:
+    def user_selected(self, user):
+        self.user = user
+        self.communication.user_selected.emit(user)
+        self._set_shortcuts()
+        self.stacked_layout.setCurrentIndex(0)
+
+    def menu_item_selected(self, index):
+        if self.stacked_layout.currentIndex() == index == self.data_frame_index:
             self.communication.toggle_select_item.emit()
             return
         else:
             self.communication.set_select_item_visibility.emit(False)
-        self.frames_layout.setCurrentIndex(index)
+        self.stacked_layout.setCurrentIndex(index)
+
+        # try:
+        #     icon = self.frames[index].ACTION_BTN_ICON
+        #     func = self.frames[index].action_btn_function
+        # except AttributeError:
+        #     self.action_button.hide()
+        # else:
+        #     self.action_button.toggle_state(icon, func)
+        #     self.action_button.show()
+        #     self.action_button.raise_()
 
     def input_changed(self, item):
         # Well it doesnt look good, but i was never good with UI.
@@ -108,38 +119,45 @@ class MainWindow(QWidget):
             for i, key in enumerate(item.keys()):
                 if item[key]:
                     text.append(str(item[key]))
+
                 if i == 2:
                     break
 
             self.communication.input_changed_signal.emit(' '.join(text))
 
-    def _set_shortcuts(self):
-        QShortcut(QKeySequence('Esc'), self).activated.connect(self.close)
-        symbols = [str(i) for i in range(0, 11)] + [chr(c) for c in range(ord('A'), ord('A') + 26)]
-        for key in symbols:
-            QShortcut(QKeySequence('Ctrl+{}'.format(key)), self).activated.connect(
-                functools.partial(self.communication.shortcut_pressed.emit, key))
+        # self.top_sys_btns.set_title('{} {}. {}.'.format(user.surname, user.name[0], user.patronymic[0]))
 
-    def user_selected(self, user):
-        self.communication.user_selected.emit(user)
-        self.communication.menu_btn_clicked.emit(self.data_frame_index)
-        self._set_shortcuts()
-
-    def resized(self, top_frame, top_sys_btns, event):
-        waterline = top_frame.y() + top_frame.height()
-        self.communication.resized.emit(self.width(), waterline, top_sys_btns.width())
+    # def _shortcut_pressed(self, key_code):
+    #     try:
+    #         return
+    #         # self.select_item(self.select_menu.get_item_index_by_key(key_code))
+    #     except (IndexError, TypeError):
+    #         pass
 
     def keyPressEvent(self, event):
         mods = event.modifiers()
-        if (mods & QtCore.Qt.ControlModifier and self.frames_layout.currentIndex() == self.data_frame_index):
+        if mods & QtCore.Qt.ControlModifier:
             if event.text() is '':
                 self.communication.ctrl_hotkey.emit(True)
-            elif event.key() == Qt.Key_Return:
+            elif event.key() == Qt.Key_Return and self.stacked_layout.currentIndex() == 0:
                 pass
 
     def keyReleaseEvent(self, event):
         if (event.text() is ''):
             self.communication.ctrl_hotkey.emit(False)
+
+    def _set_shortcuts(self):
+        QShortcut(QKeySequence('Esc'), self).activated.connect(self.close)
+        # for key, key_code in self.select_menu.HINTS:
+        #     QShortcut(QKeySequence('Ctrl+{}'.format(key)), self).activated.connect(
+        #         functools.partial(self._shortcut_pressed, key_code))
+
+    def top_frame_resized(self, frame, event):
+        waterline = frame.y() + frame.height()
+        self.communication.resized.emit(self.width(), waterline)
+
+    def create_crud_widget(self, base, callback=None, db_object=None):
+        CrudWidget(self, base, callback, db_object)
 
     def close(self, event=None):
         QCoreApplication.instance().quit()

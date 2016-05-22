@@ -1,0 +1,1166 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"btn",
+				"_btn_clicked"
+			],
+			[
+				"sho",
+				"shortcut_pressed	statement"
+			],
+			[
+				"data",
+				"data_frame_index	statement"
+			],
+			[
+				"ite",
+				"item_selected	statement"
+			],
+			[
+				"user",
+				"user_selected	function"
+			],
+			[
+				"inpu",
+				"input_changed"
+			],
+			[
+				"inp",
+				"input_changed	statement"
+			],
+			[
+				"in",
+				"input_changed	function"
+			],
+			[
+				"sign",
+				"pyqtSignal"
+			],
+			[
+				"topfr",
+				"top_frame	param"
+			],
+			[
+				"tops",
+				"top_system_buttons	statement"
+			],
+			[
+				"pyqt",
+				"pyqtSignal	class"
+			],
+			[
+				"fram",
+				"frames_layout	statement"
+			],
+			[
+				"setsys",
+				"_set_sys_attributes"
+			],
+			[
+				"menu",
+				"menu_item_selected	statement"
+			],
+			[
+				"show",
+				"_show_with_hints"
+			],
+			[
+				"isB",
+				"isVisible	function"
+			],
+			[
+				"tog",
+				"toggle_visibility	function"
+			],
+			[
+				"ma",
+				"main_window	param"
+			],
+			[
+				"setlab",
+				"set_item_label	function"
+			],
+			[
+				"is",
+				"isHidden	function"
+			],
+			[
+				"sele",
+				"select_item	function"
+			],
+			[
+				"togg",
+				"toggle_select_item	statement"
+			],
+			[
+				"setse",
+				"set_select_item_visibility"
+			],
+			[
+				"pyq",
+				"pyqtSignal	class"
+			],
+			[
+				"Sel",
+				"SelectItemMenu	class"
+			],
+			[
+				"gets",
+				"get_shadow	function"
+			],
+			[
+				"SE",
+				"SelectItemMenu	class"
+			],
+			[
+				"Top",
+				"TopSystemButtons	class"
+			],
+			[
+				"C",
+				"Communication	class"
+			],
+			[
+				"_templ",
+				"_template_selected_for_editing	function"
+			],
+			[
+				"marg",
+				"margin-bottom"
+			],
+			[
+				"getS",
+				"get_shadow	function"
+			],
+			[
+				"cont",
+				"content_layout	statement"
+			],
+			[
+				"templ",
+				"template_widget	module"
+			],
+			[
+				"_get",
+				"_get_all_text_fields	function"
+			],
+			[
+				"setPla",
+				"setPlainText	function"
+			],
+			[
+				"name",
+				"name_text_edit	statement"
+			],
+			[
+				"paddi",
+				"padding-top"
+			],
+			[
+				"la",
+				"layout	statement"
+			],
+			[
+				"contex",
+				"conclusion_text_edit	statement"
+			],
+			[
+				"clo",
+				"close_func"
+			],
+			[
+				"templa",
+				"template_editing_widget	statement"
+			],
+			[
+				"setC",
+				"setCurrentIndex	function"
+			],
+			[
+				"wid",
+				"widget_for_select	statement"
+			],
+			[
+				"item",
+				"items	statement"
+			],
+			[
+				"men",
+				"menu_layout	statement"
+			],
+			[
+				"templaEd",
+				"TemplateEditingWidget"
+			],
+			[
+				"temp",
+				"templates_layout	statement"
+			],
+			[
+				"QS",
+				"QStackedLayout	class"
+			],
+			[
+				"get",
+				"get_scrollable	function"
+			],
+			[
+				"str",
+				"stretch"
+			],
+			[
+				"settc",
+				"setTextCursor	function"
+			],
+			[
+				"setTex",
+				"setTextCursor	function"
+			],
+			[
+				"setG",
+				"setGraphicsEffect	function"
+			],
+			[
+				"padd",
+				"padding"
+			],
+			[
+				"font-s",
+				"font-size"
+			],
+			[
+				"sc",
+				"scrollable_vbox	statement"
+			],
+			[
+				"setTe",
+				"setTextCursor	function"
+			],
+			[
+				"ST",
+				"Start	instance"
+			],
+			[
+				"QTe",
+				"QTextCursor	class"
+			],
+			[
+				"QTextC",
+				"QTextCursor	class"
+			],
+			[
+				"tetC",
+				"textCursor	function"
+			],
+			[
+				"textC",
+				"textCursor	function"
+			],
+			[
+				"remo",
+				"_remove_attribute"
+			],
+			[
+				"insert",
+				"insert_attribute	function"
+			],
+			[
+				"texte",
+				"template_text_edit	statement"
+			],
+			[
+				"key",
+				"keyPressEvent	function"
+			],
+			[
+				"tep",
+				"template_text_edit	statement"
+			],
+			[
+				"for",
+				"format	function"
+			],
+			[
+				"setT",
+				"setTextColor	function"
+			],
+			[
+				"click",
+				"clicked	function"
+			],
+			[
+				"Te",
+				"TemplateOptionsWidget	class"
+			],
+			[
+				"QText",
+				"QTextEdit	class"
+			],
+			[
+				"func",
+				"functools	module"
+			],
+			[
+				"bor",
+				"border"
+			],
+			[
+				"border",
+				"border"
+			],
+			[
+				"head",
+				"headerLayout	statement"
+			],
+			[
+				"setCo",
+				"setContentsMargins	function"
+			],
+			[
+				"font",
+				"font-size"
+			],
+			[
+				"row",
+				"row_id	param"
+			],
+			[
+				"QW",
+				"QWidget	class"
+			],
+			[
+				"wiz",
+				"wizard	statement"
+			],
+			[
+				"MAX",
+				"MAX_Y	statement"
+			],
+			[
+				"Inv",
+				"InventoryItem	class"
+			],
+			[
+				"pos",
+				"pos_y	statement"
+			],
+			[
+				"wi",
+				"wizard	statement"
+			],
+			[
+				"po",
+				"pos_x"
+			],
+			[
+				"Po",
+				"PositiveSmallIntegerField	class"
+			],
+			[
+				"reu",
+				"return	keyword"
+			],
+			[
+				"wiza",
+				"wizard_name"
+			],
+			[
+				"Wiz",
+				"Wizards"
+			],
+			[
+				"Key",
+				"KeyError	class"
+			],
+			[
+				"iv",
+				"inventory	module"
+			],
+			[
+				"IN",
+				"InventoryItem	class"
+			],
+			[
+				"js",
+				"json_response	module"
+			],
+			[
+				"HttpRe",
+				"HttpResponse	class"
+			],
+			[
+				"In",
+				"InventoryItem	class"
+			],
+			[
+				"Iv",
+				"InventoryItem	class"
+			],
+			[
+				"Inve",
+				"inventory"
+			],
+			[
+				"hos",
+				"hospital_id"
+			],
+			[
+				"create",
+				"created_items	statement"
+			],
+			[
+				"ho",
+				"hospital_id"
+			],
+			[
+				"Cr",
+				"CrudWidget	class"
+			],
+			[
+				"com",
+				"combo_box	param"
+			],
+			[
+				"text-",
+				"text-align"
+			],
+			[
+				"QI",
+				"QIcon	class"
+			],
+			[
+				"QL",
+				"QLabel	class"
+			],
+			[
+				"QG",
+				"QGraphicsDropShadowEffect	class"
+			],
+			[
+				"bord",
+				"border"
+			],
+			[
+				"li",
+				"list_display"
+			],
+			[
+				"aut",
+				"auto_generated	module"
+			],
+			[
+				"on",
+				"on_delete	param"
+			],
+			[
+				"findC",
+				"findChildren	function"
+			],
+			[
+				"doc",
+				"doctor_created	function"
+			],
+			[
+				"cli",
+				"clicked	function"
+			],
+			[
+				"back",
+				"background-color"
+			],
+			[
+				"addW",
+				"addRow	function"
+			],
+			[
+				"borde",
+				"border-bottom"
+			],
+			[
+				"CON",
+				"CONTROL_BUTTONS_LABELS	statement"
+			],
+			[
+				"fore",
+				"foreign_keys"
+			],
+			[
+				"Ql",
+				"QLineEdit	class"
+			],
+			[
+				"op",
+				"options	statement"
+			],
+			[
+				"addI",
+				"addItems	function"
+			],
+			[
+				"Crw",
+				"CrudWidgetContent	class"
+			],
+			[
+				"db",
+				"db_object	param"
+			],
+			[
+				"setSize",
+				"setFixedSize	function"
+			],
+			[
+				"findc",
+				"findChildren	function"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "app/gui1/template_widget.py",
+			"settings":
+			{
+				"buffer_size": 9420,
+				"line_ending": "Windows"
+			}
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+		[
+			[
+				[
+					"Anaconda Python Builder",
+					""
+				],
+				[
+					"Packages/Python/Python.sublime-build",
+					""
+				],
+				[
+					"Packages/Python/Python.sublime-build",
+					"Syntax Check"
+				]
+			],
+			[
+				"Anaconda Python Builder",
+				""
+			]
+		],
+		[
+			[
+				[
+					"Packages/Python/Python.sublime-build",
+					""
+				],
+				[
+					"Packages/Python/Python.sublime-build",
+					"Syntax Check"
+				]
+			],
+			[
+				"Packages/Python/Python.sublime-build",
+				""
+			]
+		]
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 567.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"css",
+				"Set Syntax: CSS"
+			],
+			[
+				"insta",
+				"Package Control: Install Package"
+			],
+			[
+				"py",
+				"Set Syntax: Python"
+			],
+			[
+				"qml",
+				"Set Syntax: QML"
+			],
+			[
+				"ins",
+				"Package Control: Install Package"
+			],
+			[
+				"install",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 708.0
+	},
+	"console":
+	{
+		"height": 213.0,
+		"history":
+		[
+			"print(print(1))",
+			"print(print())",
+			"'12345qwertasdfgzxcvb'.upper()",
+			"'123'.find('1')",
+			"'123'.find(1)",
+			"'123'.index(1)",
+			"for i, a, b in enumerate(zip((1, 2, 3), (4, 5, 6)))",
+			"for i, a, b in enumerate(zip((1, 2, 3), (4, 5, 6))):",
+			"exit()",
+			"a",
+			"a = float()",
+			"a",
+			"a = str()",
+			"a == 0",
+			"a = int()",
+			"import urllib.request,os,hashlib; h = '2915d1851351e5ee549c20394736b442' + '8bc59f460fa1548d1514676163dafc88'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://packagecontrol.io/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by) "
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2",
+		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app",
+		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/gui",
+		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/gui1",
+		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/model"
+	],
+	"file_history":
+	[
+		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/gui/main.py",
+		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/n.py",
+		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/gui/users_widget.py",
+		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/gui/select_menu.py",
+		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/gui1/main.py",
+		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/gui1/select_menu.py",
+		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/gui/db_widget.py",
+		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/gui/top_frame.py",
+		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/gui/attributes_frame.py",
+		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/gui/data_widget.py",
+		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/gui/input_widget.py",
+		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/gui1/attributes_frame.py",
+		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/gui1/input_widget.py",
+		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/gui1/top_frame.py",
+		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/gui/template_widget.py",
+		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/main.py",
+		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/gui/top_system_buttons.py",
+		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/gui1/top_system_buttons.py",
+		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/gui/__init__.py",
+		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/gui1/__init__.py",
+		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/gui/static/style/template_widget.qss",
+		"/C/Users/Jack/AppData/Roaming/Sublime Text 3/Packages/Default/Preferences.sublime-settings",
+		"/C/Users/Jack/AppData/Roaming/Sublime Text 3/Packages/User/Preferences.sublime-settings",
+		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/gui/crud_widget.py",
+		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/gui/main1.py",
+		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/options.py",
+		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/model/db.py",
+		"/C/Users/Jack/AppData/Roaming/Sublime Text 3/Packages/User/Hospital-Helper-2.sublime-build",
+		"/C/Users/Jack/AppData/Roaming/Sublime Text 3/Packages/User/Python3.sublime-build",
+		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/gui/action_button.py",
+		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/gui/static/style/users_widget.qss",
+		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/gui/static/style/top_frame.qss",
+		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/gui/static/style/base.qss",
+		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/gui/static/style/data_widget.qss",
+		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/gui/static/style/crud_widget.qss",
+		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/gui/static/style/db_widget.qss",
+		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/gui/static/style/style.qss",
+		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/gui/static/style.qss",
+		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/gui/options_widget.py",
+		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/gui/report_widget.py",
+		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/gui/utils.py",
+		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/model/template.py",
+		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/model/logic.py",
+		"/C/Users/Jack/AppData/Local/Temp/do.rtf",
+		"/C/Users/Jack/AppData/Local/Temp/doc-%D0%A4%D0%BE%D1%80%D0%BC%D0%B0+7+%D0%BE%D0%B1%D1%80%D0%B0%D0%B7%D0%B5%D1%86.RTF.txt",
+		"/C/Users/Jack/AppData/Roaming/Sublime Text 3/Packages/User/Anaconda.sublime-settings",
+		"/C/Users/Jack/AppData/Roaming/Sublime Text 3/Packages/Anaconda/Anaconda.sublime-settings",
+		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/gui/crud_widget1.py",
+		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/model/report.py",
+		"/C/Users/Jack/Documents/test/work/craft_example.py",
+		"/C/Users/Jack/Documents/GitHub/saber/inventory/api/methods/__init__.py",
+		"/C/Users/Jack/Documents/GitHub/saber/inventory/api/methods/abracadabra.py",
+		"/C/Users/Jack/Documents/GitHub/saber/inventory/api/methods/remove_item.py",
+		"/C/Users/Jack/Documents/GitHub/saber/inventory/api/methods/add_item.py",
+		"/C/Users/Jack/Documents/GitHub/saber/inventory/api/methods/get_inventory.py",
+		"/C/Users/Jack/Documents/GitHub/saber/inventory/models/auto_generated.py",
+		"/C/Users/Jack/Documents/GitHub/saber/inventory/models/inventory_item.py",
+		"/C/Users/Jack/Documents/GitHub/saber/inventory/admin.py",
+		"/C/Users/Jack/Documents/GitHub/saber/inventory/api/urls.py",
+		"/C/Users/Jack/Documents/GitHub/saber/settings.py",
+		"/C/Users/Jack/Documents/test/shell/mysql_bootstrap.sql",
+		"/C/Users/Jack/Documents/GitHub/saber/inventory/migrations/0001_initial.py",
+		"/C/Users/Jack/Documents/GitHub/saber/inventory/models/__init__.py",
+		"/C/Users/Jack/Documents/GitHub/saber/urls.py",
+		"/C/Users/Jack/Documents/GitHub/saber/inventory/models/inventory.py",
+		"/C/Users/Jack/Documents/GitHub/saber/inventory/apps.py",
+		"/C/Users/Jack/Documents/GitHub/saber/inventory/functions/__init__.py",
+		"/C/Users/Jack/Documents/GitHub/saber/inventory/functions/json_response.py",
+		"/C/Users/Jack/Documents/GitHub/saber/inventory/api/__init__.py",
+		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/.travis.yml",
+		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/tdd.py",
+		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/README.md",
+		"/C/Users/Jack/Downloads/iZotope.Ozone.6.Advanced.v6.10.Incl.Emulator-R2R/R2R/R2R.txt",
+		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/gui/static/icons/pencil.png",
+		"/C/Users/Jack/Documents/GitHub/saber/.gitignore",
+		"/C/Users/Jack/Documents/GitHub/saber/wsgi.py",
+		"/C/Users/Jack/Documents/GitHub/saber/manage.py",
+		"/C/Python27/Scripts/virtualenv-2.7-script.py",
+		"/C/Users/Jack/Documents/GitHub/saber/saber/settings.py",
+		"/C/Users/Jack/Documents/GitHub/saber1/settings.py",
+		"/C/Users/Jack/Documents/GitHub/n.py",
+		"/C/Python27/Lib/site-packages/django/bin/django-admin.py",
+		"/C/Users/Jack/Documents/GitHub/startproject",
+		"/C/Users/Jack/Documents/GitHub/saber",
+		"/C/Users/Jack/Documents/GitHub/saber/inventory/__init__.py",
+		"/C/Users/Jack/Documents/GitHub/saber/models.py",
+		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/gui/doctors_widget.py",
+		"/C/Users/Jack/Documents/test/Vagrantfile",
+		"/C/Users/Jack/Documents/test/shell/linux_bootstrap.sh",
+		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/model/localization.py",
+		"/C/Users/Jack/Documents/GitHub/HospitalHelper/template_creator.py",
+		"/C/Users/Jack/Downloads/XLN Audio Addictive Drums 2 v2.0.7/R2R.txt",
+		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/gui/static/icons/arrow.png",
+		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/gui/static/icons/menu.png",
+		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/gui/static/icons/plus.png",
+		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/gui/static/icons/star.png",
+		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/gui/style.qss",
+		"/C/Users/Jack/Documents/HospitalHelper/n.py",
+		"/C/Users/Jack/Downloads/iZotope.Ozone.6.Advanced.v6.10.Incl.Emulator-R2R/LicenseSupportInstallerWin64_v2.4.2_r26950/ReadMe.rtf",
+		"/C/Users/Jack/Documents/HospitalHelper/colors_and_options.py",
+		"/C/Users/Jack/Documents/HospitalHelper/templates/Урология/Норма.txt",
+		"/C/Users/Jack/Documents/HospitalHelper/main.py",
+		"/C/Users/Jack/Documents/HospitalHelper/txt2pkl.py",
+		"/C/Users/Jack/Documents/GitHub/gopro_shop/shop/models/product.py",
+		"/C/Users/Jack/Documents/GitHub/gopro_shop/shop/models/cart.py",
+		"/C/Users/Jack/Documents/GitHub/gopro_shop/orders/models/order_product.py",
+		"/C/Users/Jack/Documents/GitHub/gopro_shop/orders/models/order.py",
+		"/C/Users/Jack/Documents/GitHub/gopro_shop/local_settings.py",
+		"/C/Users/Jack/Documents/GitHub/gopro_shop/addresses/fixture/provide_init_geo_data.py",
+		"/C/Users/Jack/Documents/GitHub/gopro_shop/shop/admin.py",
+		"/C/Users/Jack/Documents/GitHub/gopro_shop/manage.py",
+		"/C/Users/Jack/Documents/GitHub/gopro_shop/db.sqlite3",
+		"/C/Users/Jack/Documents/GitHub/gopro_shop/addresses/fixture/geo_fixture.json",
+		"/C/Users/Jack/Documents/GitHub/gopro_shop/shop/models/category.py",
+		"/C/Users/Jack/Documents/GitHub/gopro_shop/shop/models/manufacturer.py",
+		"/C/Users/Jack/Documents/GitHub/gopro_shop/shop_front/static/shop_front/bower.json",
+		"/C/Users/Jack/Documents/GitHub/gopro_shop/shop_front/templates/shop_front/index.html",
+		"/C/Users/Jack/Documents/GitHub/gopro_shop/wsgi.py",
+		"/C/Users/Jack/Documents/GitHub/gopro_shop/addresses/migrations/0003_auto_20160316_0022.py",
+		"/C/Users/Jack/Documents/GitHub/gopro_shop/shop/models/__init__.py",
+		"/C/Users/Jack/Documents/GitHub/gopro_shop/shop/__init__.py",
+		"/C/Users/Jack/Documents/GitHub/gopro_shop/settings.py",
+		"/C/Users/Jack/Documents/GitHub/gopro_shop/urls.py",
+		"/C/Users/Jack/Documents/GitHub/gopro_shop/addresses/migrations/0001_initial.py",
+		"/C/Users/Jack/Documents/GitHub/gopro_shop/shop_auth/admin.py",
+		"/C/Users/Jack/Documents/GitHub/gopro_shop/shop_auth/models/user.py",
+		"/C/Users/Jack/Documents/GitHub/gopro_shop/.gitignore",
+		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/model/exceptions.py"
+	],
+	"find":
+	{
+		"height": 50.0
+	},
+	"find_in_files":
+	{
+		"height": 138.0,
+		"where_history":
+		[
+			"C:\\Users\\Jack\\Documents\\GitHub\\Hospital-Helper-2\\",
+			"C:\\Users\\Jack\\Documents\\GitHub\\gopro_shop",
+			"C:\\Users\\Jack\\Documents\\GitHub\\Hospital-Helper-2\\"
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"self.main_window",
+			"_set_shortcuts",
+			"btn_clicked",
+			"get_item_index_by_key",
+			"hints",
+			"short",
+			"set_sh",
+			"user_selected",
+			"SelectItemMenu",
+			"addSpa",
+			"wtf",
+			"keys()[",
+			"main_window",
+			"input_changed",
+			"input_changed_signal",
+			"input_changed",
+			"input_changed_signal",
+			"input_changed",
+			"action_button",
+			"action_btn",
+			"data_frame_index",
+			"stacked_layout",
+			"menu_item_selected",
+			"top_system_buttons",
+			"resized",
+			"_resized",
+			"MENU",
+			"set_item_label",
+			"SelectMenu",
+			"main_window",
+			"SelectMenu",
+			"action",
+			"self.action",
+			"set_select_item_visibility",
+			"toggle_select_item",
+			"select_menu_button_clicked",
+			"menu_item_selected",
+			"set_sho",
+			"menu_item_selected",
+			"set_item_label",
+			"item_selected",
+			"self.communication",
+			"tab",
+			"create_crud_widget",
+			"CrudW",
+			"top_sys",
+			"self.action_button",
+			"action_button",
+			"input_changed",
+			"self.main_window",
+			"self.stacked_layout.setC",
+			"menu_item_selected",
+			"item_selected",
+			"menu_button_clicked",
+			"item_selected",
+			"menu_button_clicked",
+			"select_menu_button_clicked",
+			"ctrl_",
+			"ctrl",
+			"set_select_item_visibility",
+			"toggle_hints",
+			"set_select_item_visibility",
+			"item_selected",
+			"action_button",
+			"menu_button_clicked",
+			"toggle_select_item",
+			"_set_shortcuts",
+			"user_sel",
+			"data_w",
+			"user_selected",
+			"set_select_item_visibility",
+			"hide()",
+			"TOP_MARGIN",
+			"0",
+			"top_frame_res",
+			"select_item",
+			"create_crud_widget",
+			"_shortcut_pressed",
+			"user_selected",
+			"SelectItemMenu",
+			"self.waterline",
+			"SelectMenu",
+			"setVisible",
+			"visibility",
+			"select_menu_button_clicked",
+			"SelectMenu",
+			"self.select_menu",
+			"SelectItemMenu",
+			"_shortcut_pressed",
+			"self.select_menu",
+			"SelectItemMenu",
+			"SelectMenu",
+			"SelectItemMenu",
+			"self.main_wind",
+			"set_select_menu_item_visibility",
+			"self.main_window",
+			"top_sys_btns",
+			"self.top_frame",
+			"MENU_LABELS",
+			"top_frame_resized",
+			"self.select_menu",
+			"selectItemMenu",
+			"action_btn_function",
+			"action_button",
+			"crudW",
+			"TemplateWidget QP",
+			"UsersWi",
+			"UsersWidget",
+			"userswid",
+			"self.setL",
+			"self.users",
+			"clicked",
+			"templateW",
+			"parent",
+			"print",
+			"self.visib",
+			"self.visible_items()",
+			"self._iterate_items()",
+			"_iterate_items",
+			"len(",
+			"qstretc",
+			"addstre",
+			"self.action_button",
+			"action_button",
+			"action",
+			"template_text_edit",
+			"_show",
+			"_close"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"frames_layout",
+			"menu_btn_clicked",
+			"main_window",
+			"self.visible_items",
+			"TemplateWidget",
+			"_select_attribute",
+			"self.model",
+			"vbox",
+			"QVBoxLayout",
+			"Organization",
+			"organization",
+			"user",
+			"User",
+			"user",
+			"User",
+			"organization",
+			"Organization",
+			"organization",
+			"Group",
+			"group",
+			"user",
+			"User",
+			"users",
+			"user",
+			"self.vbox",
+			"",
+			"''}",
+			"'',",
+			"model",
+			"# self.action_button",
+			"'",
+			"",
+			"0, 0, 0",
+			"'",
+			"self.select_wrapper",
+			"self.wrapper_layout",
+			"select_wrapper",
+			"",
+			"/",
+			"InputWidget",
+			"font-size: 20px;",
+			"\\n",
+			"#00BCD4",
+			"_create_layout",
+			"25px",
+			"vbox",
+			"hbox",
+			";",
+			";\\n",
+			";",
+			";\\n",
+			"#print"
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 0,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "app/gui1/template_widget.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 9420,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								5042,
+								5058
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 4606.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 37.0
+	},
+	"input":
+	{
+		"height": 40.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": false,
+	"output.exec":
+	{
+		"height": 491.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "Packages/User/Hospital-Helper-2.sublime-build",
+	"project": "hh.sublime-project",
+	"replace":
+	{
+		"height": 94.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"input",
+				"app\\gui1\\input_widget.py"
+			],
+			[
+				"attr",
+				"app\\gui1\\attributes_frame.py"
+			],
+			[
+				"a",
+				"app\\gui\\attributes_frame.py"
+			],
+			[
+				"te",
+				"app\\gui\\template_widget.py"
+			],
+			[
+				"top_",
+				"app\\gui1\\top_frame.py"
+			],
+			[
+				"main",
+				"app\\gui1\\main.py"
+			],
+			[
+				"topfra",
+				"app\\gui\\top_frame.py"
+			],
+			[
+				"sele",
+				"app\\gui1\\select_menu.py"
+			],
+			[
+				"selec",
+				"app\\gui\\select_menu.py"
+			],
+			[
+				"topsy",
+				"app\\gui\\top_system_buttons.py"
+			],
+			[
+				"sty",
+				"app\\gui\\style.qss"
+			],
+			[
+				"repo",
+				"app\\gui\\report_widget.py"
+			],
+			[
+				"topf",
+				"app\\gui\\top_frame.py"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 345.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

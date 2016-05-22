@@ -19,11 +19,11 @@ class AttributesFrame(QWidget):
 
         self.item = item
         self.inputs = []
-        self.input_changed = self._get_input_changed_func(main_window)
 
         hbox = QHBoxLayout()
         self.setLayout(hbox)
         hbox.setSpacing(0)
+        hbox.addSpacing(25)
 
         rows = 5
         for i, arg_name in enumerate(item):
@@ -48,18 +48,10 @@ class AttributesFrame(QWidget):
 
         hbox.addStretch(100)
 
-    def _get_input_changed_func(self, main_window):
-        """
-        I don't want to keep reference to the MainWindow
-        """
+    def input_changed(self, label, value):
+        self.item.set(label, value)
+        self.item.calculate()
 
-        def input_changed(label, value):
-            self.item.set(label, value)
-            self.item.calculate()
-
-            for each in self.inputs:
-                if label != each.label_text:
-                    each.set_value(self.item[each.label_text])
-            main_window.input_changed(self.item)
-
-        return input_changed
+        for each in self.inputs:
+            if label != each.label_text:
+                each.set_value(self.item[each.label_text])
