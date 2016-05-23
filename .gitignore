@@ -61,4 +61,4 @@ target/
 n.py
 dump.rdb
 *.*~
-
+.idea/
