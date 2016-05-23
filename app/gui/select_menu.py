@@ -1,6 +1,6 @@
 import functools
 
-from PyQt5.QtCore import Qt, QPropertyAnimation, QParallelAnimationGroup, QSize
+from PyQt5.QtCore import Qt, QPropertyAnimation, QParallelAnimationGroup, QSize, QEasingCurve
 from PyQt5.QtWidgets import (QWidget, QFrame, QPushButton, QHBoxLayout, QLabel,
                              QGridLayout, QGraphicsOpacityEffect)
 
@@ -77,9 +77,7 @@ class SelectItemMenu(QFrame):
         main_window.communication.resized.connect(self._move)
         main_window.communication.shortcut_pressed.connect(self._select_for_shortcut)
 
-        opacity = QGraphicsOpacityEffect()
-        self.setGraphicsEffect(opacity)
-        self.anim = self._get_animation(opacity)
+        self.anim = self._get_animation()
 
         grid = QGridLayout()
         self.setLayout(grid)
@@ -101,7 +99,7 @@ class SelectItemMenu(QFrame):
             l.hide()
             self.hints_labels.append(l)
 
-        # self.setGraphicsEffect(utils.get_shadow())
+        self.setGraphicsEffect(utils.get_shadow())
 
     def _move(self, width, waterline):
         self.move(20, waterline)
@@ -110,22 +108,21 @@ class SelectItemMenu(QFrame):
         self.HINTS = [(key, getattr(Qt, 'Key_{}'.format(key), -1))
                       for key in '1234qwerasdfzxcv'.upper()]
 
-    def _get_animation(self, opacity):
+    def _get_animation(self):
 
-        anim_show = QParallelAnimationGroup()
-        anim_hide = QParallelAnimationGroup()
+        anim_show = QPropertyAnimation(self, 'size')
+        anim_show.setDuration(150)
+        anim_show.setStartValue(QSize(0, 0))
+        anim_show.setEndValue(self.size())
+        # anim_show.setEasingCurve(QEasingCurve.InCubic)
 
-        anim = QPropertyAnimation(self, 'size')
-        anim.setDuration(100)
-        anim.setStartValue(0)
-        anim.setEndValue(self.size())
-        anim_show.addAnimation(anim)
+        anim_hide = QPropertyAnimation(self, 'size')
+        anim_hide.setDuration(150)
+        anim_hide.setStartValue(self.size())
+        anim_hide.setEndValue(QSize(0, 0))
+        anim_hide.finished.connect(functools.partial(self.setVisible, False))
+        # anim_show.setEasingCurve(QEasingCurve.InCubic)
 
-        anim = QPropertyAnimation(opacity, 'opacity')
-        anim.setDuration(100)
-        anim.setStartValue(0.0)
-        anim.setEndValue(1.0)
-        anim_show.addAnimation(anim)
         return [anim_hide, anim_show]
 
     def _get_btn_clicked_func(self, main_window, select_menu):
@@ -138,18 +135,19 @@ class SelectItemMenu(QFrame):
         return _btn_clicked
 
     def toggle_visibility(self):
-        self.setVisible(self.isHidden())
-        self.raise_()
+        self.set_visible(self.isHidden())
 
     def set_visible(self, value):
-        self.setVisible(value)
-        self.raise_()
+        if value:
+            self.show()
         self.anim[value].start()
+        self.raise_()
 
     def leaveEvent(self, event):
         self.hide()
 
     def _show_with_hints(self, is_visible):
+        self.set_visible(is_visible)
         for i, item in enumerate(zip(self.hints_labels, self.findChildren(QPushButton))):
             x = item[1].x() + item[1].width() - 80
             item[0].move(x, item[1].y())
@@ -157,7 +155,6 @@ class SelectItemMenu(QFrame):
                 item[0].show()
             else:
                 item[0].hide()
-            self.set_visible(is_visible)
 
     def _select_for_shortcut(self, key):
         index = self._get_item_index_by_key(key)
