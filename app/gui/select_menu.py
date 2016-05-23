@@ -1,8 +1,8 @@
 import functools
 
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QPropertyAnimation, QParallelAnimationGroup, QSize
 from PyQt5.QtWidgets import (QWidget, QFrame, QPushButton, QHBoxLayout, QLabel,
-                             QGridLayout, QGraphicsDropShadowEffect)
+                             QGridLayout, QGraphicsOpacityEffect)
 
 import options
 
@@ -77,6 +77,10 @@ class SelectItemMenu(QFrame):
         main_window.communication.resized.connect(self._move)
         main_window.communication.shortcut_pressed.connect(self._select_for_shortcut)
 
+        opacity = QGraphicsOpacityEffect()
+        self.setGraphicsEffect(opacity)
+        self.anim = self._get_animation(opacity)
+
         grid = QGridLayout()
         self.setLayout(grid)
         grid.setSpacing(0)
@@ -97,7 +101,7 @@ class SelectItemMenu(QFrame):
             l.hide()
             self.hints_labels.append(l)
 
-        self.setGraphicsEffect(utils.get_shadow())
+        # self.setGraphicsEffect(utils.get_shadow())
 
     def _move(self, width, waterline):
         self.move(20, waterline)
@@ -105,6 +109,24 @@ class SelectItemMenu(QFrame):
     def _create_hints_list(self):
         self.HINTS = [(key, getattr(Qt, 'Key_{}'.format(key), -1))
                       for key in '1234qwerasdfzxcv'.upper()]
+
+    def _get_animation(self, opacity):
+
+        anim_show = QParallelAnimationGroup()
+        anim_hide = QParallelAnimationGroup()
+
+        anim = QPropertyAnimation(self, 'size')
+        anim.setDuration(100)
+        anim.setStartValue(0)
+        anim.setEndValue(self.size())
+        anim_show.addAnimation(anim)
+
+        anim = QPropertyAnimation(opacity, 'opacity')
+        anim.setDuration(100)
+        anim.setStartValue(0.0)
+        anim.setEndValue(1.0)
+        anim_show.addAnimation(anim)
+        return [anim_hide, anim_show]
 
     def _get_btn_clicked_func(self, main_window, select_menu):
 
@@ -122,6 +144,7 @@ class SelectItemMenu(QFrame):
     def set_visible(self, value):
         self.setVisible(value)
         self.raise_()
+        self.anim[value].start()
 
     def leaveEvent(self, event):
         self.hide()
