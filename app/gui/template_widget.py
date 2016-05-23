@@ -1,3 +1,4 @@
+import copy
 import functools
 
 from PyQt5.Qt import QColor, Qt, QTextCursor
@@ -172,7 +173,11 @@ class TemplateWidget(QFrame):
     def __init__(self, main_window, items, widget_for_select):
         super().__init__()
 
+        def do_nothing(*args, **kwargs):
+            return None
+
         self.items = items
+
         self.visible_items = []
         self.widget_for_select = widget_for_select
         self.layout = QStackedLayout()
@@ -181,9 +186,10 @@ class TemplateWidget(QFrame):
         self.templates_layout = QStackedLayout()
         self.template_editing_widget = TemplateEditingWidget(lambda: self.layout.setCurrentIndex(0))
         self.ACTION_BTN_ICON = ['plus', 'check'][widget_for_select]
-        self.action_btn_function = [self._create_template, self._create_report][widget_for_select]
-        self._template_clicked = [self._template_selected_for_editing,
-                                  self._template_selected_for_report][widget_for_select]
+        self.action_btn_function = [self._create_template, main_window.create_report][widget_for_select]
+        self._double_click = [self._get_double_click(main_window), do_nothing][widget_for_select]
+        self._template_clicked = [do_nothing, self._template_selected_for_report][widget_for_select]
+        self.hideEvent = [do_nothing, self._hide_event][widget_for_select]
 
         self.setLayout(self.layout)
 
@@ -194,7 +200,6 @@ class TemplateWidget(QFrame):
         hbox = QHBoxLayout()
         hbox.addWidget(utils.get_scrollable(self.menu_layout), stretch=30)
         hbox.addLayout(self.templates_layout, stretch=70)
-        # hbox.addStretch(10)
         widget = QWidget()
         widget.setLayout(hbox)
         widget.setGraphicsEffect(utils.get_shadow())
@@ -213,19 +218,27 @@ class TemplateWidget(QFrame):
 
         return items
 
+    def _get_double_click(self, main_window):
+        def _func(index, template=None, event=None):
+            self.layout.setCurrentIndex(1)
+            self.template_editing_widget._show(self.items[index], template)
+            main_window.communication.action_button_toggle.emit(False, None, None)
+
+        return _func
+
+    def _hide_event(self, event):
+        utils.clear_layout(self.menu_layout)
+        utils.clear_layout(self.templates_layout)
+        self.layout.setCurrentIndex(0)
+
     def _get_show_event(self, main_window):
         def show_event(event):
             self.visible_items = self._iterate_items()
             self._show_menu()
             self._show_templates()
-            main_window.communication.action_button_toggle.emit(True, self.ACTION_BTN_ICON, self.action_btn_function)
+            main_window.communication.action_button_toggle.emit(bool(self.visible_items), self.ACTION_BTN_ICON, self.action_btn_function)
 
         return show_event
-
-    def hideEvent(self, event):
-        utils.clear_layout(self.menu_layout)
-        utils.clear_layout(self.templates_layout)
-        self.layout.setCurrentIndex(0)
 
     def _show_menu(self):
         items = self.visible_items
@@ -253,8 +266,9 @@ class TemplateWidget(QFrame):
             for i, each in enumerate(templates[item.id]):
                 row, col = i // cols, i % cols
                 b = QRadioButton(each.name)
-                b.setChecked(item.template == each)
+                b.setChecked(self.widget_for_select and item.template == each)
                 b.clicked.connect(functools.partial(self._template_clicked, j, each))
+                b.mouseDoubleClickEvent = functools.partial(self._double_click, j, each)
                 grid.addWidget(b, row, col)
             self.templates_layout.addWidget(utils.get_scrollable(grid))
 
@@ -270,13 +284,7 @@ class TemplateWidget(QFrame):
                 buttons[index].setChecked(False)
                 return
 
-    def _template_selected_for_editing(self, index, template=None):
-        self.layout.setCurrentIndex(1)
-        # self.main_window.action_button.hide()
-        self.template_editing_widget._show(self.items[index], template)
-
     def _create_template(self):
-        print('yo', self.menu_layout.currentIndex())
         self._template_selected_for_editing(self.menu_layout.currentIndex())
 
     def _create_report(self):
@@ -284,7 +292,7 @@ class TemplateWidget(QFrame):
 
     def _get_button_name(self, item):
 
-        if item.template:
+        if item.template and self.widget_for_select:
             return '{} - {}'.format(_(item.name), item.template.name)
         else:
             return _(item.name)

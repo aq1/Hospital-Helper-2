@@ -75,7 +75,7 @@ CrudWidgetContent QPushButton#icon:hover {
 CrudWidgetContent QPushButton#icon:pressed {
     background-color: rgba(0, 0, 0, 0.3);
 }
-
+/*
 CrudWidgetContent QPushButton#save {
     qproperty-icon: url('gui/static/icons/pencil.png');
 }
@@ -87,3 +87,4 @@ CrudWidgetContent QPushButton#close {
 CrudWidgetContent QPushButton#delete {
     qproperty-icon: url('gui/static/icons/delete.png');
 }
+*/

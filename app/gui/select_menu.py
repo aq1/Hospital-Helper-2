@@ -60,13 +60,11 @@ class SelectMenu(QWidget):
 
 class SelectItemMenu(QFrame):
 
-    HINTS = [(key, getattr(Qt, 'Key_{}'.format(key))) for key in '12345QWERTASDFGZXCVB']
-
     def __init__(self, main_window, select_menu, items):
 
         super().__init__(main_window)
 
-        self._create_hints_list()
+        self.HINTS = self._get_hints_list()
         self.items = items
         self.resize(main_window.width() * 0.6, main_window.height() * 0.4)
         self.hide()
@@ -102,9 +100,9 @@ class SelectItemMenu(QFrame):
     def _move(self, width, waterline):
         self.move(20, waterline)
 
-    def _create_hints_list(self):
-        self.HINTS = [(key, getattr(Qt, 'Key_{}'.format(key), -1))
-                      for key in '1234qwerasdfzxcv'.upper()]
+    def _get_hints_list(self):
+        return [(key, getattr(Qt, 'Key_{}'.format(key), -1))
+                for key in '12345qwertsdfgcv'.upper()]
 
     def _get_btn_clicked_func(self, main_window, select_menu):
 

@@ -48,7 +48,6 @@ def init():
 if __name__ == '__main__':
     init()
 
-
     # c = db.SESSION.query(db.Client).filter(db.Client.id < 200).count() - 100
     # x = db.SESSION.query(db.Client).filter(db.Client.id < 200).order_by(db.Client.id)
     # print(c, x[0].id, x[-1].id)

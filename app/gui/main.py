@@ -7,9 +7,10 @@ from PyQt5.QtCore import QCoreApplication, Qt, QObject, pyqtSignal
 from PyQt5.QtWidgets import (QWidget, QStackedLayout, QDesktopWidget,
                              QVBoxLayout, QShortcut, QApplication, QSplashScreen)
 
-from PyQt5.QtGui import QKeySequence, QPixmap
+from PyQt5.QtGui import QKeySequence
 
 import options
+from model import report
 
 from gui.top_frame import TopFrame
 from gui.users_widget import UsersWidget
@@ -18,7 +19,7 @@ from gui.db_widget import DBWidget
 from gui.options_widget import OptionsWidget
 from gui.template_widget import TemplateWidget
 from gui.action_button import ActionButton
-# from gui.crud_widget import CrudWidget
+from gui.crud_widget import CrudWidget
 
 
 class Communication(QObject):
@@ -114,28 +115,43 @@ class MainWindow(QWidget):
             self.communication.input_changed_signal.emit(' '.join(text))
 
     def _set_shortcuts(self):
+
+        def _shortcut_callback(key):
+            if self.frames_layout.currentIndex() != self.data_frame_index:
+                return
+            self.communication.shortcut_pressed.emit(key)
+
         QShortcut(QKeySequence('Esc'), self).activated.connect(self.close)
-        symbols = [str(i) for i in range(0, 11)] + [chr(c) for c in range(ord('A'), ord('A') + 26)]
-        for key in symbols:
+        keys = [str(i) for i in range(0, 11)] + [chr(c) for c in range(ord('A'), ord('Z') + 1)]
+        for key in keys:
             QShortcut(QKeySequence('Ctrl+{}'.format(key)), self).activated.connect(
-                functools.partial(self.communication.shortcut_pressed.emit, key))
+                functools.partial(_shortcut_callback, key))
+
+    def create_crud_widget(self, model, callback, db_object=None):
+        CrudWidget(self, model, callback, db_object)
 
     def user_selected(self, user):
+        self.user = user
         self.communication.user_selected.emit(user)
         self.communication.menu_btn_clicked.emit(self.data_frame_index)
         self._set_shortcuts()
 
+    def create_report(self):
+        r = report.Report(self.user, self.items)
+        r.render_and_save()
+
     def resized(self, top_frame, top_sys_btns, event):
         waterline = top_frame.y() + top_frame.height()
-        self.communication.resized.emit(self.width(), waterline, top_sys_btns.width())
+        self.communication.resized.emit(self.width(), waterline, top_sys_btns.height())
 
     def keyPressEvent(self, event):
         mods = event.modifiers()
         if (mods & QtCore.Qt.ControlModifier and self.frames_layout.currentIndex() == self.data_frame_index):
             if event.text() is '':
                 self.communication.ctrl_hotkey.emit(True)
+                return
             elif event.key() == Qt.Key_Return:
-                pass
+                self.communication.menu_btn_clicked.emit(self.data_frame_index + 1)
 
     def keyReleaseEvent(self, event):
         if (event.text() is ''):

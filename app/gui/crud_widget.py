@@ -1,9 +1,11 @@
+import os
 import functools
 
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import (QWidget, QFrame, QLineEdit, QPushButton, QHBoxLayout,
                              QComboBox, QLabel, QVBoxLayout, QGroupBox, QScrollArea)
 
+import options
 from gui import utils
 from model import db
 
@@ -14,16 +16,14 @@ class CrudWidget(QFrame):
         super().__init__(main_window)
         self.setFixedSize(main_window.size())
         self.show()
-        self.main_window = main_window
-        self.move(0, main_window.top_sys_btns.height())
-        main_window.com
+        self.move(self.x(), 50)
         self.raise_()
-        CrudWidgetContent(self, model, callback, item)
+        CrudWidgetContent(self, main_window, model, callback, item)
 
 
 class CrudWidgetContent(QFrame):
 
-    def __init__(self, parent, model, callback, item=None):
+    def __init__(self, parent, main_window, model, callback, item=None):
 
         super().__init__(parent)
 
@@ -32,24 +32,27 @@ class CrudWidgetContent(QFrame):
         self.foreigns = {}
         self.model = model
         self.item = item
-        self.parent = parent
         self.created_items = []
+        self._close = self._get_close_function(parent)
 
-        self._create_layout()
+        self._create_layout(main_window)
 
     def _get_controls_layout(self, layout):
         hbox = QHBoxLayout()
+        hbox.addStretch()
         hbox.setContentsMargins(0, 0, 0, 0)
         hbox.setSpacing(0)
 
         args = ((' Сохранить', ' Закрыть'),
                 ('save', 'close'),
+                ('pencil.png', 'close.png'),
                 (self._save, self._close))
 
-        for l, n, f in zip(*args):
+        for l, n, i, f in zip(*args):
             b = QPushButton(l)
             b.clicked.connect(f)
             b.setObjectName(n)
+            b.setIcon(QIcon(os.path.join(options.STATIC_DIR, 'icons', i)))
             b.setGraphicsEffect(utils.get_shadow())
             hbox.addWidget(b)
 
@@ -60,10 +63,9 @@ class CrudWidgetContent(QFrame):
             b.setGraphicsEffect(utils.get_shadow())
             hbox.addWidget(b)
 
-        hbox.addStretch()
         return hbox
 
-    def _create_layout(self):
+    def _create_layout(self, main_window):
         layout = QVBoxLayout()
         self.setLayout(layout)
         layout.setContentsMargins(30, 10, 30, 10)
@@ -74,7 +76,7 @@ class CrudWidgetContent(QFrame):
         layout.addWidget(l)
 
         scrollable = QVBoxLayout()
-        for row in self._get_rows(self.model):
+        for row in self._get_rows(self.model, main_window):
             for w in row:
                 scrollable.addWidget(w)
 
@@ -88,13 +90,12 @@ class CrudWidgetContent(QFrame):
         self.show()
         self.raise_()
         # self.setFixedWidth(groupbox.width() * 2)
-        # self.setFixedHeight(self.parent.main_window.height() - 200)
-        self.move((self.parent.width() - self.width()) / 2,
-                  (self.parent.height() - self.height()) / 2)
+        self.move((main_window.width() - self.width()) / 2,
+                  (main_window.height() - self.height()) / 2)
 
         self._check_input()
 
-    def _get_combobox(self, column, relations):
+    def _get_combobox(self, column, relations, main_window):
 
         label = column.name
         if label.endswith('_id'):
@@ -113,17 +114,17 @@ class CrudWidgetContent(QFrame):
         hbox.setContentsMargins(0, 0, 0, 0)
         hbox.setSpacing(0)
         hbox.addWidget(combo_box, stretch=95)
-        for icon, new in zip(('pencil_g', 'plus'), (False, True)):
+        for icon, new in zip(('pencil_g.png', 'plus.png'), (False, True)):
             b = QPushButton()
             b.setObjectName('icon')
-            b.setIcon(QIcon('gui/static/icons/{}.png'.format(icon)))
+            b.setIcon(QIcon(os.path.join(options.STATIC_DIR, 'icons', icon)))
             b.clicked.connect(functools.partial(
-                self.open_crud, foreign_model, new, combo_box))
+                self.open_crud, main_window, foreign_model, new, combo_box))
             hbox.addWidget(b, stretch=2)
         widget.setLayout(hbox)
         return label, widget
 
-    def _get_rows(self, model):
+    def _get_rows(self, model, main_window):
         """
         Default row for a form is QLabel, QLineEdit
         But for foreign fields it's QComboBox
@@ -135,7 +136,7 @@ class CrudWidgetContent(QFrame):
                 continue
 
             if column.foreign_keys:
-                label, widget = self._get_combobox(column, model.__mapper__.relationships)
+                label, widget = self._get_combobox(column, model.__mapper__.relationships, main_window)
             else:
                 label = column.name
                 widget = QLineEdit()
@@ -150,9 +151,11 @@ class CrudWidgetContent(QFrame):
         self.item.delete()
         self._close()
 
-    def _close(self):
-        self.callback(self.created_items)
-        self.parent.deleteLater()
+    def _get_close_function(self, parent):
+        def _close():
+            self.callback(self.created_items)
+            parent.deleteLater()
+        return _close
 
     def _save(self, event=None):
         kwargs = {}
@@ -192,7 +195,7 @@ class CrudWidgetContent(QFrame):
                 self.foreigns[combo_box.objectName()].append(item)
                 combo_box.setCurrentIndex(combo_box.count() - 1)
 
-    def open_crud(self, model, new, combo_box):
+    def open_crud(self, main_window, model, new, combo_box):
 
         item = None
         if not new:
@@ -200,7 +203,5 @@ class CrudWidgetContent(QFrame):
             if index == -1:
                 return
             item = self.foreigns[combo_box.objectName()][index]
-        CrudWidget(self.parent.main_window,
-                   model,
-                   functools.partial(self._add_foreign_item, combo_box),
-                   item)
+
+        main_window.create_crud_widget(model, functools.partial(self._add_foreign_item, combo_box), item)

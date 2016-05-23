@@ -39,9 +39,16 @@ TRANSLATION = (
 BASE_DIR = os.path.dirname(__file__)
 DATABASE = os.path.join(BASE_DIR, 'data.db')
 
+# klient left here intentionally
+CLIENT_TABLE_NAME = 'klient'
+
 CONCLUSION = 'Заключение: '
 
 STATIC_DIR = os.path.join(BASE_DIR, 'gui', 'static')
+REPORTS_DIR = os.path.join(BASE_DIR, 'reports')
+
+if not os.path.exists(REPORTS_DIR):
+    os.makedirs(REPORTS_DIR)
 
 TYPES = {
     'str': str,

@@ -1,17 +1,17 @@
+import os
 import functools
 
-from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import (QWidget, QFrame, QVBoxLayout, QHBoxLayout,
-                             QLabel, QGridLayout, QGraphicsDropShadowEffect,
-                             QGroupBox, QScrollArea, QPushButton, QScrollBar)
+                             QLabel, QGridLayout, QPushButton)
 
+import options
 from model import db
+from gui import utils
 
 
 class DBWidget(QFrame):
 
-    # ACTION_BTN_ICON = 'plus'
     ITEMS_PER_PAGE = 50
 
     def __init__(self, main_window):
@@ -27,42 +27,24 @@ class DBWidget(QFrame):
         self.layout = QGridLayout()
         self.header_layout = QGridLayout()
         self.control_layout = QHBoxLayout()
-        content_widget = QWidget()
-        # content_widget.setLayout(self.layout)
         self.layout.setContentsMargins(0, 0, 0, 0)
         self.layout.setSpacing(0)
         vbox = QVBoxLayout()
         vbox.setSpacing(0)
         vbox.addLayout(self.header_layout)
-        vbox.addWidget(content_widget)
-        # vbox.addStretch()
+        vbox.addWidget(utils.get_scrollable(self.layout))
         vbox.addLayout(self.control_layout)
         self.setLayout(vbox)
 
-        groupbox = QGroupBox()
-
-        groupbox.setLayout(self.layout)
-        scroll = QScrollArea()
-        scroll.setWidget(groupbox)
-        scroll.setWidgetResizable(True)
-        scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        this_vbox = QVBoxLayout(content_widget)
-        this_vbox.addWidget(scroll)
-
         self.control_layout.addStretch()
-        for icon, direciton in zip(('left', 'right'), (-1, 1)):
+        for icon, direciton in zip(('left.png', 'right.png'), (-1, 1)):
             b = QPushButton()
-            b.setIcon(QIcon('gui/static/icons/{}.png'.format(icon)))
+            b.setIcon(QIcon(os.path.join(options.STATIC_DIR, 'icons', icon)))
             b.clicked.connect(functools.partial(self._move, direciton))
             b.setObjectName(icon)
             self.control_layout.addWidget(b)
-
-        shadow = QGraphicsDropShadowEffect()
-        shadow.setBlurRadius(10)
-        shadow.setXOffset(0)
-        shadow.setYOffset(0)
-        self.setGraphicsEffect(shadow)
+        self.setGraphicsEffect(utils.get_shadow())
+        main_window.communication.action_button_toggle.emit(False, None, None)
 
     def showEvent(self, event):
         if not self.items:
@@ -105,6 +87,3 @@ class DBWidget(QFrame):
     def _add_row(self, row_id, item):
         for j, c in enumerate(self.columns):
             self.layout.addWidget(QLabel(str(getattr(item, c))), row_id, j)
-
-    def action_btn_function(self):
-        print('db')
