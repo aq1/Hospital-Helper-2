@@ -4,6 +4,10 @@
 		"selected_items":
 		[
 			[
+				"text",
+				"text_edit	param"
+			],
+			[
 				"iso",
 				"isoformat	function"
 			],
@@ -510,15 +514,35 @@
 			[
 				"fore",
 				"foreign_keys"
-			],
-			[
-				"Ql",
-				"QLineEdit	class"
 			]
 		]
 	},
 	"buffers":
 	[
+		{
+			"file": "app/gui/template_widget.py",
+			"settings":
+			{
+				"buffer_size": 11381,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "n.py",
+			"settings":
+			{
+				"buffer_size": 6395,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "app/gui/main.py",
+			"settings":
+			{
+				"buffer_size": 7731,
+				"line_ending": "Windows"
+			}
+		}
 	],
 	"build_system": "",
 	"build_system_choices":
@@ -563,17 +587,17 @@
 	"build_varint": "",
 	"command_palette":
 	{
-		"height": 567.0,
-		"last_filter": "",
+		"height": 247.0,
+		"last_filter": "insta",
 		"selected_items":
 		[
 			[
-				"css",
-				"Set Syntax: CSS"
-			],
-			[
 				"insta",
 				"Package Control: Install Package"
+			],
+			[
+				"css",
+				"Set Syntax: CSS"
 			],
 			[
 				"py",
@@ -630,10 +654,12 @@
 	[
 		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2",
 		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app",
-		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/gui/static"
+		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/gui"
 	],
 	"file_history":
 	[
+		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/gui/crud_widget.py",
+		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/gui/db_widget.py",
 		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/model/db.py",
 		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/.gitignore",
 		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/options.py",
@@ -642,12 +668,10 @@
 		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/reports/2016/05/24/43 434 4343.odt",
 		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/main.py",
 		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/model/logic.py",
-		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/gui/db_widget.py",
 		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/gui/template_widget.py",
 		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/model/template.py",
 		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/gui/users_widget.py",
 		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/gui/static/style/crud_widget.qss",
-		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/gui/crud_widget.py",
 		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/gui/options_widget.py",
 		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/gui/static/style/base.qss",
 		"/C/Users/Jack/Documents/GitHub/Hospital-Helper-2/app/gui/data_widget.py",
@@ -782,6 +806,9 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			".length",
+			"length",
+			"PyQt4",
 			"Client",
 			"CalculableObject",
 			"klient",
@@ -906,10 +933,7 @@
 			"action_button",
 			"menu_button_clicked",
 			"toggle_select_item",
-			"_set_shortcuts",
-			"user_sel",
-			"data_w",
-			"user_selected"
+			"_set_shortcuts"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -917,6 +941,7 @@
 		"regex": false,
 		"replace_history":
 		[
+			"PyQt5",
 			"frames_layout",
 			"menu_btn_clicked",
 			"main_window",
@@ -979,8 +1004,97 @@
 	"groups":
 	[
 		{
+			"selected": 1,
 			"sheets":
 			[
+				{
+					"buffer": 0,
+					"file": "app/gui/template_widget.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 11381,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								594,
+								594
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "n.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 6395,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								5251,
+								5251
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 4014.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "app/gui/main.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 7731,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								254,
+								266
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				}
 			]
 		}
 	],
@@ -1023,11 +1137,11 @@
 	{
 		"height": 0.0
 	},
-	"pinned_build_system": "Packages/User/Hospital-Helper-2.sublime-build",
+	"pinned_build_system": "Packages/Python/Python.sublime-build",
 	"project": "hh.sublime-project",
 	"replace":
 	{
-		"height": 66.0
+		"height": 94.0
 	},
 	"save_all_on_build": true,
 	"select_file":

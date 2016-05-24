@@ -2,6 +2,7 @@ import copy
 import functools
 
 from PyQt5.Qt import QColor, Qt, QTextCursor
+from PyQt5.QtGui import QSyntaxHighlighter, QTextCharFormat
 from PyQt5.QtWidgets import (QFrame, QHBoxLayout, QLabel, QGridLayout,
                              QStackedLayout, QVBoxLayout, QPushButton,
                              QTextEdit, QWidget, QGroupBox, QScrollArea,
@@ -10,6 +11,23 @@ from PyQt5.QtWidgets import (QFrame, QHBoxLayout, QLabel, QGridLayout,
 from model import template as template_module
 
 from gui import utils
+
+
+class SyntaxHighlighter(QSyntaxHighlighter):
+
+    def __init__(self, text_edit):
+        super().__init__(text_edit)
+
+        keyword = self._get_keyword_format()
+
+
+
+    @staticmethod
+    def _get_keyword_format():
+        keyword = QTextCharFormat()
+        keyword.setForeground(Qt.darkBlue)
+        keyword.setBackground(Qt.lightGray)
+        return keyword
 
 
 class TemplateTextEdit(QTextEdit):
