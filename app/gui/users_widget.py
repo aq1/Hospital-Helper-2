@@ -1,8 +1,7 @@
 import functools
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import (QFrame, QGroupBox, QVBoxLayout, QLabel,
-                             QScrollArea, QRadioButton, QGraphicsDropShadowEffect,
+from PyQt5.QtWidgets import (QFrame, QVBoxLayout, QLabel, QRadioButton,
                              QHBoxLayout, QPushButton)
 
 from model import db
@@ -11,6 +10,10 @@ from gui.crud_widget import CrudWidget
 
 
 class UsersWidget(QFrame):
+
+    """
+    Widget for selecting and creating Users.
+    """
 
     ACTION_BTN_ICON = 'check'
 
@@ -43,10 +46,11 @@ class UsersWidget(QFrame):
         vbox.addLayout(control_layout)
         self.setGraphicsEffect(utils.get_shadow())
 
-    def create_crud_widget(self, base, callback=None, db_object=None):
-        CrudWidget(self, base, callback, db_object)
-
     def _update_content(self, *args):
+        """
+        If new user or organization were created, update content.
+        """
+
         utils.clear_layout(self.content_layout)
         self.users = db.SESSION.query(db.User).all()
         organizations = db.SESSION.query(db.Organization).all()
@@ -70,14 +74,23 @@ class UsersWidget(QFrame):
         return b
 
     def _get_label(self, item):
+        """
+        Add label for organization.
+        """
         l = QLabel(item.name)
         l.setObjectName(str(item.id))
         return l
 
     def _button_clicked(self, user, event):
+        """
+        Select user.
+        """
         self.main_window.user_selected(user)
 
     def action_btn_function(self):
+        """
+        Select user when ActionButton is clicked.
+        """
         for i, b in enumerate(self.findChildren(QRadioButton)):
             if b.isChecked():
                 self.main_window.user_selected(self.users[i])

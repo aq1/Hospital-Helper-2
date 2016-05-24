@@ -3,7 +3,7 @@ import functools
 
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import (QWidget, QFrame, QLineEdit, QPushButton, QHBoxLayout,
-                             QComboBox, QLabel, QVBoxLayout, QGroupBox, QScrollArea)
+                             QComboBox, QLabel, QVBoxLayout)
 
 import options
 from gui import utils
@@ -11,6 +11,11 @@ from model import db
 
 
 class CrudWidget(QFrame):
+
+    """
+    Wrapper for CrudWidgetContent.
+    Shadows the application.
+    """
 
     def __init__(self, main_window, model, callback=None, item=None):
         super().__init__(main_window)
@@ -25,6 +30,10 @@ class CrudWidgetContent(QFrame):
 
     def __init__(self, parent, main_window, model, callback, item=None):
 
+        """
+        Widget for CRUD operations on model instances.
+        """
+
         super().__init__(parent)
 
         self.callback = callback
@@ -36,8 +45,13 @@ class CrudWidgetContent(QFrame):
         self._close = self._get_close_function(parent)
 
         self._create_layout(main_window)
+        self._check_input()
 
     def _get_controls_layout(self, layout):
+        """
+        Return buttons layout
+        """
+
         hbox = QHBoxLayout()
         hbox.addStretch()
         hbox.setContentsMargins(0, 0, 0, 0)
@@ -66,6 +80,10 @@ class CrudWidgetContent(QFrame):
         return hbox
 
     def _create_layout(self, main_window):
+        """
+        Create main layout of widget.
+        """
+
         layout = QVBoxLayout()
         self.setLayout(layout)
         layout.setContentsMargins(30, 10, 30, 10)
@@ -93,9 +111,11 @@ class CrudWidgetContent(QFrame):
         self.move((main_window.width() - self.width()) / 2,
                   (main_window.height() - self.height()) / 2)
 
-        self._check_input()
-
     def _get_combobox(self, column, relations, main_window):
+
+        """
+        Return combobox for foreign fields.
+        """
 
         label = column.name
         if label.endswith('_id'):
@@ -148,16 +168,28 @@ class CrudWidgetContent(QFrame):
             yield QLabel(_(label)), widget
 
     def _delete(self):
+        """
+        Delete item.
+        """
+
         self.item.delete()
         self._close()
 
     def _get_close_function(self, parent):
+        """
+        Delete widget.
+        """
+
         def _close():
             self.callback(self.created_items)
             parent.deleteLater()
         return _close
 
     def _save(self, event=None):
+        """
+        Save instance.
+        """
+
         kwargs = {}
         for each in self.findChildren(QLineEdit):
             kwargs[each.objectName()] = each.text()
@@ -175,10 +207,18 @@ class CrudWidgetContent(QFrame):
         self._close()
 
     def _check_input(self):
+        """
+        Disable 'save' button if not all mandatory fields are filled.
+        """
+
         self.findChild(QPushButton, name='save').setDisabled(
             not all([each.text() for each in self.findChildren(QLineEdit)]))
 
     def _add_foreign_item(self, combo_box, items):
+        """
+        Add new instance for combobox.
+        """
+
         for item in items:
             created = True
             for i, each in enumerate(self.foreigns[combo_box.objectName()]):
@@ -196,6 +236,10 @@ class CrudWidgetContent(QFrame):
                 combo_box.setCurrentIndex(combo_box.count() - 1)
 
     def open_crud(self, main_window, model, new, combo_box):
+
+        """
+        Open another crud window for foreign instance.
+        """
 
         item = None
         if not new:

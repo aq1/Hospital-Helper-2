@@ -36,6 +36,10 @@ class TopSystemButtons(QFrame):
 
     def _get_move_function(self, main_window):
 
+        """
+        Move the window.
+        """
+
         def _f(event):
             if not self.move_offset:
                 return
@@ -49,6 +53,10 @@ class TopSystemButtons(QFrame):
         return _f
 
     def set_title(self, user):
+        """
+        Change title when user is selected.
+        """
+
         self.title.setText('{} {}. {}.'.format(user.surname, user.name[0], user.patronymic[0]))
 
     def mousePressEvent(self, event):

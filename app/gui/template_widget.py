@@ -14,6 +14,10 @@ from gui import utils
 
 class TemplateTextEdit(QTextEdit):
 
+    """
+    Custom widget with syntax highlighting and custom controls.
+    """
+
     BACKGROUND_COLOR = 221, 221, 221
 
     def __init__(self):
@@ -100,6 +104,10 @@ class TemplateEditingWidget(QFrame):
         layout.addWidget(self._get_control_layout(), stretch=20)
 
     def _get_control_layout(self):
+        """
+        Create static layout.
+        """
+
         widget = QWidget()
         vbox = QVBoxLayout()
         widget.setLayout(vbox)
@@ -125,6 +133,10 @@ class TemplateEditingWidget(QFrame):
         return widget
 
     def _get_text_layout(self):
+        """
+        Create TextEdit widgets.
+        """
+
         layout = QVBoxLayout()
         self.template_text_edit = TemplateTextEdit()
         self.conclusion_text_edit = QTextEdit()
@@ -140,9 +152,18 @@ class TemplateEditingWidget(QFrame):
         return layout
 
     def _get_all_text_fields(self):
+        """
+        Get all TextEdit fields.
+        """
+
         return self.name_text_edit, self.template_text_edit, self.conclusion_text_edit
 
     def _show(self, item, template=None):
+        """
+        Fill TextEdit fields with template data if it was provided.
+        Add menu buttons with item attributes.
+        """
+
         for name in item.keys():
             b = QPushButton(_(name))
             b.clicked.connect(functools.partial(self.template_text_edit.insert_attribute, name))
@@ -156,11 +177,18 @@ class TemplateEditingWidget(QFrame):
             w.setText(t)
 
     def hideEvent(self, event):
+        """
+        Clear layout.
+        """
+
         for w in (self._get_all_text_fields()):
             w.setText('')
         utils.clear_layout(self.controls_layout)
 
     def _save(self, event):
+        """
+        Save template.
+        """
         pass
 
 
@@ -197,6 +225,10 @@ class TemplateWidget(QFrame):
         self.layout.addWidget(self.template_editing_widget)
 
     def _get_static_widgets(self):
+        """
+        Create layout that does not depend on content.
+        """
+
         hbox = QHBoxLayout()
         hbox.addWidget(utils.get_scrollable(self.menu_layout), stretch=30)
         hbox.addLayout(self.templates_layout, stretch=70)
@@ -206,6 +238,10 @@ class TemplateWidget(QFrame):
         return widget
 
     def _iterate_items(self):
+        """
+        If widget was created for selection, filter items if they has no values.
+        Otherwise return all items.
+        """
         if not self.widget_for_select:
             return self.items
 
@@ -219,6 +255,9 @@ class TemplateWidget(QFrame):
         return items
 
     def _get_double_click(self, main_window):
+        """
+        If widget was created for editing, open TemplateEditingWidget with provided template.
+        """
         def _func(index, template=None, event=None):
             self.layout.setCurrentIndex(1)
             self.template_editing_widget._show(self.items[index], template)
@@ -227,11 +266,19 @@ class TemplateWidget(QFrame):
         return _func
 
     def _hide_event(self, event):
+        """
+        Clear menu and templates.
+        """
+
         utils.clear_layout(self.menu_layout)
         utils.clear_layout(self.templates_layout)
         self.layout.setCurrentIndex(0)
 
     def _get_show_event(self, main_window):
+        """
+        Update templates list and re-select them.
+        """
+
         def show_event(event):
             self.visible_items = self._iterate_items()
             self._show_menu()
@@ -241,6 +288,10 @@ class TemplateWidget(QFrame):
         return show_event
 
     def _show_menu(self):
+        """
+        Update menu on showEvent.
+        """
+
         items = self.visible_items
         for i, item in enumerate(items):
             b = QRadioButton(self._get_button_name(item))
@@ -258,6 +309,10 @@ class TemplateWidget(QFrame):
         self.menu_layout.addStretch()
 
     def _show_templates(self):
+        """
+        Update templates on shoeEvent.
+        """
+
         cols = 3
         templates = template_module.Template.get_all()
 
@@ -273,6 +328,12 @@ class TemplateWidget(QFrame):
             self.templates_layout.addWidget(utils.get_scrollable(grid))
 
     def _template_selected_for_report(self, index, template):
+
+        """
+        Change menu item name.
+        Add template for the item.
+        """
+
         self.visible_items[index].template = template
         buttons = self.findChildren(QRadioButton, name='menu_button')
         buttons[index].setText(self._get_button_name(self.visible_items[index]))
@@ -285,12 +346,17 @@ class TemplateWidget(QFrame):
                 return
 
     def _create_template(self):
-        self._template_selected_for_editing(self.menu_layout.currentIndex())
-
-    def _create_report(self):
-        print('report!')
+        """
+        Open TemplateEditingWidget without template.
+        """
+        pass
 
     def _get_button_name(self, item):
+
+        """
+        If widget was created for select, label contains item name and template name.
+        Otherwise only item name.
+        """
 
         if item.template and self.widget_for_select:
             return '{} - {}'.format(_(item.name), item.template.name)

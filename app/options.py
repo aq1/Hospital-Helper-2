@@ -47,9 +47,6 @@ CONCLUSION = 'Заключение: '
 STATIC_DIR = os.path.join(BASE_DIR, 'gui', 'static')
 REPORTS_DIR = os.path.join(BASE_DIR, 'reports')
 
-if not os.path.exists(REPORTS_DIR):
-    os.makedirs(REPORTS_DIR)
-
 TYPES = {
     'str': str,
     'float': float,

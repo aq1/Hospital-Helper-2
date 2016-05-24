@@ -23,6 +23,9 @@ from gui.crud_widget import CrudWidget
 
 
 class Communication(QObject):
+    """
+    Object defines signals for application.
+    """
 
     user_selected = pyqtSignal(object)
     menu_btn_clicked = pyqtSignal(int)
@@ -37,8 +40,18 @@ class Communication(QObject):
 
 
 class MainWindow(QWidget):
+    """
+    Root widget for application.
+    Handles signals.
+    """
 
     def __init__(self, items):
+        """
+        Init gui.
+        Connect signals.
+        Create layout.
+        """
+
         super().__init__()
 
         self.items = items
@@ -56,6 +69,10 @@ class MainWindow(QWidget):
         self.show()
 
     def _create_layout(self):
+        """
+        Add TopFrame and main frames.
+        """
+
         vbox = QVBoxLayout()
         vbox.setContentsMargins(0, 0, 0, 0)
         vbox.setSpacing(0)
@@ -68,6 +85,10 @@ class MainWindow(QWidget):
         self.show()
 
     def _add_frames(self):
+        """
+        Add frames to stacked layout.
+        """
+
         frames = [
             DataWidget(self, self.items),
             TemplateWidget(self, self.items, widget_for_select=True),
@@ -84,6 +105,12 @@ class MainWindow(QWidget):
         self.frames_layout.setCurrentIndex(len(frames) - 1)
 
     def _set_sys_attributes(self):
+        """
+        Set sys attributes like window titile.
+        Disable OS-specific buttons.
+        Remove borders.
+        """
+
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
         self.setWindowTitle('Hospital Helper')
         dw = QDesktopWidget()
@@ -95,6 +122,10 @@ class MainWindow(QWidget):
         self.move(qr.topLeft())
 
     def menu_btn_clicked(self, index):
+        """
+        Callback to switch between main frames.
+        """
+
         if self.frames_layout.currentIndex() == index == self.data_frame_index:
             self.communication.toggle_select_item.emit()
             return
@@ -103,6 +134,11 @@ class MainWindow(QWidget):
         self.frames_layout.setCurrentIndex(index)
 
     def input_changed(self, item):
+        """
+        Change TopFrame label when client name is changed.
+        Emit signal for TopFrame.
+        """
+
         # Well it doesnt look good, but i was never good with UI.
         if self.items.index(item) == 0:
             text = []
@@ -115,6 +151,9 @@ class MainWindow(QWidget):
             self.communication.input_changed_signal.emit(' '.join(text))
 
     def _set_shortcuts(self):
+        """
+        Set shortcuts for fast items switch on DataWidget.
+        """
 
         def _shortcut_callback(key):
             if self.frames_layout.currentIndex() != self.data_frame_index:
@@ -128,23 +167,48 @@ class MainWindow(QWidget):
                 functools.partial(_shortcut_callback, key))
 
     def create_crud_widget(self, model, callback, db_object=None):
+        """
+        Add CrudWidget with self as parent
+        """
+
         CrudWidget(self, model, callback, db_object)
 
     def user_selected(self, user):
+        """
+        Callback when user is selected.
+        Sets user, emits signal.
+        """
+
         self.user = user
         self.communication.user_selected.emit(user)
         self.communication.menu_btn_clicked.emit(self.data_frame_index)
         self._set_shortcuts()
 
     def create_report(self):
+        """
+        Render and save report.
+        Open report in default OS program.
+        """
+
         r = report.Report(self.user, self.items)
         r.render_and_save()
 
     def resized(self, top_frame, top_sys_btns, event):
+        """
+        Called when window is resized.
+        Calculates Y position of the border between TopFrame and DataFrame
+        """
+
         waterline = top_frame.y() + top_frame.height()
         self.communication.resized.emit(self.width(), waterline, top_sys_btns.height())
 
     def keyPressEvent(self, event):
+        """
+        If key is Ctrl - toggle SelectItemMenu visibility.
+        If key is Ctrl+Return - opens ReportFrame
+        Emits signal.
+        """
+
         mods = event.modifiers()
         if (mods & QtCore.Qt.ControlModifier and self.frames_layout.currentIndex() == self.data_frame_index):
             if event.text() is '':
@@ -154,17 +218,33 @@ class MainWindow(QWidget):
                 self.communication.menu_btn_clicked.emit(self.data_frame_index + 1)
 
     def keyReleaseEvent(self, event):
-        if (event.text() is ''):
+        """
+        If key is Ctrl - toggle SelectItemMenu visibility.
+        """
+
+        if event.text() is '':
             self.communication.ctrl_hotkey.emit(False)
 
     def close(self, event=None):
+        """
+        Close the application
+        """
+
         QCoreApplication.instance().quit()
 
     def minimize(self, event=None):
+        """
+        Minimize the application
+        """
+
         self.setWindowState(Qt.WindowMinimized)
 
 
 def init(items):
+    """
+    Init gui.
+    Concat all files from style directory and apply stylesheet.
+    """
     app = QApplication(sys.argv)
     # splash_img = QPixmap(os.path.join(options.STATIC_DIR, 'splash.png'))
     # splash = QSplashScreen(splash_img)

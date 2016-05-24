@@ -1,8 +1,16 @@
+"""
+Module for common gui operations.
+"""
+
 from PyQt5.Qt import Qt
 from PyQt5.QtWidgets import QVBoxLayout, QWidget, QGroupBox, QScrollArea, QGraphicsDropShadowEffect
 
 
 def get_scrollable(layout):
+    """
+    Convert layout to a scrollable widget.
+    """
+
     widget = QWidget()
 
     groupbox = QGroupBox()
@@ -23,6 +31,10 @@ def get_scrollable(layout):
 
 
 def get_shadow():
+    """
+    Returns shadow effect.
+    """
+
     shadow = QGraphicsDropShadowEffect()
     shadow.setBlurRadius(10)
     shadow.setXOffset(0)
@@ -31,6 +43,10 @@ def get_shadow():
 
 
 def clear_layout(layout):
+    """
+    Delete everything from the given layout.
+    """
+
     for i in reversed(range(layout.count())):
         item = layout.takeAt(i)
         try:

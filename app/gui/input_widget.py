@@ -8,7 +8,9 @@ from PyQt5.QtWidgets import (QFrame, QHBoxLayout, QLabel,
 class InputWidget(QFrame):
 
     """
-    Input contains QLabel and QLineEdit
+    Input contains QLabel and QLineEdit.
+    Represents single attribute in CalculableObject object.
+    Does not show private attributes that starts from '_'
     """
 
     def __init__(self, parent, label_text):

@@ -13,7 +13,17 @@ class SelectMenu(QWidget):
 
     BUTTON_SELECTED_QSS = "color: white; padding-bottom: 23px; border-bottom: 2px solid #FFEB3B;"
 
+    """
+    Line of buttons on TopFrame.
+    Used to navigate between frames and items on DataFrame.
+    """
+
     def __init__(self, main_window, items):
+
+        """
+        Connects to menu_btn_clicked signal
+        and also emits it when button is clicked.
+        """
 
         super().__init__()
         self.hide()
@@ -45,6 +55,10 @@ class SelectMenu(QWidget):
         hbox.addStretch()
 
     def _item_selected(self, index):
+        """
+        Change style of selected button.
+        """
+
         for each in self.buttons:
             each.setStyleSheet('')
 
@@ -55,10 +69,22 @@ class SelectMenu(QWidget):
         self.raise_()
 
     def set_item_label(self, text):
+        """
+        Change label of button that holds items.
+        """
+
         self.buttons[0].setText(_(text))
 
 
 class SelectItemMenu(QFrame):
+
+    """
+    Float frame.
+    Holds names of items.
+    Used for navigation.
+    Opens on Ctrl key when DataFrame is visible.
+    Shows shortcuts to fast switching between items.
+    """
 
     def __init__(self, main_window, select_menu, items):
 
@@ -97,14 +123,25 @@ class SelectItemMenu(QFrame):
 
         self.setGraphicsEffect(utils.get_shadow())
 
-    def _move(self, width, waterline):
+    def _move(self, width, waterline, top_sys_btns_height):
+        """
+        Move to the border between TopFrame and DataFrame.
+        """
         self.move(20, waterline)
 
     def _get_hints_list(self):
+        """
+        Returns list of keys to show near item labels.
+        """
+
         return [(key, getattr(Qt, 'Key_{}'.format(key), -1))
                 for key in '12345qwertsdfgcv'.upper()]
 
     def _get_btn_clicked_func(self, main_window, select_menu):
+
+        """
+        Emit signal when item is selected.
+        """
 
         def _btn_clicked(index):
             select_menu.set_item_label(_(self.items[index].name))
@@ -125,6 +162,11 @@ class SelectItemMenu(QFrame):
         self.hide()
 
     def _show_with_hints(self, is_visible):
+        """
+        Calls when Ctrl is pressed on DataWidget.
+        Show widget with hints.
+        """
+
         for i, item in enumerate(zip(self.hints_labels, self.findChildren(QPushButton))):
             x = item[1].x() + item[1].width() - 80
             item[0].move(x, item[1].y())
@@ -135,11 +177,19 @@ class SelectItemMenu(QFrame):
             self.set_visible(is_visible)
 
     def _select_for_shortcut(self, key):
+        """
+        If shortcut is valid imitates button click on required item.
+        """
+
         index = self._get_item_index_by_key(key)
         if index is not None:
             self._btn_clicked_func(index)
 
     def _get_item_index_by_key(self, key):
+        """
+        Return index of item by the given shortcut key.
+        """
+
         for i, hint in enumerate(self.HINTS):
             if hint[0] == key:
                 return i

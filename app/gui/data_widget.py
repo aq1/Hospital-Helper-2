@@ -7,6 +7,10 @@ class DataWidget(QFrame):
 
     def __init__(self, main_window, items):
 
+        """
+        Widget contains items with inputs.
+        """
+
         super().__init__(main_window)
 
         stacked_layout = QStackedLayout()
@@ -19,8 +23,11 @@ class DataWidget(QFrame):
             frame = AttributesFrame(main_window=main_window, item=item)
             stacked_layout.addWidget(frame)
 
-    def _get_show_event(self, main_window):
-
+    @staticmethod
+    def _get_show_event(main_window):
+        """
+        Emit signal to hide ActionButton.
+        """
         def show_event(event):
             main_window.communication.action_button_toggle.emit(False, None, None)
 

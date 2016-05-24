@@ -16,6 +16,10 @@ class DBWidget(QFrame):
 
     def __init__(self, main_window):
 
+        """
+        Widget to show data in model.
+        """
+
         super().__init__(main_window)
 
         self.items = []
@@ -47,16 +51,28 @@ class DBWidget(QFrame):
         main_window.communication.action_button_toggle.emit(False, None, None)
 
     def showEvent(self, event):
+        """
+        On each show data is refreshing.
+        """
+
         if not self.items:
             self.items = db.SESSION.query(self.model).order_by(self.model.id.desc())
 
         self.display_model()
 
     def hideEvent(self, event):
+        """
+        Delete db items.
+        """
+
         self.items = None
 
     def display_model(self):
-        self._clear_layout()
+        """
+        Clear widget and display items.
+        """
+
+        utils.clear_layout(self.layout)
 
         self.columns = []
         j = 0
@@ -73,6 +89,10 @@ class DBWidget(QFrame):
             self._add_row(i, item)
 
     def _move(self, direction):
+        """
+        Navigate between pages.
+        """
+
         index = max(self.current_items_index + self.ITEMS_PER_PAGE * direction, 0)
         if index >= self.items.count():
             return
@@ -80,10 +100,10 @@ class DBWidget(QFrame):
         self.current_items_index = index
         self.display_model()
 
-    def _clear_layout(self):
-        for i in reversed(range(self.layout.count())):
-            self.layout.itemAt(i).widget().deleteLater()
-
     def _add_row(self, row_id, item):
+        """
+        Create row for item.
+        """
+
         for j, c in enumerate(self.columns):
             self.layout.addWidget(QLabel(str(getattr(item, c))), row_id, j)
