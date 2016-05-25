@@ -56,6 +56,11 @@ AbstractTemplateWidget QLabel {
     font-size: 11pt;
 }
 
+TemplateEditingWidget QLabel {
+    background-color: white;
+    padding: 10px 5px;
+}
+
 TemplateEditingWidget QPushButton#controls {
     padding: 10px 30px;
     color: white;

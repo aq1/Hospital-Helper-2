@@ -98,6 +98,9 @@ class TemplateEditingWidget(QFrame):
         widget.setLayout(vbox)
         vbox.setContentsMargins(0, 0, 0, 0)
 
+        self.template_label = QLabel()
+        vbox.addWidget(self.template_label)
+
         scrollable_vbox = utils.get_scrollable(self.controls_layout)
         vbox.addWidget(scrollable_vbox, stretch=80)
 
@@ -156,6 +159,7 @@ class TemplateEditingWidget(QFrame):
             self.item = item
             self.template = template
 
+            self.template_label.setText(_(item.name))
             if not self.template:
                 return
 
