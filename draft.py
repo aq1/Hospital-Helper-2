@@ -1,4 +1,3 @@
-
 '''
 Python Syntax Highlighting Example
 
@@ -20,11 +19,12 @@ Street, Fifth Floor, Boston, MA  02110-1301, USA
 '''
 
 import sys
-from PyQt4.QtGui import *
-from PyQt4.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
+from PyQt5.QtWidgets import *
+
 
 class MyHighlighter(QSyntaxHighlighter):
-
     def __init__(self, parent, theme):
         QSyntaxHighlighter.__init__(self, parent)
 
@@ -35,9 +35,9 @@ class MyHighlighter(QSyntaxHighlighter):
         self.keyword = QTextCharFormat()
         self.keyword.setForeground(brush)
         self.keyword.setFontWeight(QFont.Bold)
-        keywords = QStringList(["break", "else", "for", "if", "in",
-                                      "next", "repeat", "return", "switch",
-                                      "try", "while"])
+        keywords = (["break", "else", "for", "if", "in",
+                     "next", "repeat", "return", "switch",
+                     "try", "while"])
 
         for w in keywords:
             pattern = QRegExp(r"\{%s\}" % w)
@@ -53,12 +53,12 @@ class MyHighlighter(QSyntaxHighlighter):
 
     def highlightBlock(self, text):
         for rule in self.rules:
-          expression = QRegExp(rule.pattern)
-          index = expression.indexIn(text)
-          while index >= 0:
-            length = expression.matchedLength()
-            self.setFormat(index, length, rule.format)
-            index = text.indexOf(expression, index + length)
+            expression = QRegExp(rule.pattern)
+            index = expression.indexIn(text)
+            while index >= 0:
+                length = expression.matchedLength()
+                self.setFormat(index, length, rule.format)
+                index = expression.indexIn(text, index + length)
         self.setCurrentBlockState(0)
 
 
@@ -69,7 +69,6 @@ class HighlightingRule():
 
 
 class W(QWidget):
-
     def __init__(self):
         super(W, self).__init__()
 
@@ -88,13 +87,13 @@ class W(QWidget):
         vbox.addWidget(b)
 
 
-
 class TestApp(QMainWindow):
     def __init__(self):
         QMainWindow.__init__(self)
 
         self.setCentralWidget(W())
         self.setWindowTitle("Syntax Highlighter")
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
