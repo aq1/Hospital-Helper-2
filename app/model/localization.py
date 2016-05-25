@@ -7,9 +7,12 @@ import options
 class Localization:
 
     __translation = {}
+    __lang = None
 
     @classmethod
     def install(cls, lang):
+
+        cls.__lang = lang
 
         if lang not in [c.name for c in db.Translation.__table__.columns]:
             raise exceptions.NoSuchTranslation
@@ -24,6 +27,17 @@ class Localization:
 
         import builtins
         builtins.__dict__['_'] = cls.get_text
+
+    @classmethod
+    def get_translation_map(cls, labels):
+        translation = {}
+        strings = db.SESSION.query(db.Translation).all()
+        for l in labels:
+            for s in strings:
+                if s.sys == l:
+                    translation[l] = getattr(s, cls.__lang)
+                    break
+        return translation
 
     @classmethod
     def get_text(cls, text):

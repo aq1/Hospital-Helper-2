@@ -1,36 +1,36 @@
-TemplateWidget QTextEdit {
+AbstractTemplateWidget QTextEdit {
     font-size: 10pt;
 }
 
-TemplateWidget QLineEdit {
+AbstractTemplateWidget QLineEdit {
     font-size: 10pt;
     padding: 10px 0;    
 }
 
-TemplateWidget QTextEdit:focus {
+AbstractTemplateWidget QTextEdit:focus {
     border: 1px solid #DDDDDD;
 }
 
-TemplateWidget QPushButton {
+AbstractTemplateWidget QPushButton {
     font-size: 10pt;
     padding: 10px 5px;
     border: none;
     background-color: white;
 }
 
-TemplateWidget QPushButton:hover {
+AbstractTemplateWidget QPushButton:hover {
     background-color: rgba(0, 0, 0, 0.1)
 }
 
-TemplateWidget QPushButton:pressed {
+AbstractTemplateWidget QPushButton:pressed {
     background-color: rgba(0, 0, 0, 0.2)
 }
 
-TemplateWidget QScrollArea {
+AbstractTemplateWidget QScrollArea {
     background-color: white;
 }
 
-TemplateWidget QRadioButton {
+AbstractTemplateWidget QRadioButton {
     text-align: left;
     font-size: 10pt;
     padding: 10px 5px;
@@ -38,20 +38,37 @@ TemplateWidget QRadioButton {
     background-color: white;
 }
 
-TemplateWidget QRadioButton:checked {
+AbstractTemplateWidget QRadioButton:checked {
     background-color: #45A0A3;
     color: white;
 }
 
-TemplateWidget QRadioButton:checked:hover {
+AbstractTemplateWidget QRadioButton:checked:hover {
     background-color: #3d8b8e;
     color: white;
 }
 
-TemplateWidget QRadioButton:hover {
+AbstractTemplateWidget QRadioButton:hover {
     background-color: rgba(0, 0, 0, 0.1);
 }
 
-TemplateWidget QLabel {
+AbstractTemplateWidget QLabel {
     font-size: 11pt;
+}
+
+TemplateEditingWidget QPushButton#controls {
+    padding: 10px 30px;
+    color: white;
+    background-color: #45A0A3;
+    text-transform: uppercase;
+    line-height: 18px;
+    border-width: 0;
+}
+
+TemplateEditingWidget QPushButton#controls:hover {
+    background-color: #3B8689;
+}
+
+TemplateEditingWidget QPushButton#controls:pressed {
+    background-color: #1F484A;
 }

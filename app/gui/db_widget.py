@@ -48,17 +48,22 @@ class DBWidget(QFrame):
             b.setObjectName(icon)
             self.control_layout.addWidget(b)
         self.setGraphicsEffect(utils.get_shadow())
-        main_window.communication.action_button_toggle.emit(False, None, None)
 
-    def showEvent(self, event):
-        """
-        On each show data is refreshing.
-        """
+        self.showEvent = self._get_show_event(main_window)
 
-        if not self.items:
-            self.items = db.SESSION.query(self.model).order_by(self.model.id.desc())
+    def _get_show_event(self, main_window):
+        def showEvent(event):
+            """
+            On each show data is refreshing.
+            """
 
-        self.display_model()
+            if not self.items:
+                self.items = db.SESSION.query(self.model).order_by(self.model.id.desc())
+
+            self.display_model()
+            main_window.communication.action_button_toggle.emit(False, None, None)
+
+        return showEvent
 
     def hideEvent(self, event):
         """

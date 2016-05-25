@@ -20,7 +20,7 @@ from gui.options_widget import OptionsWidget
 from gui.template_widget import TemplateWidget
 from gui.action_button import ActionButton
 from gui.crud_widget import CrudWidget
-
+from gui import utils
 
 class Communication(QObject):
     """
@@ -91,7 +91,7 @@ class MainWindow(QWidget):
 
         frames = [
             DataWidget(self, self.items),
-            TemplateWidget(self, self.items, widget_for_select=True),
+            TemplateWidget(self, self.items),
             DBWidget(self),
             OptionsWidget(self, self.items),
             UsersWidget(self),

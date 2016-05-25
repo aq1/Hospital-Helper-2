@@ -1,12 +1,14 @@
+import re
 from collections import defaultdict
 
-from model import db, exceptions
+from model import db, exceptions, localization
 
 
 class Template:
 
-    def __init__(self, item=None, name=None, body=None, conclusion=None):
+    def __init__(self, pk=None, item=None, name=None, body=None, conclusion=None):
 
+        self.pk = pk
         self.item = item
         self.name = name
         self.body = body
@@ -23,23 +25,39 @@ class Template:
         if not (self.body or self.conclusion):
             raise exceptions.NeedBodyOrConclusion
 
-        template, created = db.Template.get_or_create(item=self.item, name=self.name)
+        if self.pk:
+            template = db.SESSION.query(db.Template).get(self.pk)
+        else:
+            template = db.Template()
 
-        if not created and not force:
-            raise exceptions.TemplateAlreadyExists
-
+        template.item_id = self.item.id
+        template.name = self.name
         template.body = self.body
         template.conclusion = self.conclusion
-        db.SESSION.add(template)
-        db.SESSION.flush()
+        template.save()
+
+    def get_translated_body(self, reverse=False):
+        translation = localization.Localization.get_translation_map(self.item.keys())
+        if reverse:
+            translation = {r'\{%s\}' % v: r'\{%s\}' % k for (k, v) in translation.items()}
+        else:
+            translation = {r'\{%s\}' % k: r'\{%s\}' % v for (k, v) in translation.items()}
+
+        pattern = re.compile(r'\b(' + '|'.join(translation.keys()) + r')\b')
+        return pattern.sub(lambda x: translation[x.group()], self.body)
+
+    def render_and_save(self):
+        self.body = self.get_translated_body(reverse=True)
+        self.save()
 
     @classmethod
     def get_from_db(cls, item, name):
 
         template = db.SESSION.query(db.Template).filter(
-            db.Template.item == item, db.Template.name == name).first()
+            db.Template.item_id == item.id, db.Template.name == name).first()
 
-        return cls(item=item,
+        return cls(pk=template.id,
+                   item=item,
                    name=name,
                    body=template.body,
                    conclusion=template.conclusion)

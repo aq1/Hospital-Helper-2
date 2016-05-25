@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import (QFrame, QHBoxLayout, QLabel, QGridLayout,
                              QTextEdit, QWidget, QGroupBox, QScrollArea)
 
 from gui import utils
-from gui.template_widget import TemplateWidget
+from gui.template_widget import TemplateWidgetInOptions
 
 
 class OptionsWidget(QFrame):
@@ -53,4 +53,4 @@ class OptionsWidget(QFrame):
         return widget
 
     def _create_layout(self):
-        self.layout.addWidget(TemplateWidget(self.parent, self.items, widget_for_select=False))
+        self.layout.addWidget(TemplateWidgetInOptions(self.parent, self.items))
