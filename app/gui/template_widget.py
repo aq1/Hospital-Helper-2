@@ -29,6 +29,7 @@ class SyntaxHighlighter(QSyntaxHighlighter):
         for w in keywords:
             pattern = QRegExp(r"\{%s\}" % w)
             self.rules.append({'pattern': pattern, 'format': self.keyword})
+        self.rehighlight()
 
     def highlightBlock(self, text):
         for rule in self.rules:

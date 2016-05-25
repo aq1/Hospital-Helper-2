@@ -39,11 +39,11 @@ class Template:
     def get_translated_body(self, reverse=False):
         translation = localization.Localization.get_translation_map(self.item.keys())
         if reverse:
-            translation = {r'\{%s\}' % v: r'\{%s\}' % k for (k, v) in translation.items()}
+            translation = {r'{%s}' % v: r'{%s}' % k for (k, v) in translation.items()}
         else:
-            translation = {r'\{%s\}' % k: r'\{%s\}' % v for (k, v) in translation.items()}
+            translation = {r'{%s}' % k: r'{%s}' % v for (k, v) in translation.items()}
 
-        pattern = re.compile(r'\b(' + '|'.join(translation.keys()) + r')\b')
+        pattern = re.compile(r'(' + '|'.join(translation.keys()) + r')')
         return pattern.sub(lambda x: translation[x.group()], self.body)
 
     def render_and_save(self):
