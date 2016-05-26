@@ -35,13 +35,14 @@ class Template:
         template.body = self.body
         template.conclusion = self.conclusion
         template.save()
+        self.pk = template.id
 
     def get_translated_body(self, reverse=False):
         translation = localization.Localization.get_translation_map(self.item.keys())
         if reverse:
-            translation = {r'{%s}' % v: r'{%s}' % k for (k, v) in translation.items()}
+            translation = {r'{%s}' % v: r'{%s.%s}' % (self.item.name, k) for (k, v) in translation.items()}
         else:
-            translation = {r'{%s}' % k: r'{%s}' % v for (k, v) in translation.items()}
+            translation = {r'{%s.%s}' % (self.item.name, k): r'{%s}' % v for (k, v) in translation.items()}
 
         pattern = re.compile(r'(' + '|'.join(translation.keys()) + r')')
         return pattern.sub(lambda x: translation[x.group()], self.body)

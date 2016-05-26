@@ -5,9 +5,10 @@ from PyQt5.QtGui import QSyntaxHighlighter, QTextCharFormat
 from PyQt5.QtWidgets import (QFrame, QHBoxLayout, QLabel, QGridLayout,
                              QStackedLayout, QVBoxLayout, QPushButton,
                              QTextEdit, QWidget, QGroupBox, QScrollArea,
-                             QRadioButton, QLineEdit)
+                             QRadioButton, QLineEdit, QSizePolicy)
 
 from model import template as template_module
+from model import exceptions
 
 from gui import utils
 
@@ -80,7 +81,8 @@ class TemplateEditingWidget(QFrame):
         self.conclusion_text_edit = None
         self.controls_layout = QVBoxLayout()
         self._close = close_func
-        self._show = self._get_show_func(main_window)
+        self.save = self._get_save_func(main_window)
+        self.showEvent = self._get_show_event(main_window)
 
         layout = QHBoxLayout()
         self.setLayout(layout)
@@ -134,6 +136,12 @@ class TemplateEditingWidget(QFrame):
 
         return layout
 
+    def _get_show_event(self, main_window):
+        def showEvent(event):
+            main_window.communication.action_button_toggle.emit(True, 'save', self.save)
+
+        return showEvent
+
     def _get_all_text_fields(self):
         """
         Get all TextEdit fields.
@@ -141,51 +149,56 @@ class TemplateEditingWidget(QFrame):
 
         return self.name_text_edit, self.template_text_edit, self.conclusion_text_edit
 
-    def _get_show_func(self, main_window):
-        def _show(item, template=None):
-            """
-            Fill TextEdit fields with template data if it was provided.
-            Add menu buttons with item attributes.
-            """
-            keywords = [_(key) for key in item.keys()]
-            for name in keywords:
-                b = QPushButton(_(name))
-                b.clicked.connect(functools.partial(self.template_text_edit.insert_attribute, name))
-                self.controls_layout.addWidget(b)
+    def _show(self, item, template=None):
+        """
+        Fill TextEdit fields with template data if it was provided.
+        Add menu buttons with item attributes.
+        """
+        keywords = [_(key) for key in item.keys()]
+        for name in keywords:
+            b = QPushButton(_(name))
+            b.clicked.connect(functools.partial(self.template_text_edit.insert_attribute, name))
+            self.controls_layout.addWidget(b)
 
-            self.controls_layout.addStretch()
+        self.controls_layout.addStretch()
 
-            main_window.communication.action_button_toggle.emit(True, 'save', self.save)
-            self.item = item
-            self.template = template
+        self.item = item
+        self.template = template
 
-            self.template_label.setText(_(item.name))
-            if not self.template:
-                return
-
+        self.template_label.setText(_(item.name))
+        if self.template:
             self.template = template_module.Template.get_from_db(item=self.item, name=self.template.name)
             self.template.body = self.template.get_translated_body()
 
             for w, t in zip(self._get_all_text_fields(),
                             (self.template.name, self.template.body, self.template.conclusion)):
                 w.setText(t)
+        else:
+            for w in self._get_all_text_fields():
+                w.setText('')
 
-            self.template_text_edit.set_rules(keywords)
-        return _show
+        self.template_text_edit.set_rules(keywords)
 
-    def save(self, event):
-        """
-        Save template.
-        """
+    def _get_save_func(self, main_window):
+        def save(event):
+            """
+            Save template.
+            """
 
-        if not self.template:
-            self.template = template_module.Template()
-        self.template.item = self.item
-        self.template.name = self.name_text_edit.text()
-        self.template.body = self.template_text_edit.toPlainText()
-        self.template.conclusion = self.conclusion_text_edit.toPlainText()
+            if not self.template:
+                self.template = template_module.Template()
+            self.template.item = self.item
+            self.template.name = self.name_text_edit.text()
+            self.template.body = self.template_text_edit.toPlainText()
+            self.template.conclusion = self.conclusion_text_edit.toPlainText()
 
-        self.template.render_and_save()
+            try:
+                self.template.render_and_save()
+            except exceptions.CannotSaveTemplate:
+                main_window.create_alert('Не удалось сохранить шаблон.\nПоле "Имя" обязательно.')
+            except exceptions.NeedBodyOrConclusion:
+                main_window.create_alert('Необходимо добавить тело или заключение шаблона.')
+        return save
 
 
 class AbstractTemplateWidget(QFrame):
@@ -198,9 +211,6 @@ class AbstractTemplateWidget(QFrame):
 
     def __init__(self, main_window, items):
         super().__init__()
-
-        def do_nothing(*args, **kwargs):
-            return None
 
         self.items = items
         self.visible_items = []
@@ -257,9 +267,10 @@ class AbstractTemplateWidget(QFrame):
             self.visible_items = self._iterate_items()
             self._show_menu()
             self._show_templates()
-            main_window.communication.action_button_toggle.emit(bool(self.visible_items),
-                                                                self.ACTION_BTN_ICON,
-                                                                self.action_btn_function)
+            if not self.layout.currentIndex():
+                main_window.communication.action_button_toggle.emit(bool(self.visible_items),
+                                                                    self.ACTION_BTN_ICON,
+                                                                    self.action_btn_function)
 
         return show_event
 
@@ -294,11 +305,6 @@ class AbstractTemplateWidget(QFrame):
         for j, item in enumerate(self.visible_items):
             grid = QGridLayout()
 
-            if not templates[item.id]:
-                l = QLabel('Нет шаблонов для данного объекта\nУправлять шаблонами можно на вкладке настроек')
-                l.setAlignment(Qt.AlignCenter)
-                grid.addWidget(l, 0, 0)
-
             for i, each in enumerate(templates[item.id]):
                 row, col = i // cols, i % cols
                 b = QRadioButton(each.name)
@@ -306,6 +312,16 @@ class AbstractTemplateWidget(QFrame):
                 b.clicked.connect(functools.partial(self._template_clicked, j, each))
                 b.mouseDoubleClickEvent = functools.partial(self.open_template_edit_widget, j, each)
                 grid.addWidget(b, row, col)
+
+            if not templates[item.id]:
+                l = QLabel('Нет шаблонов для данного объекта\nУправлять шаблонами можно на вкладке настроек')
+                l.setAlignment(Qt.AlignCenter)
+                grid.addWidget(l, 0, 0)
+            else:
+                empty = QWidget()
+                empty.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
+                grid.addWidget(empty, grid.rowCount(), 0)
+
             self.templates_layout.addWidget(utils.get_scrollable(grid))
 
     def _template_selected(self, index, template):

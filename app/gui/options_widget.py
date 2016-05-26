@@ -1,9 +1,9 @@
 import functools
 
 from PyQt5.Qt import QSpacerItem, QSizePolicy
-from PyQt5.QtWidgets import (QFrame, QHBoxLayout, QLabel, QGridLayout,
+from PyQt5.QtWidgets import (QFrame, QHBoxLayout, QGridLayout,
                              QStackedLayout, QVBoxLayout, QPushButton,
-                             QTextEdit, QWidget, QGroupBox, QScrollArea)
+                             QWidget)
 
 from gui import utils
 from gui.template_widget import TemplateWidgetInOptions

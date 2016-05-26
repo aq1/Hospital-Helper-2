@@ -20,7 +20,8 @@ from gui.options_widget import OptionsWidget
 from gui.template_widget import TemplateWidget
 from gui.action_button import ActionButton
 from gui.crud_widget import CrudWidget
-from gui import utils
+from gui.alert_widget import AlertWidget
+
 
 class Communication(QObject):
     """
@@ -59,6 +60,7 @@ class MainWindow(QWidget):
         self.communication = Communication()
         self.frames_layout = QStackedLayout()
         self.data_frame_index = None
+        self.top_system_frame_height = 0
 
         self._init_gui()
 
@@ -173,6 +175,9 @@ class MainWindow(QWidget):
 
         CrudWidget(self, model, callback, db_object)
 
+    def create_alert(self, text):
+        AlertWidget(self, text)
+
     def user_selected(self, user):
         """
         Callback when user is selected.
@@ -200,7 +205,8 @@ class MainWindow(QWidget):
         """
 
         waterline = top_frame.y() + top_frame.height()
-        self.communication.resized.emit(self.width(), waterline, top_sys_btns.height())
+        self.top_system_frame_height = top_sys_btns.height()
+        self.communication.resized.emit(self.width(), waterline, self.top_system_frame_height)
 
     def keyPressEvent(self, event):
         """

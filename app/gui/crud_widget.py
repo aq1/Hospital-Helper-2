@@ -21,7 +21,7 @@ class CrudWidget(QFrame):
         super().__init__(main_window)
         self.setFixedSize(main_window.size())
         self.show()
-        self.move(self.x(), 50)
+        self.move(self.x(), main_window.top_system_frame_height)
         self.raise_()
         CrudWidgetContent(self, main_window, model, callback, item)
 
@@ -55,7 +55,7 @@ class CrudWidgetContent(QFrame):
         hbox = QHBoxLayout()
         hbox.addStretch()
         hbox.setContentsMargins(0, 0, 0, 0)
-        hbox.setSpacing(0)
+        hbox.setSpacing(10)
 
         args = ((' Сохранить', ' Закрыть'),
                 ('save', 'close'),
@@ -107,9 +107,7 @@ class CrudWidgetContent(QFrame):
 
         self.show()
         self.raise_()
-        # self.setFixedWidth(groupbox.width() * 2)
-        self.move((main_window.width() - self.width()) / 2,
-                  (main_window.height() - self.height()) / 2)
+        self.move((main_window.width() - self.width()) / 2, (main_window.height() - self.height()) / 2)
 
     def _get_combobox(self, column, relations, main_window):
 
