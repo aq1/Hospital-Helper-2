@@ -29,6 +29,6 @@ class DataWidget(QFrame):
         Emit signal to hide ActionButton.
         """
         def show_event(event):
-            main_window.communication.action_button_toggle.emit(False, None, None)
+            main_window.communication.action_button_toggle.emit(True, 'refresh', main_window.clean_input)
 
         return show_event

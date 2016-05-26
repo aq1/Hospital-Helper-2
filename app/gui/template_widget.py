@@ -402,6 +402,7 @@ class TemplateWidget(AbstractTemplateWidget):
 
     def __init__(self, main_window, items):
         self.ACTION_BTN_ICON = 'check'
+        self.action_btn_function = main_window.create_report
         super().__init__(main_window, items)
 
     def _iterate_items(self):
@@ -445,5 +446,8 @@ class TemplateWidget(AbstractTemplateWidget):
                 buttons[index].setChecked(False)
                 return
 
-    def showEvent(self, event):
-        pass
+    def keyPressEvent(self, event):
+        if QGuiApplication.keyboardModifiers() != Qt.ControlModifier:
+            return
+        if event.key() == Qt.Key_Return:
+            self.action_btn_function(event=None)

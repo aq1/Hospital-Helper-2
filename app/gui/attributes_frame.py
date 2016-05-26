@@ -38,7 +38,7 @@ class AttributesFrame(QWidget):
 
                 hbox.addLayout(vbox)
 
-            self.inputs.append(InputWidget(self, arg_name))
+            self.inputs.append(InputWidget(self, main_window, arg_name))
             vbox.addWidget(self.inputs[-1])
 
         try:

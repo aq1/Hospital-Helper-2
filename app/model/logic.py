@@ -35,7 +35,7 @@ class Parser:
     property_re = re.compile(r'[^\W\d]+\.?[\w\_\'"]*', re.UNICODE)
     module_str = '{}.{}'
     get_str = 'self._get("{}")'
-    self_str = 'self._set("{}", {})'
+    self_str = 'self.set("{}", {})'
 
     @staticmethod
     def unidecode(value):
@@ -158,7 +158,24 @@ class CalculableObject(collections.OrderedDict):
     def __str__(self):
         return '{}: [{}]'.format(self.name, ', '.join(self.keys()))
 
-    def _set(self, name, value):
+    def _get(self, name):
+        try:
+            value = self[name]
+        except KeyError:
+            value = self.mediator.get(name)
+
+        return value
+
+    def _create_types(self, args):
+        types = options.TYPES
+
+        return {each['name']: types.get(each.get('type', 'float'), float)
+                for each in args}
+
+    def _add_calculation(self, name, calculation):
+        pass
+
+    def set(self, name, value):
         """
         If value is fucked up it will be set to default for it's type.
         float -> 0.0
@@ -179,26 +196,10 @@ class CalculableObject(collections.OrderedDict):
 
         self[name] = value
 
-    def _get(self, name):
-        try:
-            value = self[name]
-        except KeyError:
-            value = self.mediator.get(name)
-
-        return value
-
-    def _create_types(self, args):
-        types = options.TYPES
-
-        return {each['name']: types.get(each.get('type', 'float'), float)
-                for each in args}
-
-    def _add_calculation(self, name, calculation):
-        pass
-
-    def set(self, name, value):
-        # well, maybe i should remove it
-        self._set(name, value)
+    def clean(self):
+        for k in self.keys():
+            self.set(k, '')
+        self.template = None
 
     def get_verbose_name(self):
         return _(self.verbose_name)
@@ -228,7 +229,6 @@ class ObjectFactory:
 
         model = None
         item = None
-        group = None
 
         if info.get('db'):
             model = cls.model_factory.get_model(info)

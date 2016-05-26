@@ -1,4 +1,5 @@
 import os
+import  subprocess
 import datetime
 from collections import OrderedDict
 
@@ -56,6 +57,17 @@ class Report:
                                         self.user.name,
                                         self.user.patronymic)
 
+    @staticmethod
+    def open(path):
+        name = os.name
+
+        if name == 'posix':
+            subprocess.call(["xdg-open", path])
+        elif name == 'nt':
+            os.startfile(path)
+        else:
+            raise AttributeError('Unknown system')
+
     def render(self, strict_mode=False):
         document = OpenDocumentText()
 
@@ -71,7 +83,9 @@ class Report:
                         raise exceptions.NoTemplateForItem()
                 else:
                     conclusion.append(item.template.conclusion)
-                    document.text.addElement(P(text=item.template.body.format(**item.for_template())))
+                    text = item.template.body.format(**item.for_template())
+                    for t in text.splitlines():
+                        document.text.addElement(P(text=t))
 
             conclusion = '\n'.join(conclusion)
             document.text.addElement(P(text=conclusion))
@@ -81,14 +95,15 @@ class Report:
         return document
 
     def render_and_save(self):
-        path = os.path.join(options.REPORTS_DIR, os.sep.join(datetime.date.today().isoformat().split('-')))
+        path = os.path.join(options.REPORTS_DIR, *(datetime.date.today().isoformat().split('-')))
         if not os.path.exists(path):
             os.makedirs(path)
 
-        self.client.save()
-
+        path = os.path.join(path, '{}.odt'.format(self.user))
         document = self.render()
-        document.save(os.path.join(path, '{}.odt'.format(self.user)))
+        document.save(path)
+
+        self.client.save()
         report = db.Report(path=path, client_id=self.client.id)
         report.save()
         return report

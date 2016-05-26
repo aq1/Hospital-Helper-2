@@ -21,6 +21,7 @@ from gui.template_widget import TemplateWidget
 from gui.action_button import ActionButton
 from gui.crud_widget import CrudWidget
 from gui.alert_widget import AlertWidget
+from gui.message_widget import MessageWidget
 
 
 class Communication(QObject):
@@ -38,6 +39,8 @@ class Communication(QObject):
     ctrl_hotkey = pyqtSignal(bool)
     shortcut_pressed = pyqtSignal(str)
     action_button_toggle = pyqtSignal(bool, str, object)
+    clean_items = pyqtSignal()
+    set_message_text = pyqtSignal(str)
 
 
 class MainWindow(QWidget):
@@ -75,6 +78,7 @@ class MainWindow(QWidget):
         Add TopFrame and main frames.
         """
 
+        MessageWidget(self)
         vbox = QVBoxLayout()
         vbox.setContentsMargins(0, 0, 0, 0)
         vbox.setSpacing(0)
@@ -178,6 +182,9 @@ class MainWindow(QWidget):
     def create_alert(self, text):
         AlertWidget(self, text)
 
+    def show_message(self, text):
+        self.communication.set_message_text.emit(text)
+
     def user_selected(self, user):
         """
         Callback when user is selected.
@@ -196,7 +203,16 @@ class MainWindow(QWidget):
         """
 
         r = report.Report(self.user, self.items)
-        r.render_and_save()
+        db_report = r.render_and_save()
+        r.open(db_report.path)
+
+    def clean_input(self):
+        self.communication.clean_items.emit()
+        self.communication.input_changed_signal.emit('')
+        for item in self.items:
+            item.clean()
+
+        self.show_message('Готово')
 
     def resized(self, top_frame, top_sys_btns, event):
         """
