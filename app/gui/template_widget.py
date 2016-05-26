@@ -338,6 +338,9 @@ class AbstractTemplateWidget(QFrame):
     def action_btn_function(self, event):
         pass
 
+    def open_template_edit_widget(self, index, template, event):
+        pass
+
 
 class TemplateWidgetInOptions(AbstractTemplateWidget):
 
