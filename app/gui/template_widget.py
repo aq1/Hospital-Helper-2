@@ -1,11 +1,11 @@
 import functools
 
 from PyQt5.Qt import QColor, Qt, QBrush, QFont, QRegExp
-from PyQt5.QtGui import QSyntaxHighlighter, QTextCharFormat
+from PyQt5.QtGui import QSyntaxHighlighter, QTextCharFormat, QGuiApplication
 from PyQt5.QtWidgets import (QFrame, QHBoxLayout, QLabel, QGridLayout,
                              QStackedLayout, QVBoxLayout, QPushButton,
-                             QTextEdit, QWidget, QGroupBox, QScrollArea,
-                             QRadioButton, QLineEdit, QSizePolicy)
+                             QTextEdit, QWidget, QRadioButton, QLineEdit,
+                             QSizePolicy)
 
 from model import template as template_module
 from model import exceptions
@@ -425,9 +425,18 @@ class TemplateWidget(AbstractTemplateWidget):
         return _(item.name)
 
     def _template_clicked(self, index, template):
+        """
+        Set item's template to selected.
+        If Ctrl key pressed - find next item without the template and focus on it.
+        """
+
         self.visible_items[index].template = template
         buttons = self.findChildren(QRadioButton, name='menu_button')
         buttons[index].setText(self._get_button_name(self.visible_items[index]))
+
+        if QGuiApplication.keyboardModifiers() != Qt.ControlModifier:
+            return
+
         for i in range(len(self.visible_items)):
             ind = (i + index) % len(self.visible_items)
             if not self.visible_items[ind].template:

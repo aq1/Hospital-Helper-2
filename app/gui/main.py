@@ -5,7 +5,7 @@ import functools
 from PyQt5 import QtCore
 from PyQt5.QtCore import QCoreApplication, Qt, QObject, pyqtSignal
 from PyQt5.QtWidgets import (QWidget, QStackedLayout, QDesktopWidget,
-                             QVBoxLayout, QShortcut, QApplication, QSplashScreen)
+                             QVBoxLayout, QShortcut, QApplication)
 
 from PyQt5.QtGui import QKeySequence
 
