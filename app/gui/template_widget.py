@@ -155,6 +155,7 @@ class TemplateEditingWidget(QFrame):
         Add menu buttons with item attributes.
         """
         keywords = [_(key) for key in item.keys()]
+        utils.clear_layout(self.controls_layout)
         for name in keywords:
             b = QPushButton(_(name))
             b.clicked.connect(functools.partial(self.template_text_edit.insert_attribute, name))
@@ -198,6 +199,8 @@ class TemplateEditingWidget(QFrame):
                 main_window.create_alert('Не удалось сохранить шаблон.\nПоле "Имя" обязательно.')
             except exceptions.NeedBodyOrConclusion:
                 main_window.create_alert('Необходимо добавить тело или заключение шаблона.')
+            else:
+                main_window.show_message('Шаблон сохранен')
         return save
 
 

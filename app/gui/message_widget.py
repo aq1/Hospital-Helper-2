@@ -5,62 +5,76 @@ from gui import utils
 
 
 class MessageWidget(QFrame):
-
     """
     Displays message that disappears after some time.
     """
 
     LEFT_MARGIN = 20
-    TIMEOUT = 5000
+    TIMEOUT = 1000
 
     def __init__(self, main_window):
         super().__init__(main_window)
 
+        self.label = self._create_layout_and_get_label(main_window)
+
+        self._animation = self._get_animation(main_window)
+
+        self.timer = self._get_timer()
+
+        main_window.communication.set_message_text.connect(self._show)
+
+    def _create_layout_and_get_label(self, main_window):
         vbox = QVBoxLayout()
-        self.setLayout(vbox)
         vbox.setContentsMargins(0, 0, 0, 0)
+        self.setLayout(vbox)
+
         l = QLabel()
         l.setAlignment(Qt.AlignCenter)
         vbox.addWidget(l)
-
         self.setGraphicsEffect(utils.get_shadow())
+        self.hide()
 
-        main_window.communication.set_message_text.connect(self._get_set_text_func(l))
         w = main_window.width() / 5
         self.setFixedSize(w, w * 0.3)
         self.move(self.LEFT_MARGIN, main_window.height())
-        self.hide()
 
-        self.show_animation = QPropertyAnimation(self, b'pos')
-        self.show_animation.setStartValue(QPoint(self.LEFT_MARGIN, main_window.height()))
-        self.show_animation.setEndValue(QPoint(self.LEFT_MARGIN, main_window.height() - self.height()))
-        self.show_animation.setDuration(200)
-        self.show_animation.finished.connect(self._set_timeout_to_hide)
+        return l
 
-        self.hide_animation = QPropertyAnimation(self, b'pos')
-        self.hide_animation.setStartValue(QPoint(self.LEFT_MARGIN, main_window.height() - self.height()))
-        self.hide_animation.setEndValue(QPoint(self.LEFT_MARGIN, main_window.height()))
-        self.hide_animation.finished.connect(self.hide)
-        self.show_animation.setDuration(200)
+    def _get_animation(self, main_window):
+        animation = {'show': QPropertyAnimation(self, b'pos'),
+                     'hide': QPropertyAnimation(self, b'pos')}
 
-        self.timer = QTimer(self)
+        animation['show'].setStartValue(QPoint(self.LEFT_MARGIN, main_window.height()))
+        animation['show'].setEndValue(QPoint(self.LEFT_MARGIN, main_window.height() - self.height()))
+        animation['show'].setDuration(200)
+        animation['show'].finished.connect(self._set_timeout_to_hide)
 
-    def _get_set_text_func(self, label):
-        def _set_text(text):
-            self.timer.stop()
-            self.show()
-            self.raise_()
-            label.setText(text)
-            self.show_animation.start()
+        animation['hide'].setStartValue(QPoint(self.LEFT_MARGIN, main_window.height() - self.height()))
+        animation['hide'].setEndValue(QPoint(self.LEFT_MARGIN, main_window.height()))
+        animation['hide'].setDuration(200)
+        animation['hide'].finished.connect(self.hide)
+        return animation
 
-        return _set_text
+    def _get_timer(self):
+        timer = QTimer(self)
+        timer.setSingleShot(True)
+        timer.timeout.connect(self._hide)
+        return timer
 
     def _set_timeout_to_hide(self):
-        self.timer.timeout.connect(self._hide)
+        self.timer.stop()
         self.timer.start(self.TIMEOUT)
 
-    def _hide(self, callback=None):
-        if callback:
-            self.hide_animation.finished.connect(callback)
-            self.hide_animation.finished.connect(self.hide)
-        self.hide_animation.start()
+    def _show(self, text):
+        self.label.setText(text)
+        self.show()
+        self.raise_()
+        self._animation['show'].start()
+
+    def _hide(self):
+        self._animation['show'].stop()
+        self._animation['hide'].start()
+        self.timer.stop()
+
+    def mousePressEvent(self, event):
+        self._hide()

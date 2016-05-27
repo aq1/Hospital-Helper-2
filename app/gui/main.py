@@ -205,6 +205,7 @@ class MainWindow(QWidget):
         r = report.Report(self.user, self.items)
         db_report = r.render_and_save()
         r.open(db_report.path)
+        self.show_message('Отчет создан')
 
     def clean_input(self):
         self.communication.clean_items.emit()
@@ -212,7 +213,7 @@ class MainWindow(QWidget):
         for item in self.items:
             item.clean()
 
-        self.show_message('Готово')
+        self.show_message('Ок')
 
     def resized(self, top_frame, top_sys_btns, event):
         """
