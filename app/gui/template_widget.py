@@ -2,10 +2,9 @@ import functools
 
 from PyQt5.Qt import QColor, Qt, QBrush, QFont, QRegExp
 from PyQt5.QtGui import QSyntaxHighlighter, QTextCharFormat, QGuiApplication
-from PyQt5.QtWidgets import (QFrame, QHBoxLayout, QLabel, QGridLayout,
-                             QStackedLayout, QVBoxLayout, QPushButton,
-                             QTextEdit, QWidget, QRadioButton, QLineEdit,
-                             QSizePolicy)
+from PyQt5.QtWidgets import (QFrame, QHBoxLayout, QLabel, QStackedLayout,
+                             QVBoxLayout, QPushButton, QTextEdit, QWidget,
+                             QRadioButton, QLineEdit)
 
 from model import template as template_module
 from model import exceptions
@@ -308,26 +307,19 @@ class AbstractTemplateWidget(QFrame):
         templates = template_module.Template.get_all()
 
         for j, item in enumerate(self.visible_items):
-            grid = QGridLayout()
-
+            layouts = [QVBoxLayout() for _ in range(cols)]
             for i, each in enumerate(templates[item.id]):
-                row, col = i // cols, i % cols
                 b = QRadioButton(each.name)
                 b.setChecked(item.template == each)
                 b.clicked.connect(functools.partial(self._template_clicked, j, each))
                 b.mouseDoubleClickEvent = functools.partial(self.open_template_edit_widget, j, each)
-                grid.addWidget(b, row, col)
+                layouts[i % cols].addWidget(b)
 
-            if not templates[item.id]:
-                l = QLabel('Нет шаблонов для данного объекта\nУправлять шаблонами можно на вкладке настроек')
-                l.setAlignment(Qt.AlignCenter)
-                grid.addWidget(l, 0, 0)
-            else:
-                empty = QWidget()
-                empty.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
-                grid.addWidget(empty, grid.rowCount(), 0)
-
-            self.templates_layout.addWidget(utils.get_scrollable(grid))
+            wrapper = QHBoxLayout()
+            for each in layouts:
+                each.addStretch()
+                wrapper.addLayout(each, stretch=33)
+            self.templates_layout.addWidget(utils.get_scrollable(wrapper))
 
     def _template_selected(self, index, template):
 
