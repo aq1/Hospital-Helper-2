@@ -97,7 +97,7 @@ INIT_STRUCTURE = """[
     },
     {
         "name": "Сердце",
-        "db": true,
+        "db": false,
         "relations": [
             "Клиент"
         ],
@@ -163,7 +163,7 @@ INIT_STRUCTURE = """[
     {
         "name": "Печень",
         "group": "Брюшная полость",
-        "db": true,
+        "db": false,
         "relations": [
             "Клиент"
         ],
@@ -185,7 +185,7 @@ INIT_STRUCTURE = """[
     {
         "name": "Желчный",
         "group": "Брюшная полость",
-        "db": true,
+        "db": false,
         "relations": [
             "Клиент"
         ],
@@ -212,7 +212,7 @@ INIT_STRUCTURE = """[
         "name": "Поджелудочная",
         "verbose_name": "Поджелудочная железа",
         "group": "Брюшная полость",
-        "db": true,
+        "db": false,
         "relations": [
             "Клиент"
         ],
@@ -234,7 +234,7 @@ INIT_STRUCTURE = """[
     {
         "name": "Селезенка",
         "group": "Брюшная полость",
-        "db": true,
+        "db": false,
         "relations": [
             "Клиент"
         ],
@@ -255,7 +255,7 @@ INIT_STRUCTURE = """[
     },
     {
         "name": "Почки",
-        "db": true,
+        "db": false,
         "relations": [
             "Клиент"
         ],
@@ -295,7 +295,7 @@ INIT_STRUCTURE = """[
     {
         "name": "Щитовидная",
         "verbose_name": "Щитовидная железа",
-        "db": true,
+        "db": false,
         "relations": [
             "Клиент"
         ],
@@ -338,7 +338,7 @@ INIT_STRUCTURE = """[
     {
         "name": "Предстательная",
         "verbose_name": "Предстательная железа",
-        "db": true,
+        "db": false,
         "relations": [
             "Клиент"
         ],
@@ -361,7 +361,7 @@ INIT_STRUCTURE = """[
     {
         "name": "М.Пузырь",
         "verbose_name": "Мочевой пузырь",
-        "db": true,
+        "db": false,
         "relations": [
             "Клиент"
         ],
@@ -386,7 +386,7 @@ INIT_STRUCTURE = """[
     },
     {
         "name": "Гинекология",
-        "db": true,
+        "db": false,
         "relations": [
             "Клиент"
         ],
@@ -443,7 +443,7 @@ INIT_STRUCTURE = """[
     },
     {
         "name": "Урология",
-        "db": true,
+        "db": false,
         "relations": [
             "Клиент"
         ],
@@ -488,7 +488,7 @@ INIT_STRUCTURE = """[
     },
     {
         "name": "Образование",
-        "db": true,
+        "db": false,
         "relations": [
             "Клиент"
         ],
@@ -515,7 +515,7 @@ INIT_STRUCTURE = """[
     },
     {
         "name": "Киста",
-        "db": true,
+        "db": false,
         "relations": [
             "Клиент"
         ],
