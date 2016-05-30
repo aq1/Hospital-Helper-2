@@ -221,6 +221,7 @@ class AbstractTemplateWidget(QFrame):
         self.menu_layout = QVBoxLayout()
         self.templates_layout = QStackedLayout()
         self.showEvent = self._get_show_event(main_window)
+        self.menu_wrapper = QVBoxLayout()
 
         try:
             self.ACTION_BTN_ICON
@@ -237,7 +238,8 @@ class AbstractTemplateWidget(QFrame):
         """
 
         hbox = QHBoxLayout()
-        hbox.addWidget(utils.get_scrollable(self.menu_layout), stretch=30)
+        self.menu_wrapper.addWidget(utils.get_scrollable(self.menu_layout))
+        hbox.addLayout(self.menu_wrapper, stretch=30)
         hbox.addLayout(self.templates_layout, stretch=70)
         widget = QWidget()
         widget.setLayout(hbox)
@@ -367,12 +369,16 @@ class TemplateWidgetInOptions(AbstractTemplateWidget):
     Contains menu with the list of items with templates.
     """
 
-    def __init__(self, main_window, items):
+    def __init__(self, main_window, items, parent):
         self.ACTION_BTN_ICON = 'plus'
         super().__init__(main_window, items)
 
         self.template_editing_widget = TemplateEditingWidget(main_window, self._close_func)
         self.layout.addWidget(self.template_editing_widget)
+        b = QPushButton('Назад')
+        b.setObjectName('controls')
+        b.clicked.connect(functools.partial(parent.layout.setCurrentIndex, 0))
+        self.menu_wrapper.addWidget(b)
 
     def _close_func(self):
         self.layout.setCurrentIndex(0)

@@ -61,7 +61,7 @@ TemplateEditingWidget QLabel {
     padding: 10px 5px;
 }
 
-TemplateEditingWidget QPushButton#controls {
+AbstractTemplateWidget QPushButton#controls {
     padding: 10px 30px;
     color: white;
     background-color: #45A0A3;
@@ -70,10 +70,10 @@ TemplateEditingWidget QPushButton#controls {
     border-width: 0;
 }
 
-TemplateEditingWidget QPushButton#controls:hover {
+AbstractTemplateWidget QPushButton#controls:hover {
     background-color: #3B8689;
 }
 
-TemplateEditingWidget QPushButton#controls:pressed {
+AbstractTemplateWidget QPushButton#controls:pressed {
     background-color: #1F484A;
 }

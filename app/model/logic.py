@@ -207,7 +207,7 @@ class CalculableObject(collections.OrderedDict):
     def calculate(self):
         try:
             exec(self.calculations)
-        except (ZeroDivisionError):
+        except ZeroDivisionError:
             pass
 
     def for_template(self):

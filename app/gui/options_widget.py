@@ -20,12 +20,11 @@ class OptionsWidget(QFrame):
         super().__init__()
 
         self.items = items
-        self.parent = main_window
 
         self.layout = QStackedLayout()
         self.setLayout(self.layout)
         self.layout.addWidget(self._get_menu_layout())
-        self._create_layout()
+        self._create_layout(main_window)
 
     def _get_menu_layout(self):
 
@@ -52,5 +51,5 @@ class OptionsWidget(QFrame):
         widget.setLayout(vbox)
         return widget
 
-    def _create_layout(self):
-        self.layout.addWidget(TemplateWidgetInOptions(self.parent, self.items))
+    def _create_layout(self, main_window):
+        self.layout.addWidget(TemplateWidgetInOptions(main_window, self.items, self))
