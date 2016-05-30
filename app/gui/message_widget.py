@@ -9,16 +9,15 @@ class MessageWidget(QFrame):
     Displays message that disappears after some time.
     """
 
-    LEFT_MARGIN = 20
+    RIGHT_MARGIN = 20
     TIMEOUT = 1000
 
     def __init__(self, main_window):
         super().__init__(main_window)
 
+        self.x_pos = 0
         self.label = self._create_layout_and_get_label(main_window)
-
         self._animation = self._get_animation(main_window)
-
         self.timer = self._get_timer()
 
         main_window.communication.set_message_text.connect(self._show)
@@ -36,7 +35,8 @@ class MessageWidget(QFrame):
 
         w = main_window.width() / 5
         self.setFixedSize(w, w * 0.3)
-        self.move(self.LEFT_MARGIN, main_window.height())
+        self.x_pos = main_window.width() - self.width() - self.RIGHT_MARGIN
+        self.move(self.x_pos, main_window.height())
 
         return l
 
@@ -44,13 +44,13 @@ class MessageWidget(QFrame):
         animation = {'show': QPropertyAnimation(self, b'pos'),
                      'hide': QPropertyAnimation(self, b'pos')}
 
-        animation['show'].setStartValue(QPoint(self.LEFT_MARGIN, main_window.height()))
-        animation['show'].setEndValue(QPoint(self.LEFT_MARGIN, main_window.height() - self.height()))
+        animation['show'].setStartValue(QPoint(self.x_pos, main_window.height()))
+        animation['show'].setEndValue(QPoint(self.x_pos, main_window.height() - self.height()))
         animation['show'].setDuration(200)
         animation['show'].finished.connect(self._set_timeout_to_hide)
 
-        animation['hide'].setStartValue(QPoint(self.LEFT_MARGIN, main_window.height() - self.height()))
-        animation['hide'].setEndValue(QPoint(self.LEFT_MARGIN, main_window.height()))
+        animation['hide'].setStartValue(QPoint(self.x_pos, main_window.height() - self.height()))
+        animation['hide'].setEndValue(QPoint(self.x_pos, main_window.height()))
         animation['hide'].setDuration(200)
         animation['hide'].finished.connect(self.hide)
         return animation
