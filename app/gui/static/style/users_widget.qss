@@ -14,8 +14,7 @@ UsersWidget QLabel {
 }
 
 UsersWidget QRadioButton {
-    padding: 15px;
-    padding-left: -10px;
+    padding: 15px 15px 15px -10px;
     vertical-align: middle;
     font-size: 11pt;
     background-color: white;
@@ -35,4 +34,16 @@ UsersWidget QRadioButton:checked {
 UsersWidget QRadioButton:checked:hover {
     background-color: #3d8b8e;
     color: white;
+}
+
+UsersWidget QPushButton {
+    font-size: 12pt;
+    padding: 10px 30px;
+    color: white;
+    background-color: #45A0A3;
+    margin-top: 30px;
+    text-transform: uppercase;
+    icon-size: 18px;
+    line-height: 18px;
+    border-width: 0;
 }

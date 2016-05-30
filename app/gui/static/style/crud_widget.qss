@@ -38,12 +38,11 @@ CrudWidgetContent QLabel#title {
     font-size: 16pt;
 }
 
-CrudWidgetContent QPushButton, UsersWidget QPushButton {
+CrudWidgetContent QPushButton {
     font-size: 12pt;
     padding: 10px 30px;
     color: white;
     background-color: #45A0A3;
-    /*margin-right: 30px;*/
     margin-top: 30px;
     text-transform: uppercase;
     icon-size: 18px;

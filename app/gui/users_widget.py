@@ -34,16 +34,11 @@ class UsersWidget(QFrame):
         hbox.addLayout(vbox, stretch=50)
         hbox.addStretch(25)
         self.setLayout(hbox)
-
-        control_layout = QHBoxLayout()
-        control_layout.setContentsMargins(0, 0, 0, 0)
-        control_layout.setSpacing(0)
-        b = QPushButton('Добавить')
-        b.clicked.connect(functools.partial(main_window.create_crud_widget, db.User, self._update_content))
-        control_layout.addStretch()
-        control_layout.addWidget(b)
-        control_layout.addStretch()
-        vbox.addLayout(control_layout)
+        main_window.communication.action_button_toggle.emit(True,
+                                                            'plus',
+                                                            functools.partial(main_window.create_crud_widget,
+                                                                              db.User,
+                                                                              self._update_content))
         self.setGraphicsEffect(utils.get_shadow())
 
     def _update_content(self, *args):
