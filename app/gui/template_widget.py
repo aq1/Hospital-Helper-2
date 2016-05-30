@@ -86,8 +86,8 @@ class TemplateEditingWidget(QFrame):
         layout = QHBoxLayout()
         self.setLayout(layout)
 
-        layout.addLayout(self._get_text_layout(), stretch=80)
         layout.addWidget(self._get_control_layout(), stretch=20)
+        layout.addLayout(self._get_text_layout(), stretch=80)
 
     def _get_control_layout(self):
         """
@@ -318,7 +318,7 @@ class AbstractTemplateWidget(QFrame):
             wrapper = QHBoxLayout()
             for each in layouts:
                 each.addStretch()
-                wrapper.addLayout(each, stretch=33)
+                wrapper.addLayout(each, stretch=int(100 / cols))
             self.templates_layout.addWidget(utils.get_scrollable(wrapper))
 
     def _template_selected(self, index, template):
@@ -369,7 +369,7 @@ class TemplateWidgetInOptions(AbstractTemplateWidget):
         self.layout.addWidget(self.template_editing_widget)
         b = QPushButton('Назад')
         b.setObjectName('controls')
-        b.clicked.connect(functools.partial(parent.layout.setCurrentIndex, 0))
+        b.clicked.connect(functools.partial(parent.set_current_index, 0))
         self.menu_wrapper.addWidget(b)
 
     def _close_func(self):

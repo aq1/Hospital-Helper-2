@@ -68,6 +68,7 @@ AbstractTemplateWidget QPushButton#controls {
     text-transform: uppercase;
     line-height: 18px;
     border-width: 0;
+    margin: 0;
 }
 
 AbstractTemplateWidget QPushButton#controls:hover {
