@@ -2,7 +2,6 @@ import os
 import sys
 import functools
 
-from PyQt5 import QtCore
 from PyQt5.QtCore import QCoreApplication, Qt, QObject, pyqtSignal
 from PyQt5.QtWidgets import (QWidget, QStackedLayout, QDesktopWidget,
                              QVBoxLayout, QShortcut, QApplication)
@@ -117,7 +116,7 @@ class MainWindow(QWidget):
         Remove borders.
         """
 
-        self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
+        self.setWindowFlags(Qt.FramelessWindowHint)
         self.setWindowTitle('Hospital Helper')
         dw = QDesktopWidget()
         w = dw.geometry().size().width() * 0.75
@@ -233,7 +232,7 @@ class MainWindow(QWidget):
         """
 
         mods = event.modifiers()
-        if (mods & QtCore.Qt.ControlModifier and self.frames_layout.currentIndex() == self.data_frame_index):
+        if mods & Qt.ControlModifier and self.frames_layout.currentIndex() == self.data_frame_index:
             if event.text() is '':
                 self.communication.ctrl_hotkey.emit(True)
                 return
