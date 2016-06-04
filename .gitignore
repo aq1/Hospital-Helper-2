@@ -63,3 +63,5 @@ dump.rdb
 *.*~
 .idea/
 app/reports/
+dist/
+build/
