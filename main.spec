@@ -1,14 +1,38 @@
 # -*- mode: python -*-
 
+import os
+import importlib
+
+
 block_cipher = None
 
+ROOT = os.path.dirname(r'C:\Users\Jack\Documents\GitHub\Hospital-Helper-2\main.spec')
+STATIC = os.path.join(ROOT, 'app', 'gui', 'static')
 
-a = Analysis(['app\\main.py'],
-             pathex=['C:\\Users\\Jack\\Documents\\GitHub\\Hospital-Helper-2'],
+DATAS = [
+    (os.path.join(STATIC, 'icons', '*.png'), os.path.join('gui', 'static', 'icons')),
+    (os.path.join(STATIC ,'style', '*.qss'), os.path.join('gui', 'static', 'style')),
+]
+
+
+def get_module_imports(*modules_names):
+    # I'm not sure if it is a good desicion
+    # but it works with my modules
+    files = []
+    for module_name in modules_names:
+        module_dir = os.path.dirname(importlib.import_module(module_name).__file__)
+        for each in os.listdir(module_dir):
+            if each.endswith('.py'):
+                # f = os.path.join(module_dir, each)
+                # files.append(os.path.join(module_dir, each))
+                files.append('%s.%s' % (module_name, each.replace('.py', '')))
+    return files
+
+a = Analysis([os.path.join(ROOT, 'app', 'main.py')],
+             pathex=[ROOT],
              binaries=None,
-             datas=[(r'C:\Users\Jack\Documents\GitHub\Hospital-Helper-2\app\gui\static\icons\*.png', r'gui\static\icons'),
-             (r'C:\Users\Jack\Documents\GitHub\Hospital-Helper-2\app\gui\static\style\*.qss', r'gui\static\style'),],
-             hiddenimports=[r'C:\Python34\Lib\site-packages\odf\namespaces.py'],
+             datas=DATAS,
+             hiddenimports=get_module_imports('unidecode'),
              hookspath=[],
              runtime_hooks=[],
              excludes=[],
@@ -16,7 +40,7 @@ a = Analysis(['app\\main.py'],
              win_private_assemblies=False,
              cipher=block_cipher)
 pyz = PYZ(a.pure, a.zipped_data,
-             cipher=block_cipher)
+          cipher=block_cipher)
 exe = EXE(pyz,
           a.scripts,
           a.binaries,
@@ -26,4 +50,4 @@ exe = EXE(pyz,
           debug=False,
           strip=False,
           upx=True,
-          console=True )
+          console=True)
