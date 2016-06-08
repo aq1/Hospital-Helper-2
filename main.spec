@@ -4,7 +4,6 @@ import os
 import importlib
 import inspect
 
-
 block_cipher = None
 
 ROOT = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
@@ -12,7 +11,7 @@ STATIC = os.path.join(ROOT, 'app', 'gui', 'static')
 
 DATAS = [
     (os.path.join(STATIC, 'icons', '*.png'), os.path.join('gui', 'static', 'icons')),
-    (os.path.join(STATIC ,'style', '*.qss'), os.path.join('gui', 'static', 'style')),
+    (os.path.join(STATIC, 'style', '*.qss'), os.path.join('gui', 'static', 'style')),
 ]
 
 
@@ -28,6 +27,7 @@ def get_module_imports(*modules_names):
                 # files.append(os.path.join(module_dir, each))
                 files.append('%s.%s' % (module_name, each.replace('.py', '')))
     return files
+
 
 a = Analysis([os.path.join(ROOT, 'app', 'main.py')],
              pathex=[ROOT],

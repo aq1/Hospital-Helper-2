@@ -23,6 +23,8 @@ def convert_structure_to_items(structure):
 
 
 def init():
+    app, splash = gui.create_application()
+
     try:
         structure = db.SESSION.query(db.KeyValue).get(options.STRUCTURE_KEY)
         structure = structure.value
@@ -37,12 +39,12 @@ def init():
 
     localization.Localization.install('ru')
 
-    # for i in items:
-    #     for j in range(25):
-    #         t, _ = db.Template.get_or_create(item_id=i.id, name='%s %s' % (i.name, j), body='Тело', conclusion='Заключение')
-    # db.SESSION.flush()
+    for i in items:
+        for j in range(25):
+            t, _ = db.Template.get_or_create(item_id=i.id, name='%s %s' % (i.name, j), body='Тело', conclusion='Заключение')
+    db.SESSION.flush()
 
-    gui.init(items)
+    gui.init(items, app, splash)
 
 
 if __name__ == '__main__':

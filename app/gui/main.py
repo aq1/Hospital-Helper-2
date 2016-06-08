@@ -4,9 +4,9 @@ import functools
 
 from PyQt5.QtCore import QCoreApplication, Qt, QObject, pyqtSignal
 from PyQt5.QtWidgets import (QWidget, QStackedLayout, QDesktopWidget,
-                             QVBoxLayout, QShortcut, QApplication)
+                             QVBoxLayout, QShortcut, QApplication, QSplashScreen)
 
-from PyQt5.QtGui import QKeySequence
+from PyQt5.QtGui import QKeySequence, QPixmap
 
 import options
 from model import report
@@ -262,16 +262,19 @@ class MainWindow(QWidget):
         self.setWindowState(Qt.WindowMinimized)
 
 
-def init(items):
+def create_application():
     """
-    Init gui.
-    Concat all files from style directory and apply stylesheet.
-    """
-    app = QApplication(sys.argv)
-    # splash_img = QPixmap(os.path.join(options.STATIC_DIR, 'splash.png'))
-    # splash = QSplashScreen(splash_img)
-    # splash.show()
+    Start dull application.
+    Used to show splash screen when the program loads.
+    Call init() to show widgets and etc.
 
+    Return application and splash instances
+    """
+
+    app = QApplication(sys.argv)
+    splash_img = QPixmap(os.path.join(options.STATIC_DIR, 'splash.png'))
+    splash = QSplashScreen(splash_img)
+    splash.show()
     style = []
     style_dir = os.path.join(options.STATIC_DIR, 'style')
     for f in os.listdir(style_dir):
@@ -281,7 +284,15 @@ def init(items):
             style.append(qss.read())
     app.setStyleSheet('\n'.join(style))
 
+
+def init(items, app, splash=None):
+    """
+    Init gui.
+    Concat all files from style directory and apply stylesheet.
+    """
+
     mw = MainWindow(items)
-    # splash.finish(mw)
+    if splash:
+        splash.finish(mw)
 
     sys.exit(app.exec_())
