@@ -2,11 +2,12 @@
 
 import os
 import importlib
+import inspect
 
 
 block_cipher = None
 
-ROOT = os.path.dirname(r'C:\Users\Jack\Documents\GitHub\Hospital-Helper-2\main.spec')
+ROOT = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 STATIC = os.path.join(ROOT, 'app', 'gui', 'static')
 
 DATAS = [
