@@ -262,19 +262,19 @@ class MainWindow(QWidget):
         self.setWindowState(Qt.WindowMinimized)
 
 
-def create_application():
+def init(bootstrap_function):
     """
-    Start dull application.
-    Used to show splash screen when the program loads.
-    Call init() to show widgets and etc.
-
-    Return application and splash instances
+    Init gui.
+    Concat all files from style directory and apply stylesheet.
+    Run `bootstrap_function` to prepare app.
     """
-
     app = QApplication(sys.argv)
     splash_img = QPixmap(os.path.join(options.STATIC_DIR, 'splash.png'))
     splash = QSplashScreen(splash_img)
     splash.show()
+
+    items = bootstrap_function()
+
     style = []
     style_dir = os.path.join(options.STATIC_DIR, 'style')
     for f in os.listdir(style_dir):
@@ -284,15 +284,6 @@ def create_application():
             style.append(qss.read())
     app.setStyleSheet('\n'.join(style))
 
-
-def init(items, app, splash=None):
-    """
-    Init gui.
-    Concat all files from style directory and apply stylesheet.
-    """
-
     mw = MainWindow(items)
-    if splash:
-        splash.finish(mw)
-
+    splash.finish(mw)
     sys.exit(app.exec_())

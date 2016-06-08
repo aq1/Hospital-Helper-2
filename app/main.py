@@ -23,8 +23,6 @@ def convert_structure_to_items(structure):
 
 
 def init():
-    app, splash = gui.create_application()
-
     try:
         structure = db.SESSION.query(db.KeyValue).get(options.STRUCTURE_KEY)
         structure = structure.value
@@ -44,11 +42,11 @@ def init():
             t, _ = db.Template.get_or_create(item_id=i.id, name='%s %s' % (i.name, j), body='Тело', conclusion='Заключение')
     db.SESSION.flush()
 
-    gui.init(items, app, splash)
+    return items
 
 
 if __name__ == '__main__':
-    init()
+    gui.init(init)
 
     # c = db.SESSION.query(db.Client).filter(db.Client.id < 200).count() - 100
     # x = db.SESSION.query(db.Client).filter(db.Client.id < 200).order_by(db.Client.id)
