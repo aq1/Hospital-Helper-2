@@ -16,7 +16,7 @@ DATAS = [
 
 
 def get_module_imports(*modules_names):
-    # I'm not sure if it is a good desicion
+    # I'm not sure if it is a good decision
     # but it works with my modules
     files = []
     for module_name in modules_names:
