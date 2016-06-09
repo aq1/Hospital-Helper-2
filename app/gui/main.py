@@ -272,6 +272,7 @@ def init(bootstrap_function):
     splash_img = QPixmap(os.path.join(options.STATIC_DIR, 'splash.png'))
     splash = QSplashScreen(splash_img)
     splash.show()
+    app.processEvents()
 
     items = bootstrap_function()
 
