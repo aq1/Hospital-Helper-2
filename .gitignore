@@ -65,3 +65,4 @@ dump.rdb
 app/reports/
 dist/
 build/
+*.odt
