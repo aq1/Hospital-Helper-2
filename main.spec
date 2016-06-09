@@ -12,6 +12,7 @@ STATIC = os.path.join(ROOT, 'app', 'gui', 'static')
 DATAS = [
     (os.path.join(STATIC, 'icons', '*.png'), os.path.join('gui', 'static', 'icons')),
     (os.path.join(STATIC, 'style', '*.qss'), os.path.join('gui', 'static', 'style')),
+    (os.path.join(STATIC, '*.png'), os.path.join('gui', 'static')),
 ]
 
 
