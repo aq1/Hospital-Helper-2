@@ -23,6 +23,8 @@ class Report:
         self.template_groups = OrderedDict()
 
         for item in items:
+            if not item.template:
+                continue
             if item.name == options.CLIENT_TABLE_NAME:
                 self.client = self._get_client(item)
             if not self.template_groups.get(item.group):
@@ -78,14 +80,10 @@ class Report:
 
             for item in group:
                 document.text.addElement(H(outlinelevel=4, text=item.get_verbose_name()))
-                if not item.template:
-                    if strict_mode:
-                        raise exceptions.NoTemplateForItem()
-                else:
-                    conclusion.append(item.template.conclusion)
-                    text = item.template.body.format(**item.for_template())
-                    for t in text.splitlines():
-                        document.text.addElement(P(text=t))
+                conclusion.append(item.template.conclusion)
+                text = item.template.body.format(**item.for_template())
+                for t in text.splitlines():
+                    document.text.addElement(P(text=t))
 
             conclusion = '\n'.join(conclusion)
             document.text.addElement(P(text=conclusion))
