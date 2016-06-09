@@ -70,7 +70,7 @@ class Report:
         else:
             raise AttributeError('Unknown system')
 
-    def render(self, strict_mode=False):
+    def render(self):
         document = OpenDocumentText()
 
         document.text.addElement(P(text=self._get_header()))
