@@ -43,7 +43,7 @@ class OptionsWidget(QWidget):
         vboxes = [QVBoxLayout() for _ in range(cols)]
 
         widgets = ((TemplateWidgetInOptions(main_window, self.items, self), 'Шаблоны'),
-                   (UsersAndGroupsWidget(main_window), 'Пользователи и группы'))
+                   (UsersAndGroupsWidget(main_window, self), 'Пользователи и группы'))
 
         for i, widget in enumerate(widgets):
             self.layout.addWidget(widget[0])

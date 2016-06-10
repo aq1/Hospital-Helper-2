@@ -20,7 +20,7 @@ class UsersAndGroupsWidget(QFrame):
     Provide the way to add or delete groups and also dit group name and header.
     """
 
-    def __init__(self, main_window):
+    def __init__(self, main_window, parent):
         super().__init__()
 
         self._groups_layout = None
@@ -32,9 +32,9 @@ class UsersAndGroupsWidget(QFrame):
         self.users = []
         self.selected_group_id = None
 
-        self._create_layout()
+        self._create_layout(parent)
 
-    def _create_layout(self):
+    def _create_layout(self, parent):
         self._groups_layout = QVBoxLayout()
         self._users_layout = QVBoxLayout()
         self._text_field = QTextEdit()
@@ -43,10 +43,16 @@ class UsersAndGroupsWidget(QFrame):
 
         groups_wrapper = QVBoxLayout()
         groups_wrapper.setSpacing(0)
+        groups_wrapper.setContentsMargins(0, 0, 0, 0)
         l = QLabel('Группы')
         l.setObjectName('header')
         groups_wrapper.addWidget(l)
         groups_wrapper.addWidget(utils.get_scrollable(self._groups_layout))
+        b = QPushButton('Назад')
+        b.setObjectName('control')
+        b.clicked.connect(functools.partial(parent.set_current_index, 0))
+        b.setGraphicsEffect(utils.get_shadow())
+        groups_wrapper.addWidget(b)
 
         users_wrapper = QVBoxLayout()
         users_wrapper.setSpacing(0)
@@ -65,6 +71,8 @@ class UsersAndGroupsWidget(QFrame):
         self._text_field.setPlaceholderText('Заголовок будет отображаться в начале шаблона')
 
         h = QHBoxLayout()
+        h.setContentsMargins(0, 0, 0, 0)
+        h.setSpacing(10)
         h.addStretch()
         for l, i, f in zip(('Добавить пользователя', 'Сохранить', 'Удалить'),
                            ('user', 'save_w', 'delete'),
