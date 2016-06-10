@@ -26,6 +26,7 @@ class UsersAndGroupsWidget(QFrame):
         self._groups_layout = None
         self._users_layout = None
         self._text_field = None
+        self.show_message = main_window.communication.set_message_text.emit
         self._show_crud = self._get_crud_func(main_window)
         self.showEvent = self._get_show_event(main_window)
         self.groups = []
@@ -76,13 +77,14 @@ class UsersAndGroupsWidget(QFrame):
         h.addStretch()
         for l, i, f in zip(('Добавить пользователя', 'Сохранить', 'Удалить'),
                            ('user', 'save_w', 'delete'),
-                           (functools.partial(self._show_crud, db.User), lambda e: None, lambda e: None)):
+                           (functools.partial(self._show_crud, db.User), self._save, self._delete)):
             b = QPushButton(l)
             b.setIcon(QIcon(os.path.join(options.STATIC_DIR, 'icons', i)))
             b.setObjectName('control')
             b.setGraphicsEffect(utils.get_shadow())
             b.clicked.connect(f)
             h.addWidget(b)
+        text_wrapper.addStretch()
         text_wrapper.addLayout(h)
 
         for l, s in zip((groups_wrapper, users_wrapper, text_wrapper), (20, 30, 50)):
@@ -137,3 +139,14 @@ class UsersAndGroupsWidget(QFrame):
                 self._group_selected(group)
             self._groups_layout.addWidget(b)
         self._groups_layout.addStretch()
+
+    def _save(self):
+        for group in self.groups:
+            if group.id == self.selected_group_id:
+                group.header = self._text_field.toPlainText()
+                group.save()
+                self.show_message('Ок')
+                return
+
+    def _delete(self):
+        pass
