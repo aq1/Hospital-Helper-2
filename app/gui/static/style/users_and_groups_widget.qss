@@ -1,7 +1,44 @@
 UsersAndGroupsWidget QWidget {
-    border: none;
+    /*border: none;*/
 }
 
 UsersAndGroupsWidget QTextEdit {
     border: 1px solid #DDDDDD;
+}
+
+UsersAndGroupsWidget QPushButton {
+    font-size: 12pt;
+    padding: 10px 30px;
+    color: white;
+    background-color: #45A0A3;
+    margin-top: 30px;
+    text-transform: uppercase;
+    icon-size: 18px;
+    line-height: 18px;
+    border-width: 0;
+}
+
+UsersAndGroupsWidget QPushButton:hover {
+    background-color: #3B8689;
+}
+
+UsersAndGroupsWidget QPushButton:pressed {
+    background-color: #1F484A;
+}
+
+UsersAndGroupsWidget QPushButton:disabled {
+    background-color: #AAAAAA;
+}
+
+UsersAndGroupsWidget QPushButton#icon {
+    padding: 10px 10px;
+    background-color: transparent;
+}
+
+UsersAndGroupsWidget QPushButton#icon:hover {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+UsersAndGroupsWidget QPushButton#icon:pressed {
+    background-color: rgba(0, 0, 0, 0.3);
 }

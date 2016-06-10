@@ -1,11 +1,14 @@
+import os
 import functools
 
 from PyQt5.Qt import QColor, Qt, QBrush, QFont, QRegExp
 from PyQt5.QtGui import QSyntaxHighlighter, QTextCharFormat, QGuiApplication
+from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import (QFrame, QHBoxLayout, QLabel, QStackedLayout,
                              QVBoxLayout, QPushButton, QTextEdit, QWidget,
                              QRadioButton, QLineEdit)
 
+import options
 from model import db
 
 from gui.crud_widget import CrudWidget
@@ -48,11 +51,17 @@ class UsersAndGroupsWidget(QFrame):
         text_wrapper = QVBoxLayout()
         text_wrapper.addWidget(QLabel('Заголовок'))
         text_wrapper.addWidget(self._text_field)
-        b = QPushButton('Сохранить')
-        text_wrapper.addWidget(b)
 
-        for l in (groups_wrapper, users_wrapper, text_wrapper):
-            layout.addLayout(l)
+        b = QPushButton('Сохранить')
+        b.setIcon(QIcon(os.path.join(options.STATIC_DIR, 'icons', 'save')))
+        b.setGraphicsEffect(utils.get_shadow())
+        h = QHBoxLayout()
+        h.addStretch()
+        h.addWidget(b)
+        text_wrapper.addLayout(h)
+
+        for l, s in zip((groups_wrapper, users_wrapper, text_wrapper), (20, 30, 50)):
+            layout.addLayout(l, stretch=s)
 
         self.setLayout(layout)
 
