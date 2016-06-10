@@ -59,7 +59,7 @@ class CrudWidgetContent(QFrame):
 
         args = ((' Сохранить', ' Закрыть'),
                 ('save', 'close'),
-                ('pencil.png', 'close.png'),
+                ('save_w.png', 'close.png'),
                 (self._save, self._close))
 
         for l, n, i, f in zip(*args):
