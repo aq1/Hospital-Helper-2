@@ -2,11 +2,10 @@ import functools
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (QFrame, QVBoxLayout, QLabel, QRadioButton,
-                             QHBoxLayout, QPushButton)
+                             QHBoxLayout)
 
 from model import db
 from gui import utils
-from gui.crud_widget import CrudWidget
 
 
 class UsersWidget(QFrame):
@@ -68,7 +67,8 @@ class UsersWidget(QFrame):
         b.mouseDoubleClickEvent = (functools.partial(self._button_clicked, item))
         return b
 
-    def _get_label(self, item):
+    @staticmethod
+    def _get_label(item):
         """
         Add label for organization.
         """
