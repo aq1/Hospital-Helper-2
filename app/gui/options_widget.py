@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import (QWidget, QHBoxLayout, QStackedLayout,
 
 from gui import utils
 from gui.template_widget import TemplateWidgetInOptions
+from gui.users_and_groups_widget import UsersAndGroupsWidget
 
 
 class OptionsWidget(QWidget):
@@ -42,8 +43,7 @@ class OptionsWidget(QWidget):
         vboxes = [QVBoxLayout() for _ in range(cols)]
 
         widgets = ((TemplateWidgetInOptions(main_window, self.items, self), 'Шаблоны'),
-                   (QWidget(), 'Пользователи'),
-                   (QWidget(), 'Группы'))
+                   (UsersAndGroupsWidget(main_window), 'Пользователи и группы'))
 
         for i, widget in enumerate(widgets):
             self.layout.addWidget(widget[0])

@@ -1,0 +1,7 @@
+UsersAndGroupsWidget QWidget {
+    border: none;
+}
+
+UsersAndGroupsWidget QTextEdit {
+    border: 1px solid #DDDDDD;
+}
