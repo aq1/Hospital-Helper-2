@@ -16,7 +16,6 @@ from gui import utils
 
 
 class UsersAndGroupsWidget(QFrame):
-
     """
     Provide the way to add or delete groups and also dit group name and header.
     """
@@ -31,6 +30,7 @@ class UsersAndGroupsWidget(QFrame):
         self.showEvent = self._get_show_event(main_window)
         self.groups = []
         self.users = []
+        self.selected_group_id = None
 
         self._create_layout()
 
@@ -55,10 +55,6 @@ class UsersAndGroupsWidget(QFrame):
         l.setObjectName('header')
         users_wrapper.addWidget(l)
         users_wrapper.addWidget(utils.get_scrollable(self._users_layout))
-        b = QPushButton('Добавить')
-        b.clicked.connect(functools.partial(self._show_crud, db.User))
-        b.setObjectName('control')
-        users_wrapper.addWidget(b)
 
         text_wrapper = QVBoxLayout()
         text_wrapper.setSpacing(0)
@@ -70,11 +66,14 @@ class UsersAndGroupsWidget(QFrame):
 
         h = QHBoxLayout()
         h.addStretch()
-        for l, i in zip(('Сохранить', 'Удалить'), ('save_w', 'delete')):
+        for l, i, f in zip(('Добавить пользователя', 'Сохранить', 'Удалить'),
+                           ('user', 'save_w', 'delete'),
+                           (functools.partial(self._show_crud, db.User), lambda e: None, lambda e: None)):
             b = QPushButton(l)
             b.setIcon(QIcon(os.path.join(options.STATIC_DIR, 'icons', i)))
             b.setObjectName('control')
             b.setGraphicsEffect(utils.get_shadow())
+            b.clicked.connect(f)
             h.addWidget(b)
         text_wrapper.addLayout(h)
 
@@ -99,16 +98,21 @@ class UsersAndGroupsWidget(QFrame):
         return _show_event
 
     def _group_selected(self, group):
+        self.selected_group_id = group.id
         utils.clear_layout(self._users_layout)
-        for user in group.user:
+        for user in db.SESSION.query(db.User).filter(db.User.organization_id == group.id):
             layout = QHBoxLayout()
+            layout.setContentsMargins(0, 0, 0, 0)
+            layout.setSpacing(0)
             layout.addWidget(QLabel(str(user)))
             layout.addStretch()
             b = QPushButton()
             b.setIcon(QIcon(os.path.join(options.STATIC_DIR, 'icons', 'pencil_g')))
             b.clicked.connect(functools.partial(self._show_crud, db.User, user))
             layout.addWidget(b)
-            self._users_layout.addLayout(layout)
+            wrapper = QWidget()
+            wrapper.setLayout(layout)
+            self._users_layout.addWidget(wrapper)
         self._users_layout.addStretch()
 
         self._text_field.setText(group.header)
@@ -120,5 +124,8 @@ class UsersAndGroupsWidget(QFrame):
         for group in self.groups:
             b = QRadioButton(group.name)
             b.clicked.connect(functools.partial(self._group_selected, group))
+            if group.id == self.selected_group_id:
+                b.setChecked(True)
+                self._group_selected(group)
             self._groups_layout.addWidget(b)
         self._groups_layout.addStretch()
