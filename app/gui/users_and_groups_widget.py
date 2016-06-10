@@ -27,11 +27,12 @@ class UsersAndGroupsWidget(QFrame):
         self._groups_layout = None
         self._users_layout = None
         self._text_field = None
-        self._create_layout()
-
         self._show_crud = self._get_crud_func(main_window)
         self.showEvent = self._get_show_event(main_window)
         self.groups = []
+        self.users = []
+
+        self._create_layout()
 
     def _create_layout(self):
         self._groups_layout = QVBoxLayout()
@@ -41,42 +42,83 @@ class UsersAndGroupsWidget(QFrame):
         layout = QHBoxLayout()
 
         groups_wrapper = QVBoxLayout()
-        groups_wrapper.addWidget(QLabel('Группы'))
+        groups_wrapper.setSpacing(0)
+        l = QLabel('Группы')
+        l.setObjectName('header')
+        groups_wrapper.addWidget(l)
         groups_wrapper.addWidget(utils.get_scrollable(self._groups_layout))
 
         users_wrapper = QVBoxLayout()
-        users_wrapper.addWidget(QLabel('Пользователи'))
+        users_wrapper.setSpacing(0)
+        users_wrapper.setContentsMargins(0, 0, 0, 0)
+        l = QLabel('Пользователи')
+        l.setObjectName('header')
+        users_wrapper.addWidget(l)
         users_wrapper.addWidget(utils.get_scrollable(self._users_layout))
+        b = QPushButton('Добавить')
+        b.clicked.connect(functools.partial(self._show_crud, db.User))
+        b.setObjectName('control')
+        users_wrapper.addWidget(b)
 
         text_wrapper = QVBoxLayout()
-        text_wrapper.addWidget(QLabel('Заголовок'))
+        text_wrapper.setSpacing(0)
+        l = QLabel('Заголовок')
+        l.setObjectName('header')
+        text_wrapper.addWidget(l)
         text_wrapper.addWidget(self._text_field)
+        self._text_field.setPlaceholderText('Заголовок будет отображаться в начале шаблона')
 
-        b = QPushButton('Сохранить')
-        b.setIcon(QIcon(os.path.join(options.STATIC_DIR, 'icons', 'save')))
-        b.setGraphicsEffect(utils.get_shadow())
         h = QHBoxLayout()
         h.addStretch()
-        h.addWidget(b)
+        for l, i in zip(('Сохранить', 'Удалить'), ('save_w', 'delete')):
+            b = QPushButton(l)
+            b.setIcon(QIcon(os.path.join(options.STATIC_DIR, 'icons', i)))
+            b.setObjectName('control')
+            b.setGraphicsEffect(utils.get_shadow())
+            h.addWidget(b)
         text_wrapper.addLayout(h)
 
         for l, s in zip((groups_wrapper, users_wrapper, text_wrapper), (20, 30, 50)):
             layout.addLayout(l, stretch=s)
 
         self.setLayout(layout)
+        self.setGraphicsEffect(utils.get_shadow())
 
-    def _get_crud_func(self, main_window, item=None):
-        def _show_crud():
-            CrudWidget(main_window, db.Group, callback=self._refresh, item=item)
+    def _get_crud_func(self, main_window):
+        def _show_crud(model, item=None):
+            CrudWidget(main_window, model=model, callback=self._refresh, item=item)
 
         return _show_crud
 
     def _get_show_event(self, main_window):
         def _show_event(event=None):
-            main_window.communication.action_button_toggle.emit(True, 'plus', self._show_crud)
+            main_window.communication.action_button_toggle.emit(True, 'plus', functools.partial(self._show_crud,
+                                                                                                db.Organization))
             self._refresh()
 
         return _show_event
 
+    def _group_selected(self, group):
+        utils.clear_layout(self._users_layout)
+        for user in group.user:
+            layout = QHBoxLayout()
+            layout.addWidget(QLabel(str(user)))
+            layout.addStretch()
+            b = QPushButton()
+            b.setIcon(QIcon(os.path.join(options.STATIC_DIR, 'icons', 'pencil_g')))
+            b.clicked.connect(functools.partial(self._show_crud, db.User, user))
+            layout.addWidget(b)
+            self._users_layout.addLayout(layout)
+        self._users_layout.addStretch()
+
+        self._text_field.setText(group.header)
+
     def _refresh(self, items=None):
-        self.groups = db.SESSION.query(db.Group).all()
+        self.groups = db.SESSION.query(db.Organization).all()
+
+        utils.clear_layout(self._groups_layout)
+        for group in self.groups:
+            b = QRadioButton(group.name)
+            b.clicked.connect(functools.partial(self._group_selected, group))
+            self._groups_layout.addWidget(b)
+        self._groups_layout.addStretch()
