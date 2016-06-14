@@ -1,12 +1,9 @@
 import os
 import functools
 
-from PyQt5.Qt import QColor, Qt, QBrush, QFont, QRegExp
-from PyQt5.QtGui import QSyntaxHighlighter, QTextCharFormat, QGuiApplication
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import (QFrame, QHBoxLayout, QLabel, QStackedLayout,
-                             QVBoxLayout, QPushButton, QTextEdit, QWidget,
-                             QRadioButton, QLineEdit)
+from PyQt5.QtWidgets import (QFrame, QHBoxLayout, QLabel, QVBoxLayout,
+                             QPushButton, QTextEdit, QWidget, QRadioButton)
 
 import options
 from model import db
@@ -29,6 +26,7 @@ class UsersAndGroupsWidget(QFrame):
         self.show_message = main_window.communication.set_message_text.emit
         self._show_crud = self._get_crud_func(main_window)
         self.showEvent = self._get_show_event(main_window)
+        self._delete = self._get_delete_func(main_window)
         self.groups = []
         self.users = []
         self.selected_group_id = None
@@ -110,7 +108,9 @@ class UsersAndGroupsWidget(QFrame):
     def _group_selected(self, group):
         self.selected_group_id = group.id
         utils.clear_layout(self._users_layout)
-        for user in db.SESSION.query(db.User).filter(db.User.organization_id == group.id):
+        for user in db.SESSION.query(db.User).filter(db.User.organization_id == group.id,
+                                                     db.User.deleted == False,
+                                                     db.Organization.deleted == False):
             layout = QHBoxLayout()
             layout.setContentsMargins(0, 0, 0, 0)
             layout.setSpacing(0)
@@ -128,9 +128,9 @@ class UsersAndGroupsWidget(QFrame):
         self._text_field.setText(group.header)
 
     def _refresh(self, items=None):
-        self.groups = db.SESSION.query(db.Organization).all()
+        self.groups = db.SESSION.query(db.Organization).filter(db.Organization.deleted == False)
 
-        utils.clear_layout(self._groups_layout)
+        self._clear_layout()
         for group in self.groups:
             b = QRadioButton(group.name)
             b.clicked.connect(functools.partial(self._group_selected, group))
@@ -140,6 +140,11 @@ class UsersAndGroupsWidget(QFrame):
             self._groups_layout.addWidget(b)
         self._groups_layout.addStretch()
 
+    def _clear_layout(self):
+        utils.clear_layout(self._groups_layout)
+        utils.clear_layout(self._users_layout)
+        self._text_field.setText('')
+
     def _save(self):
         for group in self.groups:
             if group.id == self.selected_group_id:
@@ -148,5 +153,18 @@ class UsersAndGroupsWidget(QFrame):
                 self.show_message('Ок')
                 return
 
-    def _delete(self):
-        pass
+    def _get_delete_func(self, main_window):
+        def _delete_for_real(for_real):
+            if not for_real:
+                return
+            for group in self.groups:
+                if group.id == self.selected_group_id:
+                    group.deleted = True
+                    group.save()
+                    self._refresh()
+                    return
+
+        def _delete():
+            main_window.create_alert(text='Действие не может быть отменено.\nПродолжить?', callback=_delete_for_real)
+
+        return _delete
