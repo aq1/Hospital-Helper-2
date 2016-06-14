@@ -46,8 +46,9 @@ class UsersWidget(QFrame):
         """
 
         utils.clear_layout(self.content_layout)
-        self.users = db.SESSION.query(db.User).filter(db.User.deleted == False)
-        organizations = db.SESSION.query(db.Organization).filter(db.Organization.deleted == False)
+        self.users = list(db.SESSION.query(db.User).filter(db.User.deleted == False,
+                                                           db.Organization.deleted == False))
+        organizations = list(db.SESSION.query(db.Organization).filter(db.Organization.deleted == False))
 
         for organization in organizations:
             self.content_layout.addWidget(self._get_label(organization))

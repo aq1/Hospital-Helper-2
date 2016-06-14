@@ -2,7 +2,7 @@ import os
 import functools
 
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import (QFrame, QHBoxLayout, QLabel, QVBoxLayout,
+from PyQt5.QtWidgets import (QFrame, QHBoxLayout, QLabel, QVBoxLayout, QComboBox,
                              QPushButton, QTextEdit, QWidget, QRadioButton)
 
 import options
@@ -20,7 +20,7 @@ class UsersAndGroupsWidget(QFrame):
     def __init__(self, main_window, parent):
         super().__init__()
 
-        self._groups_layout = None
+        self._groups_combo_box = None
         self._users_layout = None
         self._text_field = None
         self.show_message = main_window.communication.set_message_text.emit
@@ -34,62 +34,59 @@ class UsersAndGroupsWidget(QFrame):
         self._create_layout(parent)
 
     def _create_layout(self, parent):
-        self._groups_layout = QVBoxLayout()
+        self._groups_combo_box = QComboBox()
         self._users_layout = QVBoxLayout()
         self._text_field = QTextEdit()
 
         layout = QHBoxLayout()
 
         groups_wrapper = QVBoxLayout()
-        groups_wrapper.setSpacing(0)
         groups_wrapper.setContentsMargins(0, 0, 0, 0)
-        l = QLabel('Группы')
-        l.setObjectName('header')
-        groups_wrapper.addWidget(l)
-        groups_wrapper.addWidget(utils.get_scrollable(self._groups_layout))
+        groups_wrapper.setSpacing(0)
+        groups_wrapper.addWidget(self._groups_combo_box)
+
+        h_wrapper = QWidget()
+        h_wrapper.setObjectName('header')
+        hbox = QHBoxLayout()
+        hbox.setContentsMargins(0, 0, 0, 0)
+        hbox.setSpacing(0)
+        hbox.addWidget(QLabel('Пользователи'))
+        hbox.addStretch()
+        b = QPushButton()
+        b.setIcon(QIcon(os.path.join(options.STATIC_DIR, 'icons', 'plus')))
+        hbox.addWidget(b)
+        h_wrapper.setLayout(hbox)
+        groups_wrapper.addWidget(h_wrapper)
+        groups_wrapper.addWidget(utils.get_scrollable(self._users_layout))
         b = QPushButton('Назад')
         b.setObjectName('control')
-        b.clicked.connect(functools.partial(parent.set_current_index, 0))
-        b.setGraphicsEffect(utils.get_shadow())
         groups_wrapper.addWidget(b)
 
-        users_wrapper = QVBoxLayout()
-        users_wrapper.setSpacing(0)
-        users_wrapper.setContentsMargins(0, 0, 0, 0)
-        l = QLabel('Пользователи')
-        l.setObjectName('header')
-        users_wrapper.addWidget(l)
-        users_wrapper.addWidget(utils.get_scrollable(self._users_layout))
-
         text_wrapper = QVBoxLayout()
-        text_wrapper.setSpacing(0)
-        l = QLabel('Заголовок')
-        l.setObjectName('header')
-        text_wrapper.addWidget(l)
-        text_wrapper.addWidget(self._text_field)
-        self._text_field.setPlaceholderText('Заголовок будет отображаться в начале шаблона')
+        hbox = QHBoxLayout()
+        hbox.setContentsMargins(0, 0, 0, 0)
+        hbox.setSpacing(0)
 
-        h = QHBoxLayout()
-        h.setContentsMargins(0, 0, 0, 0)
-        h.setSpacing(10)
-        h.addStretch()
-        for l, i, f in zip(('Добавить пользователя', 'Сохранить', 'Удалить'),
-                           ('user', 'save_w', 'delete'),
-                           (functools.partial(self._show_crud, db.User), self._save, self._delete)):
-            b = QPushButton(l)
-            b.setIcon(QIcon(os.path.join(options.STATIC_DIR, 'icons', i)))
-            b.setObjectName('control')
-            b.setGraphicsEffect(utils.get_shadow())
-            b.clicked.connect(f)
-            h.addWidget(b)
+        b = QPushButton()
+        b.setIcon(QIcon(os.path.join(options.STATIC_DIR, 'icons', 'save_w')))
+        b.setObjectName('control')
+        hbox.addWidget(b)
+
+        b = QPushButton()
+        b.setIcon(QIcon(os.path.join(options.STATIC_DIR, 'icons', 'delete')))
+        b.setObjectName('control')
+        hbox.addWidget(b)
+        hbox.addStretch()
+
+        text_wrapper.addLayout(hbox)
         text_wrapper.addStretch()
-        text_wrapper.addLayout(h)
 
-        for l, s in zip((groups_wrapper, users_wrapper, text_wrapper), (20, 30, 50)):
-            layout.addLayout(l, stretch=s)
+        layout.addLayout(groups_wrapper, stretch=30)
+        layout.addLayout(text_wrapper, stretch=70)
+        # layout.addStretch(70)
 
-        self.setLayout(layout)
         self.setGraphicsEffect(utils.get_shadow())
+        self.setLayout(layout)
 
     def _get_crud_func(self, main_window):
         def _show_crud(model, item=None):
@@ -128,6 +125,7 @@ class UsersAndGroupsWidget(QFrame):
         self._text_field.setText(group.header)
 
     def _refresh(self, items=None):
+        return
         self.groups = db.SESSION.query(db.Organization).filter(db.Organization.deleted == False)
 
         self._clear_layout()
@@ -137,11 +135,11 @@ class UsersAndGroupsWidget(QFrame):
             if group.id == self.selected_group_id:
                 b.setChecked(True)
                 self._group_selected(group)
-            self._groups_layout.addWidget(b)
-        self._groups_layout.addStretch()
+            self._groups_combo_box.addWidget(b)
+        self._groups_combo_box.addStretch()
 
     def _clear_layout(self):
-        utils.clear_layout(self._groups_layout)
+        utils.clear_layout(self._groups_combo_box)
         utils.clear_layout(self._users_layout)
         self._text_field.setText('')
 

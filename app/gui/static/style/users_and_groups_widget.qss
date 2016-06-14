@@ -65,3 +65,19 @@ UsersAndGroupsWidget QRadioButton:checked:hover {
 UsersAndGroupsWidget QRadioButton:hover {
     background-color: rgba(0, 0, 0, 0.1);
 }
+
+UsersAndGroupsWidget QComboBox {
+    font-size: 12pt;
+    padding: 10px 0;
+    border-bottom: 2px solid #DDDDDD;
+}
+
+UsersAndGroupsWidget QComboBox::drop-down {
+    padding: 0;
+    border-width: 0px;
+}
+
+UsersAndGroupsWidget QComboBox::down-arrow {
+    image: url(noimg);
+    border-width: 0px;
+}
