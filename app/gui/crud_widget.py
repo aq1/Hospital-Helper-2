@@ -43,6 +43,7 @@ class CrudWidgetContent(QFrame):
         self.item = item
         self.created_items = []
         self._close = self._get_close_function(parent)
+        self._delete = self._get_delete_functon(main_window)
 
         self._create_layout(main_window)
         self._check_input()
@@ -119,7 +120,7 @@ class CrudWidgetContent(QFrame):
         if label.endswith('_id'):
             label = label[:-3]
         foreign_model = relations.get(label).mapper.class_
-        items = db.SESSION.query(foreign_model).all()
+        items = list(db.SESSION.query(foreign_model).filter(foreign_model.deleted == False))
         self.foreigns[column.name] = items
         items_labels = [str(i) for i in items]
         widget = QWidget()
@@ -150,7 +151,7 @@ class CrudWidgetContent(QFrame):
         """
 
         for column in model.__table__.columns:
-            if column.name == 'id':
+            if column.name == 'id' or column.default:
                 continue
 
             if column.foreign_keys:
@@ -165,13 +166,25 @@ class CrudWidgetContent(QFrame):
 
             yield QLabel(_(label)), widget
 
-    def _delete(self):
-        """
-        Delete item.
-        """
+    def _get_delete_functon(self, main_window):
+        def _delete_for_real(for_real):
+            if not for_real:
+                return
+            if hasattr(self.item, 'deleted'):
+                self.item.deleted = True
+                self.item.save()
+            else:
+                self.item.delete()
+            self._close()
 
-        self.item.delete()
-        self._close()
+        def _delete():
+            """
+            Delete item.
+            """
+
+            main_window.create_alert(text='Действие не может быть отменено.\nПродолжить?',
+                                     callback=_delete_for_real)
+        return _delete
 
     def _get_close_function(self, parent):
         """
