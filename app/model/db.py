@@ -9,7 +9,7 @@ from sqlalchemy.orm import relationship
 from sqlalchemy import create_engine
 from sqlalchemy import (Column, Integer, String, Float,
                         ForeignKey, Date, SmallInteger,
-                        Text)
+                        Text, Boolean)
 
 import options
 
@@ -70,6 +70,8 @@ class Client(Base, Model):
     user_id = Column(ForeignKey('user.id'), nullable=False)
     user = relationship('User', backref=options.CLIENT_TABLE_NAME)
 
+    deleted = Column(Boolean, nullable=False, default=False)
+
     def __str__(self):
         return '{} {} {}'.format(self.surname, self.name, self.patronymic)
 
@@ -79,12 +81,14 @@ class User(Base, Model):
     __tablename__ = 'user'
 
     id = Column(Integer, primary_key=True)
-    organization_id = Column(ForeignKey('organization.id'))
+    organization_id = Column(ForeignKey('organization.id'), nullable=False)
     organization = relationship('Organization', backref='user', cascade="save-update, merge, delete")
 
-    surname = Column(String, nullable=False, default='')
-    name = Column(String, nullable=False, default='')
-    patronymic = Column(String, nullable=False, default='')
+    surname = Column(String, nullable=False)
+    name = Column(String, nullable=False)
+    patronymic = Column(String, nullable=False)
+
+    deleted = Column(Boolean, nullable=False, default=False)
 
     def __str__(self):
         return '{} {} {}'.format(self.surname, self.name, self.patronymic)
@@ -97,6 +101,8 @@ class Organization(Base, Model):
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
     header = Column(Text, nullable=False, default='')
+
+    deleted = Column(Boolean, nullable=False, default=False)
 
     __table_args__ = tuple(UniqueConstraint('name'))
 
