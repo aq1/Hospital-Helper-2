@@ -65,6 +65,7 @@ class MainWindow(QWidget):
         self.top_system_frame_height = 0
 
         self._init_gui()
+        self._set_shortcuts()
 
     def _init_gui(self):
         self._set_sys_attributes()
@@ -178,13 +179,13 @@ class MainWindow(QWidget):
 
         CrudWidget(self, model, callback, db_object)
 
-    def create_alert(self, text):
-        AlertWidget(self, text)
+    def create_alert(self, text, callback=None):
+        AlertWidget(self, text, callback)
 
     def show_message(self, text):
         self.communication.set_message_text.emit(text)
 
-    def user_selected(self, user):
+    def user_selected(self, user, go_to_data_frame=False):
         """
         Callback when user is selected.
         Sets user, emits signal.
@@ -192,8 +193,8 @@ class MainWindow(QWidget):
 
         self.user = user
         self.communication.user_selected.emit(user)
-        self.communication.menu_btn_clicked.emit(self.data_frame_index)
-        self._set_shortcuts()
+        if go_to_data_frame:
+            self.communication.menu_btn_clicked.emit(self.data_frame_index)
 
     def create_report(self):
         """

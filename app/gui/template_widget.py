@@ -307,6 +307,11 @@ class AbstractTemplateWidget(QFrame):
         templates = template_module.Template.get_all()
 
         for j, item in enumerate(self.visible_items):
+            if not templates[item.id]:
+                l = QLabel('Нет шаблонов для данного объекта\nУправлять шаблонами можно на вкладке настроек')
+                l.setAlignment(Qt.AlignCenter)
+                self.templates_layout.addWidget(l)
+                continue
             layouts = [QVBoxLayout() for _ in range(cols)]
             for i, each in enumerate(templates[item.id]):
                 b = QRadioButton(each.name)

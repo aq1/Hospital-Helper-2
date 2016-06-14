@@ -37,10 +37,10 @@ def init():
 
     localization.Localization.install('ru')
 
-    for i in items:
-        for j in range(25):
-            t, _ = db.Template.get_or_create(item_id=i.id, name='%s %s' % (i.name, j), body='Тело', conclusion='Заключение')
-    db.SESSION.flush()
+    # for i in items:
+    #     for j in range(25):
+    #         t, _ = db.Template.get_or_create(item_id=i.id, name='%s %s' % (i.name, j), body='Тело', conclusion='Заключение')
+    # db.SESSION.flush()
 
     return items
 

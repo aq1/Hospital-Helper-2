@@ -1,3 +1,7 @@
+AbstractTemplateWidget QLabel {
+    background-color: white;
+}
+
 AbstractTemplateWidget QTextEdit {
     font-size: 10pt;
 }

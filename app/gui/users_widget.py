@@ -2,11 +2,10 @@ import functools
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (QFrame, QVBoxLayout, QLabel, QRadioButton,
-                             QHBoxLayout, QPushButton)
+                             QHBoxLayout)
 
 from model import db
 from gui import utils
-from gui.crud_widget import CrudWidget
 
 
 class UsersWidget(QFrame):
@@ -47,8 +46,8 @@ class UsersWidget(QFrame):
         """
 
         utils.clear_layout(self.content_layout)
-        self.users = db.SESSION.query(db.User).all()
-        organizations = db.SESSION.query(db.Organization).all()
+        self.users = db.SESSION.query(db.User).filter(db.User.deleted == False)
+        organizations = db.SESSION.query(db.Organization).filter(db.Organization.deleted == False)
 
         for organization in organizations:
             self.content_layout.addWidget(self._get_label(organization))
@@ -68,7 +67,8 @@ class UsersWidget(QFrame):
         b.mouseDoubleClickEvent = (functools.partial(self._button_clicked, item))
         return b
 
-    def _get_label(self, item):
+    @staticmethod
+    def _get_label(item):
         """
         Add label for organization.
         """
@@ -80,7 +80,7 @@ class UsersWidget(QFrame):
         """
         Select user.
         """
-        self.main_window.user_selected(user)
+        self.main_window.user_selected(user, go_to_data_frame=True)
 
     def action_btn_function(self):
         """
