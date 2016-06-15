@@ -40,53 +40,8 @@ class UsersAndGroupsWidget(QFrame):
 
         layout = QHBoxLayout()
 
-        groups_wrapper = QVBoxLayout()
-        groups_wrapper.setContentsMargins(0, 0, 0, 0)
-        groups_wrapper.setSpacing(0)
-        groups_wrapper.addWidget(self._groups_combo_box)
-
-        h_wrapper = QWidget()
-        h_wrapper.setObjectName('header')
-        hbox = QHBoxLayout()
-        hbox.setContentsMargins(0, 0, 0, 0)
-        hbox.setSpacing(0)
-        hbox.addWidget(QLabel('Пользователи'))
-        hbox.addStretch()
-        b = QPushButton()
-        b.setIcon(QIcon(os.path.join(options.STATIC_DIR, 'icons', 'plus')))
-        hbox.addWidget(b)
-        h_wrapper.setLayout(hbox)
-        groups_wrapper.addWidget(h_wrapper)
-        groups_wrapper.addWidget(utils.get_scrollable(self._users_layout))
-        b = QPushButton('Назад')
-        b.setObjectName('control')
-        groups_wrapper.addWidget(b)
-
-        text_wrapper = QVBoxLayout()
-        hbox = QHBoxLayout()
-        hbox.setContentsMargins(0, 0, 0, 0)
-        hbox.setSpacing(0)
-
-        b = QPushButton()
-        b.setIcon(QIcon(os.path.join(options.STATIC_DIR, 'icons', 'save_w')))
-        b.setObjectName('control')
-        hbox.addWidget(b)
-
-        b = QPushButton()
-        b.setIcon(QIcon(os.path.join(options.STATIC_DIR, 'icons', 'delete')))
-        b.setObjectName('control')
-        hbox.addWidget(b)
-        hbox.addStretch()
-
-        text_wrapper.addLayout(hbox)
-        text_wrapper.addStretch()
-
-        layout.addLayout(groups_wrapper, stretch=30)
-        layout.addLayout(text_wrapper, stretch=70)
-        # layout.addStretch(70)
-
-        self.setGraphicsEffect(utils.get_shadow())
         self.setLayout(layout)
+        self.setGraphicsEffect(utils.get_shadow())
 
     def _get_crud_func(self, main_window):
         def _show_crud(model, item=None):

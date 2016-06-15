@@ -1,83 +1,83 @@
-UsersAndGroupsWidget QWidget {
-    border: none;
-    background-color: white;
-}
+/*UsersAndGroupsWidget QWidget {*/
+    /*border: none;*/
+    /*background-color: white;*/
+/*}*/
 
-UsersAndGroupsWidget QLabel#header {
-    border-bottom: 1px solid #DDDDDD;
-}
+/*UsersAndGroupsWidget #header {*/
+    /*border-bottom: 2px solid #DDDDDD;*/
+/*}*/
 
-UsersAndGroupsWidget QPushButton#control {
-    font-size: 12pt;
-    padding: 10px 30px;
-    color: white;
-    background-color: #45A0A3;
-    margin: 10px 0 0 0;
-    text-transform: uppercase;
-    icon-size: 18px;
-    line-height: 18px;
-    border-width: 0;
-}
+/*UsersAndGroupsWidget QPushButton#control {*/
+    /*font-size: 12pt;*/
+    /*padding: 10px 30px;*/
+    /*color: white;*/
+    /*background-color: #45A0A3;*/
+    /*margin: 2px 0 0 0;*/
+    /*text-transform: uppercase;*/
+    /*icon-size: 18px;*/
+    /*line-height: 18px;*/
+    /*border-width: 0;*/
+/*}*/
 
-UsersAndGroupsWidget QPushButton#control:hover {
-    background-color: #3B8689;
-}
+/*UsersAndGroupsWidget QPushButton#control:hover {*/
+    /*background-color: #3B8689;*/
+/*}*/
 
-UsersAndGroupsWidget QPushButton#control:pressed {
-    background-color: #1F484A;
-}
+/*UsersAndGroupsWidget QPushButton#control:pressed {*/
+    /*background-color: #1F484A;*/
+/*}*/
 
-UsersAndGroupsWidget QPushButton#control:disabled {
-    background-color: #AAAAAA;
-}
+/*UsersAndGroupsWidget QPushButton#control:disabled {*/
+    /*background-color: #AAAAAA;*/
+/*}*/
 
-UsersAndGroupsWidget QPushButton#control#icon {
-    padding: 10px 10px;
-    background-color: transparent;
-}
+/*UsersAndGroupsWidget QPushButton#control#icon {*/
+    /*padding: 10px 10px;*/
+    /*background-color: transparent;*/
+/*}*/
 
-UsersAndGroupsWidget QPushButton#control#icon:hover {
-    background-color: rgba(0, 0, 0, 0.2);
-}
+/*UsersAndGroupsWidget QPushButton#control#icon:hover {*/
+    /*background-color: rgba(0, 0, 0, 0.2);*/
+/*}*/
 
-UsersAndGroupsWidget QPushButton#control#icon:pressed {
-    background-color: rgba(0, 0, 0, 0.3);
-}
+/*UsersAndGroupsWidget QPushButton#control#icon:pressed {*/
+    /*background-color: rgba(0, 0, 0, 0.3);*/
+/*}*/
 
-UsersAndGroupsWidget QRadioButton, UsersAndGroupsWidget QLabel {
-    text-align: left;
-    font-size: 10pt;
-    padding: 10px 5px;
-    border: none;
-    background-color: white;
-}
+/*UsersAndGroupsWidget QRadioButton, UsersAndGroupsWidget QLabel {*/
+    /*text-align: left;*/
+    /*font-size: 10pt;*/
+    /*padding: 10px 5px;*/
+    /*border: none;*/
+    /*background-color: white;*/
+/*}*/
 
-UsersAndGroupsWidget QRadioButton:checked {
-    background-color: #45A0A3;
-    color: white;
-}
+/*UsersAndGroupsWidget QRadioButton:checked {*/
+    /*background-color: #45A0A3;*/
+    /*color: white;*/
+/*}*/
 
-UsersAndGroupsWidget QRadioButton:checked:hover {
-    background-color: #3d8b8e;
-    color: white;
-}
+/*UsersAndGroupsWidget QRadioButton:checked:hover {*/
+    /*background-color: #3d8b8e;*/
+    /*color: white;*/
+/*}*/
 
-UsersAndGroupsWidget QRadioButton:hover {
-    background-color: rgba(0, 0, 0, 0.1);
-}
+/*UsersAndGroupsWidget QRadioButton:hover {*/
+    /*background-color: rgba(0, 0, 0, 0.1);*/
+/*}*/
 
-UsersAndGroupsWidget QComboBox {
-    font-size: 12pt;
-    padding: 10px 0;
-    border-bottom: 2px solid #DDDDDD;
-}
+/*UsersAndGroupsWidget QComboBox {*/
+    /*font-size: 12pt;*/
+    /*padding: 10px 0;*/
+    /*border-bottom: 2px solid #DDDDDD;*/
+/*}*/
 
-UsersAndGroupsWidget QComboBox::drop-down {
-    padding: 0;
-    border-width: 0px;
-}
+/*UsersAndGroupsWidget QComboBox::drop-down {*/
+    /*padding: 0;*/
+    /*border-width: 0px;*/
+/*}*/
 
-UsersAndGroupsWidget QComboBox::down-arrow {
-    image: url(noimg);
-    border-width: 0px;
-}
+/*UsersAndGroupsWidget QComboBox::down-arrow {*/
+    /*image: url(noimg);*/
+    /*border-width: 0px;*/
+/*}*/
