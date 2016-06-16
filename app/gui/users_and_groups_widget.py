@@ -29,7 +29,7 @@ class UsersAndGroupsWidget(QFrame):
         self._delete = self._get_delete_func(main_window)
         self.groups = []
         self.users = []
-        self.selected_group_id = None
+        self.selected_group_index = None
 
         self._create_layout(parent)
 
@@ -38,25 +38,31 @@ class UsersAndGroupsWidget(QFrame):
         self._users_layout = QVBoxLayout()
         self._text_field = QTextEdit()
 
+        self._text_field.setPlaceholderText('Заголовок появится в начале отчета')
+        self._groups_combo_box.currentIndexChanged.connect(self._group_selected)
+
         layout = QHBoxLayout()
         layout.setContentsMargins(15, 15, 15, 15)
         layout.setSpacing(20)
 
         right_side = QVBoxLayout()
         right_side.setContentsMargins(0, 0, 0, 0)
-        right_side.setSpacing(10)
+        right_side.setSpacing(0)
         hbox = QHBoxLayout()
         hbox.setContentsMargins(0, 0, 0, 0)
         hbox.setSpacing(0)
         for i, f in zip(('save_w', 'delete'), ('', '')):
             b = QPushButton()
             b.setIcon(QIcon(os.path.join(options.STATIC_DIR, 'icons', i)))
-            b.setObjectName('control')
+            b.setObjectName('button')
             b.setGraphicsEffect(utils.get_shadow())
             hbox.addWidget(b)
+            hbox.addSpacing(5)
         hbox.addStretch()
         right_side.addLayout(hbox)
+        right_side.addSpacing(5)
         l = QLabel('Заголовок')
+        l.setObjectName('text-header')
         right_side.addWidget(l)
         right_side.addWidget(self._text_field)
 
@@ -80,6 +86,8 @@ class UsersAndGroupsWidget(QFrame):
         left_side.addWidget(wrapper)
         left_side.addWidget(utils.get_scrollable(self._users_layout))
         b = QPushButton('Назад')
+        b.setObjectName('button')
+        left_side.addSpacing(5)
         left_side.addWidget(b)
 
         layout.addLayout(left_side, stretch=30)
@@ -101,10 +109,10 @@ class UsersAndGroupsWidget(QFrame):
 
         return _show_event
 
-    def _group_selected(self, group):
-        self.selected_group_id = group.id
+    def _group_selected(self, index):
+        self.selected_group_index = index
         utils.clear_layout(self._users_layout)
-        for user in db.SESSION.query(db.User).filter(db.User.organization_id == group.id,
+        for user in db.SESSION.query(db.User).filter(db.User.organization_id == self.groups[index].id,
                                                      db.User.deleted == False,
                                                      db.Organization.deleted == False):
             layout = QHBoxLayout()
@@ -121,45 +129,34 @@ class UsersAndGroupsWidget(QFrame):
             self._users_layout.addWidget(wrapper)
         self._users_layout.addStretch()
 
-        self._text_field.setText(group.header)
+        self._text_field.setText(self.groups[index].header)
 
     def _refresh(self, items=None):
-        return
         self.groups = db.SESSION.query(db.Organization).filter(db.Organization.deleted == False)
 
         self._clear_layout()
-        for group in self.groups:
-            b = QRadioButton(group.name)
-            b.clicked.connect(functools.partial(self._group_selected, group))
-            if group.id == self.selected_group_id:
-                b.setChecked(True)
-                self._group_selected(group)
-            self._groups_combo_box.addWidget(b)
-        self._groups_combo_box.addStretch()
+        for i, group in enumerate(self.groups):
+            self._groups_combo_box.insertItem(i, str(group))
 
     def _clear_layout(self):
-        utils.clear_layout(self._groups_combo_box)
         utils.clear_layout(self._users_layout)
         self._text_field.setText('')
+        for i in range(self._groups_combo_box.count()):
+            self._groups_combo_box.removeItem(i)
 
     def _save(self):
-        for group in self.groups:
-            if group.id == self.selected_group_id:
-                group.header = self._text_field.toPlainText()
-                group.save()
-                self.show_message('Ок')
-                return
+        self.groups[self.selected_group_index].header = self._text_field.toPlainText()
+        self.groups[self.selected_group_index].save()
+        self.show_message('Ок')
 
     def _get_delete_func(self, main_window):
         def _delete_for_real(for_real):
             if not for_real:
                 return
-            for group in self.groups:
-                if group.id == self.selected_group_id:
-                    group.deleted = True
-                    group.save()
-                    self._refresh()
-                    return
+            self.groups[self.selected_group_index].deleted = True
+            self.groups[self.selected_group_index].save()
+            self._refresh()
+            return
 
         def _delete():
             main_window.create_alert(text='Действие не может быть отменено.\nПродолжить?', callback=_delete_for_real)

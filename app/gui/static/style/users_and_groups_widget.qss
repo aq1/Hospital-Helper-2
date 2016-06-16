@@ -7,7 +7,12 @@ UsersAndGroupsWidget #header {
     border-bottom: 2px solid #DDDDDD;
 }
 
-UsersAndGroupsWidget QPushButton#control {
+UsersAndGroupsWidget #text-header {
+    border-bottom: 2px solid #DDDDDD;
+    padding: 17px 0;
+}
+
+UsersAndGroupsWidget QPushButton#button {
     font-size: 12pt;
     padding: 10px 30px;
     color: white;
@@ -19,28 +24,28 @@ UsersAndGroupsWidget QPushButton#control {
     border-width: 0;
 }
 
-UsersAndGroupsWidget QPushButton#control:hover {
+UsersAndGroupsWidget QPushButton#button:hover {
     background-color: #3B8689;
 }
 
-UsersAndGroupsWidget QPushButton#control:pressed {
+UsersAndGroupsWidget QPushButton#button:pressed {
     background-color: #1F484A;
 }
 
-UsersAndGroupsWidget QPushButton#control:disabled {
+UsersAndGroupsWidget QPushButton#button:disabled {
     background-color: #AAAAAA;
 }
 
-UsersAndGroupsWidget QPushButton#control#icon {
+UsersAndGroupsWidget QPushButton#button#icon {
     padding: 10px 10px;
     background-color: transparent;
 }
 
-UsersAndGroupsWidget QPushButton#control#icon:hover {
+UsersAndGroupsWidget QPushButton#button#icon:hover {
     background-color: rgba(0, 0, 0, 0.2);
 }
 
-UsersAndGroupsWidget QPushButton#control#icon:pressed {
+UsersAndGroupsWidget QPushButton#button#icon:pressed {
     background-color: rgba(0, 0, 0, 0.3);
 }
 
@@ -68,7 +73,7 @@ UsersAndGroupsWidget QRadioButton:hover {
 
 UsersAndGroupsWidget QComboBox {
     font-size: 12pt;
-    padding: 10px 0;
+    padding: 10px 0 10px 5px;
     border-bottom: 2px solid #DDDDDD;
 }
 
