@@ -1,6 +1,7 @@
 import os
 import functools
 
+from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import (QFrame, QHBoxLayout, QLabel, QVBoxLayout, QComboBox,
                              QPushButton, QTextEdit, QWidget, QRadioButton)
@@ -29,7 +30,7 @@ class UsersAndGroupsWidget(QFrame):
         self._delete = self._get_delete_func(main_window)
         self.groups = []
         self.users = []
-        self.selected_group_index = None
+        self.selected_group_index = 0
 
         self._create_layout(parent)
 
@@ -51,11 +52,12 @@ class UsersAndGroupsWidget(QFrame):
         hbox = QHBoxLayout()
         hbox.setContentsMargins(0, 0, 0, 0)
         hbox.setSpacing(0)
-        for i, f in zip(('save_w', 'delete'), ('', '')):
+        for i, f in zip(('save_w', 'delete'), (self._save, self._delete)):
             b = QPushButton()
             b.setIcon(QIcon(os.path.join(options.STATIC_DIR, 'icons', i)))
             b.setObjectName('button')
             b.setGraphicsEffect(utils.get_shadow())
+            b.clicked.connect(f)
             hbox.addWidget(b)
             hbox.addSpacing(5)
         hbox.addStretch()
@@ -80,6 +82,7 @@ class UsersAndGroupsWidget(QFrame):
         hbox.addStretch()
         b = QPushButton()
         b.setIcon(QIcon(os.path.join(options.STATIC_DIR, 'icons', 'plus')))
+        b.clicked.connect(functools.partial(self._show_crud, db.User))
         hbox.addWidget(b)
         wrapper.setLayout(hbox)
         wrapper.setObjectName('header')
@@ -112,6 +115,15 @@ class UsersAndGroupsWidget(QFrame):
     def _group_selected(self, index):
         self.selected_group_index = index
         utils.clear_layout(self._users_layout)
+        self._text_field.setText(self.groups[index].header)
+        if not self.groups:
+            self._users_layout.addStretch()
+            l = QLabel('Создайте группу, чтобы добавлять пользователей.')
+            l.setAlignment(Qt.AlignCenter)
+            self._users_layout.addWidget(l)
+            self._users_layout.addStretch()
+            return
+
         for user in db.SESSION.query(db.User).filter(db.User.organization_id == self.groups[index].id,
                                                      db.User.deleted == False,
                                                      db.Organization.deleted == False):
@@ -129,14 +141,17 @@ class UsersAndGroupsWidget(QFrame):
             self._users_layout.addWidget(wrapper)
         self._users_layout.addStretch()
 
-        self._text_field.setText(self.groups[index].header)
+    def _refresh(self, after_delete=False):
+        self.groups = list(db.SESSION.query(db.Organization).filter(db.Organization.deleted == False))
 
-    def _refresh(self, items=None):
-        self.groups = db.SESSION.query(db.Organization).filter(db.Organization.deleted == False)
+        if after_delete:
+            self.selected_group_index = 0
 
         self._clear_layout()
         for i, group in enumerate(self.groups):
             self._groups_combo_box.insertItem(i, str(group))
+
+        self._group_selected(self.selected_group_index)
 
     def _clear_layout(self):
         utils.clear_layout(self._users_layout)
@@ -155,7 +170,7 @@ class UsersAndGroupsWidget(QFrame):
                 return
             self.groups[self.selected_group_index].deleted = True
             self.groups[self.selected_group_index].save()
-            self._refresh()
+            self._refresh(after_delete=True)
             return
 
         def _delete():
