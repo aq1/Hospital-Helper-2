@@ -43,11 +43,11 @@ class AlertWidgetContent(QFrame):
         vbox.addStretch()
 
         hbox = QHBoxLayout()
-        hbox.addStretch()
         b = QPushButton('ok')
         b.clicked.connect(functools.partial(self._close, True))
         hbox.addWidget(b)
         if callback:
+            hbox.addStretch()
             b = QPushButton('Отмена')
             b.clicked.connect(functools.partial(self._close, False))
             hbox.addWidget(b)
