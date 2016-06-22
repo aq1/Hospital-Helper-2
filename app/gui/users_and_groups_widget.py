@@ -4,7 +4,7 @@ import functools
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import (QFrame, QHBoxLayout, QLabel, QVBoxLayout, QComboBox,
-                             QPushButton, QTextEdit, QWidget, QRadioButton)
+                             QPushButton, QTextEdit, QWidget)
 
 import options
 from model import db
@@ -24,10 +24,12 @@ class UsersAndGroupsWidget(QFrame):
         self._groups_combo_box = None
         self._users_layout = None
         self._text_field = None
+        self._related_to_group_buttons = []
         self.show_message = main_window.communication.set_message_text.emit
         self._show_crud = self._get_crud_func(main_window)
         self.showEvent = self._get_show_event(main_window)
         self._delete = self._get_delete_func(main_window)
+        self._select_user = self._get_select_user(main_window)
         self.groups = []
         self.users = []
         self._selected_group = None
@@ -58,6 +60,7 @@ class UsersAndGroupsWidget(QFrame):
             b.setObjectName('button')
             b.clicked.connect(f)
             hbox.addWidget(b)
+            self._related_to_group_buttons.append(b)
             hbox.addSpacing(5)
         hbox.addStretch()
         right_side.addLayout(hbox)
@@ -89,6 +92,7 @@ class UsersAndGroupsWidget(QFrame):
         left_side.addWidget(utils.get_scrollable(self._users_layout))
         b = QPushButton('Назад')
         b.setObjectName('button')
+        b.clicked.connect(functools.partial(parent.set_current_index, 0))
         left_side.addSpacing(5)
         left_side.addWidget(b)
 
@@ -111,17 +115,60 @@ class UsersAndGroupsWidget(QFrame):
 
         return _show_event
 
-    def _group_selected(self, index):
+    @staticmethod
+    def _get_select_user(main_window):
+        def _select_user(user):
+            def callback(value):
+                if value:
+                    main_window.communication.user_selected.emit(user)
+
+            main_window.create_alert(text='Сменить пользователя?',
+                                     callback=callback)
+
+        return _select_user
+
+    def _show_users_for_group(self, group_id):
         utils.clear_layout(self._users_layout)
-        if self.groups:
-            try:
-                self._selected_group = self.groups[index]
-            except IndexError:
-                print(len(self.groups), self._groups_combo_box.currentIndex())
-                self._selected_group = self.groups[self._groups_combo_box.currentIndex()]
-            else:
-                self._text_field.setText(self._selected_group.header)
+
+        for user in db.SESSION.query(db.User).filter(db.User.organization_id == group_id,
+                                                             db.User.deleted == False,
+                                                             db.Organization.deleted == False):
+            layout = QHBoxLayout()
+            layout.setContentsMargins(0, 0, 0, 0)
+            layout.setSpacing(0)
+            layout.addWidget(QLabel(str(user)))
+            layout.addStretch()
+            for i, f in zip(('check', 'pencil_g'),
+                            (functools.partial(self._select_user, user),
+                             functools.partial(self._show_crud, db.User, user))):
+                b = QPushButton()
+                b.setIcon(QIcon(os.path.join(options.STATIC_DIR, 'icons', i)))
+                b.clicked.connect(f)
+                layout.addWidget(b)
+            wrapper = QWidget()
+            wrapper.setLayout(layout)
+            self._users_layout.addWidget(wrapper)
+        self._users_layout.addStretch()
+
+    def _set_buttons_state(self, value):
+        for b in self._related_to_group_buttons:
+            b.setDisabled(value)
+
+    def _group_selected(self, index):
+        try:
+            self._selected_group = self.groups[index]
+        except IndexError:
+            self._text_field.setText('')
+            self._set_buttons_state(True)
         else:
+            self._show_users_for_group(self._selected_group.id)
+            self._set_buttons_state(False)
+
+    def _refresh(self, items=None):
+        self.groups = list(db.SESSION.query(db.Organization).filter(db.Organization.deleted == False))
+        self._clear_layout()
+
+        if not self.groups:
             self._users_layout.addStretch()
             l = QLabel('Создайте группу, чтобы добавлять пользователей.')
             l.setAlignment(Qt.AlignCenter)
@@ -129,30 +176,8 @@ class UsersAndGroupsWidget(QFrame):
             self._users_layout.addStretch()
             return
 
-        for user in db.SESSION.query(db.User).filter(db.User.organization_id == self._selected_group.id,
-                                                     db.User.deleted == False,
-                                                     db.Organization.deleted == False):
-            layout = QHBoxLayout()
-            layout.setContentsMargins(0, 0, 0, 0)
-            layout.setSpacing(0)
-            layout.addWidget(QLabel(str(user)))
-            layout.addStretch()
-            b = QPushButton()
-            b.setIcon(QIcon(os.path.join(options.STATIC_DIR, 'icons', 'pencil_g')))
-            b.clicked.connect(functools.partial(self._show_crud, db.User, user))
-            layout.addWidget(b)
-            wrapper = QWidget()
-            wrapper.setLayout(layout)
-            self._users_layout.addWidget(wrapper)
-        self._users_layout.addStretch()
-
-    def _refresh(self, items=None):
-        self.groups = list(db.SESSION.query(db.Organization).filter(db.Organization.deleted == False))
-
-        self._clear_layout()
         for i, group in enumerate(self.groups):
             if self._selected_group and group.id == self._selected_group.id:
-                print(group, self._selected_group)
                 self._group_selected(i)
 
             self._groups_combo_box.insertItem(i, str(group))
@@ -164,6 +189,10 @@ class UsersAndGroupsWidget(QFrame):
             self._groups_combo_box.removeItem(i)
 
     def _save(self):
+
+        if not self._selected_group:
+            return
+
         self._selected_group.header = self._text_field.toPlainText()
         self._selected_group.save()
         self.show_message('Ок')
@@ -174,6 +203,7 @@ class UsersAndGroupsWidget(QFrame):
                 return
             self._selected_group.deleted = True
             self._selected_group.save()
+            self._selected_group = None
             self._refresh()
             return
 
