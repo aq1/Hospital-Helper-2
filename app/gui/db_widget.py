@@ -64,7 +64,7 @@ class DBWidget(QFrame):
                 self.items = db.SESSION.query(self.model).order_by(self.model.id.desc())
 
             self.display_model()
-            main_window.communication.action_button_toggle.emit(False, None, None)
+            main_window.communication.action_button_toggle.emit(False, '', None)
 
         return showEvent
 

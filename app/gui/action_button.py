@@ -17,6 +17,28 @@ class ActionButton(QPushButton):
 
     ICONS = {each.split('.')[0]: os.path.join(options.STATIC_DIR, 'icons', each)
              for each in os.listdir(os.path.join(options.STATIC_DIR, 'icons'))}
+    
+    QSS = """
+        ActionButton {{
+            icon-size: {x}px;
+            font-weight: bold;
+            background-color: #FFEB3B;
+            border-style: solid;
+            border-radius: {y}px;
+            max-width: {z}px;
+            max-height: {z}px;
+            min-width: {z}px;
+            min-height: {z}px;
+        }}
+
+        ActionButton:hover {{
+            background-color: #F0DE41;
+        }}
+
+        ActionButton:pressed {{
+            background-color: #E0CE31;
+        }}
+    """
 
     def __init__(self, main_window):
         """
@@ -34,6 +56,9 @@ class ActionButton(QPushButton):
         """
         Move the button when application is resized.
         """
+        w = int(width * 0.08)
+        self.setStyleSheet(self.QSS.format(x=int(w/3), y=w/2, z=w))
+        self.setFixedSize(w, w)
         self.move(width - self.width() * 1.5, waterline - self.height() / 2)
         self.raise_()
 
@@ -43,7 +68,6 @@ class ActionButton(QPushButton):
         Change icon.
         Change callback.
         """
-
         if not is_visible:
             self.hide()
             return

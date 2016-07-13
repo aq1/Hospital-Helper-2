@@ -4,7 +4,7 @@ import datetime
 from collections import OrderedDict
 
 from odf.opendocument import OpenDocumentText
-from odf.style import Style, TextProperties
+from odf.style import Style, TextProperties, ParagraphProperties
 from odf.text import H, P, Span
 
 import options
@@ -23,10 +23,10 @@ class Report:
         self.template_groups = OrderedDict()
 
         for item in items:
-            if not item.template:
-                continue
             if item.name == options.CLIENT_TABLE_NAME:
                 self.client = self._get_client(item)
+            if not item.template:
+                continue
             if not self.template_groups.get(item.group):
                 self.template_groups[item.group] = []
 
@@ -34,7 +34,7 @@ class Report:
 
     def _get_client(self, item):
         # It's hardcoded for now
-        # FIXME: change it in future'
+        # FIXME: change it in the future'
         return db.Client(surname=item['familiia'],
                          name=item['imia'],
                          patronymic=item['otchestvo'],
@@ -64,7 +64,7 @@ class Report:
         name = os.name
 
         if name == 'posix':
-            subprocess.call(["xdg-open", path])
+            subprocess.call(['xdg-open', path])
         elif name == 'nt':
             os.startfile(path)
         else:
@@ -73,22 +73,44 @@ class Report:
     def render(self):
         document = OpenDocumentText()
 
-        document.text.addElement(P(text=self._get_header()))
+        h1style = Style(name='CenterHeading 1', family='paragraph')
+        h1style.addElement(ParagraphProperties(attributes={'textalign': 'center'}))
+        h1style.addElement(TextProperties(attributes={'fontsize': '18pt', 'fontweight': 'bold'}))
+
+        header = Style(name='Header', family='paragraph')
+        header.addElement(ParagraphProperties(attributes={'textalign': 'center'}))
+        header.addElement(TextProperties(attributes={'fontsize': '14pt', 'fontweight': 'bold'}))
+
+        footer = Style(name='Footer', family='paragraph')
+        footer.addElement(ParagraphProperties(attributes={'textalign': 'right'}))
+        
+        h2style = Style(name='CenterHeading 2', family='paragraph')
+        h2style.addElement(ParagraphProperties(attributes={'textalign': 'center'}))
+        h2style.addElement(TextProperties(attributes={'fontsize': '13pt', 'fontweight': 'bold'}))
+
+        # For bold text
+        boldstyle = Style(name='Bold', family='text')
+        boldstyle.addElement(TextProperties(attributes={'fontweight': 'bold'}))
+
+        for s in (h1style, h2style, boldstyle, header, footer):
+            document.styles.addElement(s)
+
+        document.text.addElement(P(text=self._get_header(), stylename=header))
 
         for k, group in self.template_groups.items():
             conclusion = []
 
             for item in group:
-                document.text.addElement(H(outlinelevel=4, text=item.get_verbose_name()))
+                document.text.addElement(H(outlinelevel=4, text=item.get_verbose_name(), stylename=h2style))
                 conclusion.append(item.template.conclusion)
                 text = item.template.body.format(**item.for_template())
                 for t in text.splitlines():
                     document.text.addElement(P(text=t))
 
-            conclusion = '\n'.join(conclusion)
+            conclusion = '{o}{c}'.format(o=options.CONCLUSION, c='\n'.join(conclusion))
             document.text.addElement(P(text=conclusion))
 
-        document.text.addElement(P(text=self._get_footer()))
+        document.text.addElement(P(text=self._get_footer(), stylename=footer))
 
         return document
 

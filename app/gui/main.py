@@ -106,6 +106,8 @@ class MainWindow(QWidget):
         for i, frame in enumerate(frames):
             if isinstance(frame, DataWidget):
                 self.data_frame_index = i
+            if isinstance(frame, UsersWidget):
+                self.user_frame_index = i
             self.frames_layout.addWidget(frame)
 
         self.frames_layout.setCurrentIndex(len(frames) - 1)

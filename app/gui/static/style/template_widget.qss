@@ -82,3 +82,21 @@ AbstractTemplateWidget QPushButton#controls:hover {
 AbstractTemplateWidget QPushButton#controls:pressed {
     background-color: #1F484A;
 }
+
+AbstractTemplateWidget QComboBox {
+    border: none;
+    background-color: white;
+    font-size: 12pt;
+    padding: 10px 0 10px 5px;
+    border-bottom: 2px solid #DDDDDD;
+}
+
+AbstractTemplateWidget QComboBox::drop-down {
+    padding: 0;
+    border-width: 0px;
+}
+
+AbstractTemplateWidget QComboBox::down-arrow {
+    image: url(noimg);
+    border-width: 0px;
+}

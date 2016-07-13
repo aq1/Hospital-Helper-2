@@ -33,12 +33,17 @@ class UsersWidget(QFrame):
         hbox.addLayout(vbox, stretch=50)
         hbox.addStretch(25)
         self.setLayout(hbox)
-        main_window.communication.action_button_toggle.emit(True,
-                                                            'plus',
-                                                            functools.partial(main_window.create_crud_widget,
-                                                                              db.User,
-                                                                              self._update_content))
+        self.showEvent = self._get_show_event(main_window)
         self.setGraphicsEffect(utils.get_shadow())
+
+    def _get_show_event(self, main_window):
+        def _show_event(event=None):
+            main_window.communication.action_button_toggle.emit(True,
+                                                                'plus',
+                                                                functools.partial(main_window.create_crud_widget,
+                                                                                  db.User,
+                                                                                  self._update_content))
+        return _show_event
 
     def _update_content(self, *args):
         """
@@ -83,11 +88,3 @@ class UsersWidget(QFrame):
         """
         self.main_window.user_selected(user, go_to_data_frame=True)
 
-    def action_btn_function(self):
-        """
-        Select user when ActionButton is clicked.
-        """
-        for i, b in enumerate(self.findChildren(QRadioButton)):
-            if b.isChecked():
-                self.main_window.user_selected(self.users[i])
-                break

@@ -4,10 +4,10 @@ from PyQt5.Qt import QColor, Qt, QBrush, QFont, QRegExp
 from PyQt5.QtGui import QSyntaxHighlighter, QTextCharFormat, QGuiApplication
 from PyQt5.QtWidgets import (QFrame, QHBoxLayout, QLabel, QStackedLayout,
                              QVBoxLayout, QPushButton, QTextEdit, QWidget,
-                             QRadioButton, QLineEdit)
+                             QRadioButton, QLineEdit, QComboBox)
 
 from model import template as template_module
-from model import exceptions
+from model import exceptions, db
 
 from gui import utils
 
@@ -24,7 +24,7 @@ class SyntaxHighlighter(QSyntaxHighlighter):
         self.keyword.setForeground(brush)
         self.keyword.setFontWeight(QFont.Bold)
 
-    def set_rules(self, keywords):
+    def set_rules(self, item, keywords):
         self.rules = []
         for w in keywords:
             pattern = QRegExp(r"\{%s\}" % w)
@@ -55,12 +55,12 @@ class TemplateTextEdit(QTextEdit):
         self.highlighter = SyntaxHighlighter(self)
         self.keywords = []
 
-    def insert_attribute(self, name):
-        self.insertPlainText('{{{}}}'.format(_(name)))
+    def insert_attribute(self, item, name):
+        self.insertPlainText('{{{i}.{n}}}'.format(i=_(item.name), n=_(name)))
         self.setFocus()
 
-    def set_rules(self, keywords):
-        self.highlighter.set_rules(keywords)
+    def set_rules(self, item, keywords):
+        self.highlighter.set_rules(item, keywords)
 
 
 class TemplateEditingWidget(QFrame):
@@ -69,7 +69,7 @@ class TemplateEditingWidget(QFrame):
     Widget for editing the tempate.
     """
 
-    def __init__(self, main_window, close_func):
+    def __init__(self, main_window, items, close_func):
 
         super().__init__()
 
@@ -78,6 +78,7 @@ class TemplateEditingWidget(QFrame):
         self.name_text_edit = None
         self.template_text_edit = None
         self.conclusion_text_edit = None
+        self.items = items
         self.controls_layout = QVBoxLayout()
         self._close = close_func
         self.save = self._get_save_func(main_window)
@@ -99,8 +100,9 @@ class TemplateEditingWidget(QFrame):
         widget.setLayout(vbox)
         vbox.setContentsMargins(0, 0, 0, 0)
 
-        self.template_label = QLabel()
-        vbox.addWidget(self.template_label)
+        self.template_combo_box = QComboBox()
+        self.template_combo_box.currentIndexChanged.connect(self._item_selected)
+        vbox.addWidget(self.template_combo_box)
 
         scrollable_vbox = utils.get_scrollable(self.controls_layout)
         vbox.addWidget(scrollable_vbox, stretch=80)
@@ -148,24 +150,37 @@ class TemplateEditingWidget(QFrame):
 
         return self.name_text_edit, self.template_text_edit, self.conclusion_text_edit
 
+    def _item_selected(self, index):
+        self._fill_controls_layout(self.items[index])
+
+    def _fill_controls_layout(self, item):
+        keywords = [_(key) for key in item.keys()]
+        utils.clear_layout(self.controls_layout)
+        for name in keywords:
+            b = QPushButton(_(name))
+            b.clicked.connect(functools.partial(self.template_text_edit.insert_attribute, item, name))
+            self.controls_layout.addWidget(b)
+
+        self.controls_layout.addStretch()
+        return keywords
+
     def _show(self, item, template=None):
         """
         Fill TextEdit fields with template data if it was provided.
         Add menu buttons with item attributes.
         """
-        keywords = [_(key) for key in item.keys()]
-        utils.clear_layout(self.controls_layout)
-        for name in keywords:
-            b = QPushButton(_(name))
-            b.clicked.connect(functools.partial(self.template_text_edit.insert_attribute, name))
-            self.controls_layout.addWidget(b)
 
-        self.controls_layout.addStretch()
+        keywords = self._fill_controls_layout(item)
+        self.template_text_edit.set_rules(item, keywords)
 
         self.item = item
         self.template = template
 
-        self.template_label.setText(_(item.name))
+        for i, each in enumerate(self.items):
+            self.template_combo_box.addItem(_(each.name))
+            if each.id == item.id:
+                self.template_combo_box.setCurrentIndex(i)
+
         if self.template:
             self.template = template_module.Template.get_from_db(item=self.item, name=self.template.name)
             self.template.body = self.template.get_translated_body()
@@ -176,8 +191,6 @@ class TemplateEditingWidget(QFrame):
         else:
             for w in self._get_all_text_fields():
                 w.setText('')
-
-        self.template_text_edit.set_rules(keywords)
 
     def _get_save_func(self, main_window):
         def save(event):
@@ -370,7 +383,7 @@ class TemplateWidgetInOptions(AbstractTemplateWidget):
         self.ACTION_BTN_ICON = 'plus'
         super().__init__(main_window, items)
 
-        self.template_editing_widget = TemplateEditingWidget(main_window, self._close_func)
+        self.template_editing_widget = TemplateEditingWidget(main_window, items, self._close_func)
         self.layout.addWidget(self.template_editing_widget)
         b = QPushButton('Назад')
         b.setObjectName('controls')

@@ -163,6 +163,7 @@ class UsersAndGroupsWidget(QFrame):
         else:
             self._show_users_for_group(self._selected_group.id)
             self._set_buttons_state(False)
+            self._text_field.setText(self._selected_group.header)
 
     def _refresh(self, items=None):
         self.groups = list(db.SESSION.query(db.Organization).filter(db.Organization.deleted == False))
