@@ -97,18 +97,25 @@ class Report:
 
         document.text.addElement(P(text=self._get_header(), stylename=header))
 
+        keywords = {}
+        for k, group in self.template_groups.items():
+            for item in group:
+                keywords.update(item.for_template())
+
         for k, group in self.template_groups.items():
             conclusion = []
 
             for item in group:
                 document.text.addElement(H(outlinelevel=4, text=item.get_verbose_name(), stylename=h2style))
                 conclusion.append(item.template.conclusion)
-                text = item.template.body.format(**item.for_template())
+                text = item.template.body.format(**keywords)
                 for t in text.splitlines():
                     document.text.addElement(P(text=t))
 
-            conclusion = '{o}{c}'.format(o=options.CONCLUSION, c='\n'.join(conclusion))
-            document.text.addElement(P(text=conclusion))
+            conclusion = '\n'.join(conclusion)
+            if conclusion:
+                conclusion = '{o}{c}'.format(o=options.CONCLUSION, c=conclusion)
+                document.text.addElement(P(text=conclusion))
 
         document.text.addElement(P(text=self._get_footer(), stylename=footer))
 

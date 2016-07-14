@@ -6,10 +6,19 @@ from model import db, exceptions, localization
 
 class Template:
 
-    def __init__(self, pk=None, item=None, name=None, body=None, conclusion=None):
+    def __init__(self, pk=None, item=None, items=None, name=None, body=None, conclusion=None):
+
+        """
+        Parameter items is needed
+        because template for one particular item
+        can contain keywords from another items.
+        And parameter item is needed too,
+        because template needs to know for what item it is saved.
+        """
 
         self.pk = pk
         self.item = item
+        self.items = items
         self.name = name
         self.body = body
         self.conclusion = conclusion
@@ -38,17 +47,23 @@ class Template:
         self.pk = template.id
 
     def get_translated_body(self, reverse=False):
-        translation_map = localization.Localization.get_translation_map(self.item.keys())
+        """
+        This is bad function.
+        """
+        
+        regex = {}
+        translation = {}
+
         if reverse:
-            regex = {r'{%s}' % v: r'{%s[%s]}' % (self.item.name, k) for (k, v) in translation_map.items()}
-            translation = regex
+            for each in self.items:
+                for k in each.keys():
+                    regex[r'{%s.%s}' % (_(each.name), _(k))] = r'{%s[%s]}' % (each.name, k)
+                    translation = regex
         else:
-            regex = {}
-            translation = {}
-            for (k, v) in translation_map.items():
-                # God dammit.
-                regex[r'{%s\[%s\]}' % (self.item.name, k)] = r'{%s}' % v
-                translation[r'{%s[%s]}' % (self.item.name, k)] = r'{%s}' % v
+            for each in self.items:
+                for k in each.keys():
+                    regex[r'{%s\[%s\]}' % (each.name, k)] = r'{%s.%s}' % (_(each.name), _(k))
+                    translation[r'{%s[%s]}' % (each.name, k)] = r'{%s.%s}' % (_(each.name), _(k))
 
         pattern = re.compile(r'(' + '|'.join(regex.keys()) + r')')
         return pattern.sub(lambda x: translation[x.group()], self.body)
@@ -58,13 +73,14 @@ class Template:
         self.save()
 
     @classmethod
-    def get_from_db(cls, item, name):
+    def get_from_db(cls, item, items, name):
 
         template = db.SESSION.query(db.Template).filter(
             db.Template.item_id == item.id, db.Template.name == name).first()
 
         return cls(pk=template.id,
                    item=item,
+                   items=items,
                    name=name,
                    body=template.body,
                    conclusion=template.conclusion)

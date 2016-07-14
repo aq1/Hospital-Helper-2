@@ -260,7 +260,15 @@ def test_json_to_objs():
 
 # test_calc_obj()
 # test_json_to_structure()
-test_json_to_objs()
+# test_json_to_objs()
 # kdr = 10
 # a = 7/(2.4+kdr)*kdr**3
 #  print(a)
+
+
+a = {}
+
+for x in ({'a': 1}, {'b': 2}):
+    a.update(x)
+
+print(a)

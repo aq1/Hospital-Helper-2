@@ -14,21 +14,31 @@ from gui import utils
 
 class SyntaxHighlighter(QSyntaxHighlighter):
 
-    def __init__(self, parent):
+    def __init__(self, items, parent):
         super().__init__(parent)
 
         self.rules = []
+        self.items = items
 
         brush = QBrush(QColor(69, 160, 163), Qt.SolidPattern)
-        self.keyword = QTextCharFormat()
-        self.keyword.setForeground(brush)
-        self.keyword.setFontWeight(QFont.Bold)
+        self.item_keywords = QTextCharFormat()
+        self.item_keywords.setForeground(brush)
+        self.item_keywords.setFontWeight(QFont.Bold)
 
-    def set_rules(self, item, keywords):
+        self.keywords = QTextCharFormat()
+        self.keywords.setForeground(brush)
+
+    def set_rules(self, item):
         self.rules = []
-        for w in keywords:
-            pattern = QRegExp(r"\{%s\}" % w)
-            self.rules.append({'pattern': pattern, 'format': self.keyword})
+        for each in self.items:
+            if each.id == item.id:
+                format_ = self.item_keywords
+            else:
+                format_ = self.keywords
+
+            for w in [_(k) for k in each.keys()]:
+                pattern = QRegExp(r"\{%s.%s\}" % (_(each.name), w))
+                self.rules.append({'pattern': pattern, 'format': format_})
         self.rehighlight()
 
     def highlightBlock(self, text):
@@ -48,19 +58,19 @@ class TemplateTextEdit(QTextEdit):
     Custom widget with syntax highlighting and custom controls.
     """
 
-    def __init__(self):
+    def __init__(self, items):
 
         super().__init__()
         self.setGraphicsEffect(utils.get_shadow())
-        self.highlighter = SyntaxHighlighter(self)
+        self.highlighter = SyntaxHighlighter(items, self)
         self.keywords = []
 
     def insert_attribute(self, item, name):
         self.insertPlainText('{{{i}.{n}}}'.format(i=_(item.name), n=_(name)))
         self.setFocus()
 
-    def set_rules(self, item, keywords):
-        self.highlighter.set_rules(item, keywords)
+    def set_rules(self, item):
+        self.highlighter.set_rules(item)
 
 
 class TemplateEditingWidget(QFrame):
@@ -73,12 +83,12 @@ class TemplateEditingWidget(QFrame):
 
         super().__init__()
 
+        self.items = items
         self.item = None
         self.template = None
         self.name_text_edit = None
         self.template_text_edit = None
         self.conclusion_text_edit = None
-        self.items = items
         self.controls_layout = QVBoxLayout()
         self._close = close_func
         self.save = self._get_save_func(main_window)
@@ -124,7 +134,7 @@ class TemplateEditingWidget(QFrame):
         """
 
         layout = QVBoxLayout()
-        self.template_text_edit = TemplateTextEdit()
+        self.template_text_edit = TemplateTextEdit(self.items)
         self.conclusion_text_edit = QTextEdit()
         self.name_text_edit = QLineEdit()
 
@@ -171,7 +181,7 @@ class TemplateEditingWidget(QFrame):
         """
 
         keywords = self._fill_controls_layout(item)
-        self.template_text_edit.set_rules(item, keywords)
+        self.template_text_edit.set_rules(item)
 
         self.item = item
         self.template = template
@@ -182,7 +192,9 @@ class TemplateEditingWidget(QFrame):
                 self.template_combo_box.setCurrentIndex(i)
 
         if self.template:
-            self.template = template_module.Template.get_from_db(item=self.item, name=self.template.name)
+            self.template = template_module.Template.get_from_db(item=self.item,
+                                                                 items=self.items,
+                                                                 name=self.template.name)
             self.template.body = self.template.get_translated_body()
 
             for w, t in zip(self._get_all_text_fields(),
@@ -201,6 +213,7 @@ class TemplateEditingWidget(QFrame):
             if not self.template:
                 self.template = template_module.Template()
             self.template.item = self.item
+            self.template.items = self.items
             self.template.name = self.name_text_edit.text()
             self.template.body = self.template_text_edit.toPlainText()
             self.template.conclusion = self.conclusion_text_edit.toPlainText()
