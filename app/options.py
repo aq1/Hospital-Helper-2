@@ -1,4 +1,5 @@
 import os
+import sys
 
 
 STRUCTURE_KEY = 'structure'
@@ -37,7 +38,8 @@ TRANSLATION = (
 )
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DATABASE = os.path.join(BASE_DIR, 'data.db')
+DATABASE_DIR = os.path.dirname(sys.executable)
+DATABASE = os.path.join(DATABASE_DIR, 'data.sqlite3')
 
 # klient left here intentionally
 CLIENT_TABLE_NAME = 'klient'
@@ -45,7 +47,7 @@ CLIENT_TABLE_NAME = 'klient'
 CONCLUSION = 'Заключение: '
 
 STATIC_DIR = os.path.join(BASE_DIR, 'gui', 'static')
-REPORTS_DIR = os.path.join(BASE_DIR, 'reports')
+REPORTS_DIR = os.path.join(DATABASE_DIR, 'reports')
 
 TYPES = {
     'str': str,

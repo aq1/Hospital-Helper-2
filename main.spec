@@ -13,8 +13,8 @@ DATAS = [
     (os.path.join(STATIC, 'icons', '*.png'), os.path.join('gui', 'static', 'icons')),
     (os.path.join(STATIC, 'style', '*.qss'), os.path.join('gui', 'static', 'style')),
     (os.path.join(STATIC, '*.png'), os.path.join('gui', 'static')),
+    (os.path.join(STATIC, '*.ico'), os.path.join('gui', 'static')),
 ]
-
 
 def get_module_imports(*modules_names):
     # I'm not sure if it is a good decision
@@ -48,8 +48,9 @@ exe = EXE(pyz,
           a.binaries,
           a.zipfiles,
           a.datas,
-          name='main',
+          name='Hospital Helper 2',
           debug=False,
           strip=False,
           upx=True,
-          console=True)
+          console=False,
+          icon=os.path.join(STATIC, 'icon.ico'))

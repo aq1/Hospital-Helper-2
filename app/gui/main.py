@@ -6,7 +6,7 @@ from PyQt5.QtCore import QCoreApplication, Qt, QObject, pyqtSignal
 from PyQt5.QtWidgets import (QWidget, QStackedLayout, QDesktopWidget,
                              QVBoxLayout, QShortcut, QApplication, QSplashScreen)
 
-from PyQt5.QtGui import QKeySequence, QPixmap
+from PyQt5.QtGui import QKeySequence, QPixmap, QIcon
 
 import options
 from model import report
@@ -120,6 +120,7 @@ class MainWindow(QWidget):
         """
 
         self.setWindowFlags(Qt.FramelessWindowHint)
+
         self.setWindowTitle('Hospital Helper')
         dw = QDesktopWidget()
         w = dw.geometry().size().width() * 0.75
@@ -272,6 +273,7 @@ def init(bootstrap_function):
     Run `bootstrap_function` to prepare app.
     """
     app = QApplication(sys.argv)
+    app.setWindowIcon(QIcon(os.path.join(options.STATIC_DIR, 'splash.png')))
     splash_img = QPixmap(os.path.join(options.STATIC_DIR, 'splash.png'))
     splash = QSplashScreen(splash_img)
     splash.show()
