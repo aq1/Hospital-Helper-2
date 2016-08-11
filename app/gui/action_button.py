@@ -17,7 +17,7 @@ class ActionButton(QPushButton):
 
     ICONS = {each.split('.')[0]: os.path.join(options.STATIC_DIR, 'icons', each)
              for each in os.listdir(os.path.join(options.STATIC_DIR, 'icons'))}
-    
+
     QSS = """
         ActionButton {{
             icon-size: {x}px;
@@ -57,7 +57,7 @@ class ActionButton(QPushButton):
         Move the button when application is resized.
         """
         w = int(width * 0.08)
-        self.setStyleSheet(self.QSS.format(x=int(w/3), y=w/2, z=w))
+        self.setStyleSheet(self.QSS.format(x=int(w / 3), y=int(w / 2), z=w))
         self.setFixedSize(w, w)
         self.move(width - self.width() * 1.5, waterline - self.height() / 2)
         self.raise_()
