@@ -41,10 +41,7 @@ class Localization:
 
     @classmethod
     def get_text(cls, text):
-        try:
-            return cls.__translation[text]
-        except KeyError:
-            return text
+        return cls.__translation.get(text, text)
 
     @staticmethod
     def add_system_label(label):
