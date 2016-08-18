@@ -27,7 +27,7 @@ class Template:
     def __str__(self):
         return 'Template "{}"'.format(self.name)
 
-    def save(self, force=False):
+    def save(self):
 
         if not (self.item and self.name):
             raise exceptions.CannotSaveTemplate
@@ -72,9 +72,6 @@ class Template:
     def render_and_save(self):
         self.body = self.get_translated_body(reverse=True)
         self.save()
-
-    # def to_dict(self):
-
 
     @classmethod
     def get_from_db(cls, item, items, name):
@@ -139,11 +136,11 @@ class Template:
 
         replaced_key = 'replaced'
         created_key = 'created'
-        faild_key = 'fail'
+        failed_key = 'fail'
         result = {
             replaced_key: defaultdict(list),
             created_key: defaultdict(list),
-            faild_key: list()
+            failed_key: list()
         }
 
         templates_to_update = []
@@ -157,7 +154,7 @@ class Template:
         for each in templates:
             item = db.SESSION.query(db.Item).filter(db.Item.name == each['item']['name']).first()
             if not item:
-                result[faild_key].append('Item {} was not found'.format(_(each['item']['name'])))
+                result[failed_key].append('Item {} was not found'.format(_(each['item']['name'])))
 
             result_key = replaced_key
             template = db.SESSION.query(db.Template).filter(db.Template.item_id == item.id,
