@@ -176,4 +176,5 @@ class Template:
             result[result_key][item.name].append(template.name)
 
         db.SESSION.bulk_save_objects(templates_to_update)
+        db.SESSION.commit()
         return True, result
