@@ -108,13 +108,11 @@ class Template:
         bool status
         string templates in json or error message
         """
-        templates = [t.to_dict() for t in db.SESSION.query(db.Template).all()]
+        templates = [t.to_dict(relations={'item': {}})
+                     for t in db.SESSION.query(db.Template).join(db.Template.item).all()]
 
         if not templates:
             return False, 'No templates to export'
-
-        for each in templates:
-            each.pop('id')
 
         try:
             templates = json.dumps(templates, ensure_ascii=False)
@@ -122,8 +120,8 @@ class Template:
             return False, str(e)
 
         try:
-            with open(path, 'w') as f:
-                f.write(templates)
+            with open(path, 'wb') as f:
+                f.write(templates.encode('utf8'))
         except IOError as e:
             return False, str(e)
 
@@ -136,5 +134,46 @@ class Template:
         Warning: Existed templates with similar names will be overwritten.
         :return
         bool status
+        dict result
         """
-        pass
+
+        replaced_key = 'replaced'
+        created_key = 'created'
+        faild_key = 'fail'
+        result = {
+            replaced_key: defaultdict(list),
+            created_key: defaultdict(list),
+            faild_key: list()
+        }
+
+        templates_to_update = []
+
+        try:
+            with open(path, 'rb') as f:
+                templates = json.loads(f.read().decode('utf8'))
+        except (IOError, TypeError, ValueError) as e:
+            return False, {'error': str(e)}
+
+        for each in templates:
+            item = db.SESSION.query(db.Item).filter(db.Item.name == each['item']['name']).first()
+            if not item:
+                result[faild_key].append('Item {} was not found'.format(_(each['item']['name'])))
+
+            result_key = replaced_key
+            template = db.SESSION.query(db.Template).filter(db.Template.item_id == item.id,
+                                                            db.Template.name == each['name']).first()
+
+            if not template:
+                result_key = created_key
+                template = db.Template()
+
+            for k, v in each.items():
+                if k == 'id' or isinstance(v, dict):
+                    continue
+                setattr(template, k, v)
+
+            templates_to_update.append(template)
+            result[result_key][item.name].append(template.name)
+
+        db.SESSION.bulk_save_objects(templates_to_update)
+        return True, result
