@@ -39,10 +39,20 @@ class Model:
 
         return inst, True
 
-    def to_dict(self):
+    def to_dict(self, relations=None):
         d = {}
+        if relations is None:
+            relations = {}
+
         for column in self.__table__.columns:
             d[column.name] = getattr(self, column.name)
+
+        foreigners = {f.column.table.name for f in self.__table__.foreign_keys}
+        for foreign in relations:
+            if foreign not in foreigners:
+                raise exc.NoForeignKeysError(foreign)
+            else:
+                d[foreign] = getattr(self, foreign).to_dict(relations=relations[foreign])
         return d
 
     def update(self, **kwargs):
