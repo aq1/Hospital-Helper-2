@@ -35,7 +35,7 @@ class Localization:
         for l in labels:
             for s in strings:
                 if s.sys == l:
-                    translation[l] = getattr(s, cls.__lang)
+                    translation[l] = getattr(l, cls.__lang)
                     break
         return translation
 
