@@ -8,8 +8,8 @@ from collections import defaultdict
 
 import unidecode
 
-import options
-from model import exceptions, db
+from app import options
+from app.model import exceptions, db
 
 
 class AllowedModule(list):

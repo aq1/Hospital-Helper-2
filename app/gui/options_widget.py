@@ -3,9 +3,9 @@ import functools
 from PyQt5.QtWidgets import (QWidget, QHBoxLayout, QStackedLayout,
                              QVBoxLayout, QPushButton)
 
-from gui import utils
-from gui.template_widget import TemplateWidgetInOptions
-from gui.users_and_groups_widget import UsersAndGroupsWidget
+from app.gui import utils
+from app.gui.template_widget import TemplateWidgetInOptions
+from app.gui.users_and_groups_widget import UsersAndGroupsWidget
 
 
 class OptionsWidget(QWidget):

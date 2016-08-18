@@ -6,10 +6,10 @@ from PyQt5.QtWidgets import (QFrame, QHBoxLayout, QLabel, QStackedLayout,
                              QVBoxLayout, QPushButton, QTextEdit, QWidget,
                              QRadioButton, QLineEdit, QComboBox)
 
-from model import template as template_module
-from model import exceptions, db
+from app.model import template as template_module
+from app.model import exceptions
 
-from gui import utils
+from app.gui import utils
 
 
 class SyntaxHighlighter(QSyntaxHighlighter):

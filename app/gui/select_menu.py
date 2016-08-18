@@ -4,9 +4,9 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (QWidget, QFrame, QPushButton, QHBoxLayout, QLabel,
                              QGridLayout, QGraphicsDropShadowEffect)
 
-import options
+from app import options
 
-from gui import utils
+from app.gui import utils
 
 
 class SelectMenu(QWidget):

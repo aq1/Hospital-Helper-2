@@ -1,7 +1,8 @@
 import re
+import json
 from collections import defaultdict
 
-from model import db, exceptions, localization
+from app.model import db, exceptions
 
 
 class Template:
@@ -71,6 +72,9 @@ class Template:
     def render_and_save(self):
         self.body = self.get_translated_body(reverse=True)
         self.save()
+
+    # def to_dict(self):
+
 
     @classmethod
     def get_from_db(cls, item, items, name):

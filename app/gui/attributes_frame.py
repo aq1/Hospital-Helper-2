@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout
 
-from gui.input_widget import InputWidget
+from app.gui.input_widget import InputWidget
 
 
 class AttributesFrame(QWidget):

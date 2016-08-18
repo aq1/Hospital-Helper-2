@@ -11,7 +11,7 @@ from sqlalchemy import (Column, Integer, String, Float,
                         ForeignKey, Date, SmallInteger,
                         Text, Boolean)
 
-import options
+from app import options
 
 
 Base = declarative_base()
@@ -38,6 +38,12 @@ class Model:
             SESSION.flush()
 
         return inst, True
+
+    def to_dict(self):
+        d = {}
+        for column in self.__table__.columns:
+            d[column.name] = getattr(self, column.name)
+        return d
 
     def update(self, **kwargs):
         for k, v in kwargs.items():

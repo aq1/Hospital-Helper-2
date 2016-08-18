@@ -2,9 +2,9 @@ import functools
 
 from PyQt5.QtWidgets import (QFrame, QVBoxLayout, QHBoxLayout, QLabel)
 
-from gui.top_system_buttons import TopSystemButtons
-from gui.select_menu import SelectMenu
-from gui import utils
+from app.gui.top_system_buttons import TopSystemButtons
+from app.gui.select_menu import SelectMenu
+from app.gui import utils
 
 
 class TopFrame(QFrame):

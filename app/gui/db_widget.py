@@ -6,10 +6,10 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import (QWidget, QFrame, QVBoxLayout, QHBoxLayout,
                              QLabel, QGridLayout, QPushButton, QSizePolicy)
 
-import options
-from model import db, report
+from app import options
+from app.model import db, report
 
-from gui import utils
+from app.gui import utils
 
 
 class DBWidget(QFrame):

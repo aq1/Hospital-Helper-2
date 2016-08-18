@@ -6,11 +6,11 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import (QFrame, QHBoxLayout, QLabel, QVBoxLayout, QComboBox,
                              QPushButton, QTextEdit, QWidget)
 
-import options
-from model import db
+from app import options
+from app.model import db
 
-from gui.crud_widget import CrudWidget
-from gui import utils
+from app.gui.crud_widget import CrudWidget
+from app.gui import utils
 
 
 class UsersAndGroupsWidget(QFrame):

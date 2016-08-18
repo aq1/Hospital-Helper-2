@@ -1,5 +1,4 @@
-from PyQt5.QtWidgets import (QFrame, QPushButton, QHBoxLayout,
-                             QGraphicsDropShadowEffect, QLabel)
+from PyQt5.QtWidgets import QFrame, QPushButton, QHBoxLayout, QLabel
 
 
 class TopSystemButtons(QFrame):

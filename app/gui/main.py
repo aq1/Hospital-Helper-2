@@ -8,19 +8,19 @@ from PyQt5.QtWidgets import (QWidget, QStackedLayout, QDesktopWidget,
 
 from PyQt5.QtGui import QKeySequence, QPixmap, QIcon
 
-import options
-from model import report
+from app import options
+from app.model import report
 
-from gui.top_frame import TopFrame
-from gui.users_widget import UsersWidget
-from gui.data_widget import DataWidget
-from gui.db_widget import DBWidget
-from gui.options_widget import OptionsWidget
-from gui.template_widget import TemplateWidget
-from gui.action_button import ActionButton
-from gui.crud_widget import CrudWidget
-from gui.alert_widget import AlertWidget
-from gui.message_widget import MessageWidget
+from app.gui.top_frame import TopFrame
+from app.gui.users_widget import UsersWidget
+from app.gui.data_widget import DataWidget
+from app.gui.db_widget import DBWidget
+from app.gui.options_widget import OptionsWidget
+from app.gui.template_widget import TemplateWidget
+from app.gui.action_button import ActionButton
+from app.gui.crud_widget import CrudWidget
+from app.gui.alert_widget import AlertWidget
+from app.gui.message_widget import MessageWidget
 
 
 class Communication(QObject):

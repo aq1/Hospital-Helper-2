@@ -1,7 +1,7 @@
 import json
 
-from model import db, logic, exceptions
-import options
+from app import options
+from app.model import db, logic, exceptions
 
 
 class Localization:

@@ -4,7 +4,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (QFrame, QHBoxLayout, QLabel,
                              QLineEdit)
 
-from gui import utils
+from app.gui import utils
 
 
 class InputWidget(QFrame):

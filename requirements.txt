@@ -4,4 +4,5 @@ coverage==3.7.1
 unidecode==0.4.18
 unicode-slugify
 sqlalchemy
-git+https://github.com/aq1/odfpy.git
+# git+https://github.com/aq1/odfpy.git
+odfpy

@@ -4,8 +4,8 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (QFrame, QVBoxLayout, QLabel, QRadioButton,
                              QHBoxLayout)
 
-from model import db
-from gui import utils
+from app.model import db
+from app.gui import utils
 
 
 class UsersWidget(QFrame):

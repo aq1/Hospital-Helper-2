@@ -1,7 +1,7 @@
 from PyQt5.QtCore import Qt, QPropertyAnimation, QPoint, QTimer
 from PyQt5.QtWidgets import QFrame, QLabel, QVBoxLayout
 
-from gui import utils
+from app.gui import utils
 
 
 class MessageWidget(QFrame):

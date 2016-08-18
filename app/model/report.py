@@ -5,10 +5,10 @@ from collections import OrderedDict
 
 from odf.opendocument import OpenDocumentText
 from odf.style import Style, TextProperties, ParagraphProperties
-from odf.text import H, P, Span
+from odf.text import H, P
 
-import options
-from model import db, exceptions
+from app import options
+from app.model import db
 
 
 class Report:

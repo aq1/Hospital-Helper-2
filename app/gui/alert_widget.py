@@ -3,7 +3,7 @@ import functools
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QFrame, QPushButton, QLabel, QVBoxLayout, QHBoxLayout
 
-from gui import utils
+from app.gui import utils
 
 
 class AlertWidget(QFrame):

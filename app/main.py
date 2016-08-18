@@ -1,7 +1,7 @@
-import options
+from app import options
 
-from gui import main as gui
-from model import (db, logic, exceptions, localization)
+from app.gui import main as gui
+from app.model import db, logic, exceptions, localization
 
 
 def convert_structure_to_items(structure):

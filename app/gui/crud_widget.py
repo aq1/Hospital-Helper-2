@@ -5,9 +5,9 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import (QWidget, QFrame, QLineEdit, QPushButton, QHBoxLayout,
                              QComboBox, QLabel, QVBoxLayout)
 
-import options
-from gui import utils
-from model import db
+from app import options
+from app.gui import utils
+from app.model import db
 
 
 class CrudWidget(QFrame):

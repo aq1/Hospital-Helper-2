@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QFrame, QStackedLayout
 
-from gui.attributes_frame import AttributesFrame
+from app.gui.attributes_frame import AttributesFrame
 
 
 class DataWidget(QFrame):

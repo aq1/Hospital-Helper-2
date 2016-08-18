@@ -4,8 +4,8 @@ import os
 from PyQt5.QtWidgets import QPushButton
 from PyQt5.QtGui import QIcon
 
-import options
-from gui import utils
+from app import options
+from app.gui import utils
 
 
 class ActionButton(QPushButton):
