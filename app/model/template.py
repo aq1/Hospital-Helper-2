@@ -1,3 +1,5 @@
+import os
+import datetime
 import re
 import json
 from collections import defaultdict
@@ -105,6 +107,9 @@ class Template:
         bool status
         dict templates in json or error message
         """
+
+        path = os.path.join(path, 'hh_tmplts_{}.json'.format(datetime.datetime.now().strftime('%Y-%m-%d_%H-%M')))
+
         templates = [t.to_dict(relations={'item': {}})
                      for t in db.SESSION.query(db.Template).join(db.Template.item).all()]
 
@@ -173,5 +178,5 @@ class Template:
             result[result_key][item.name].append(template.name)
 
         db.SESSION.bulk_save_objects(templates_to_update)
-        db.SESSION.commit()
+        db.SESSION.flush()
         return True, result

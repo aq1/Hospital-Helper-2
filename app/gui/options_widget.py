@@ -46,12 +46,12 @@ class OptionsWidget(QWidget):
         return _switch_user
 
     def _get_template_import_func(self, main_window):
-        func = self._wrap_template_func(template.Template.export, main_window)
+        func = self._wrap_template_func(template.Template.import_, main_window)
 
         def _f():
             path = QFileDialog.getOpenFileName(main_window, 'Выберите файл', options.DATABASE_DIR)
             if path:
-                return func(path)
+                return func(path[0])
         return _f
 
     def _get_template_export_func(self, main_window):
@@ -70,7 +70,7 @@ class OptionsWidget(QWidget):
             if ok:
                 main_window.show_message('Шаблоны импортированы')
             else:
-                main_window.show_alert('Произошла ошибка\n{}'.format(result.get('error')))
+                main_window.create_alert('Произошла ошибка\n{}'.format(result.get('error')))
             return ok, result
         return _f
 
