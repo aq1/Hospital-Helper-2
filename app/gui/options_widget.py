@@ -1,7 +1,10 @@
 import functools
 
 from PyQt5.QtWidgets import (QWidget, QHBoxLayout, QStackedLayout,
-                             QVBoxLayout, QPushButton)
+                             QVBoxLayout, QPushButton, QFileDialog)
+
+from app import options
+from app.model import template
 
 from app.gui import utils
 from app.gui.template_widget import TemplateWidgetInOptions
@@ -42,6 +45,35 @@ class OptionsWidget(QWidget):
             self.layout.setCurrentIndex(0)
         return _switch_user
 
+    def _get_template_import_func(self, main_window):
+        func = self._wrap_template_func(template.Template.export, main_window)
+
+        def _f():
+            path = QFileDialog.getOpenFileName(main_window, 'Выберите файл', options.DATABASE_DIR)
+            if path:
+                return func(path)
+        return _f
+
+    def _get_template_export_func(self, main_window):
+        func = self._wrap_template_func(template.Template.export, main_window)
+
+        def _f():
+            path = QFileDialog.getExistingDirectory(main_window, 'Выберите директорию', options.DATABASE_DIR)
+            if path:
+                return func(path)
+        return _f
+
+    @staticmethod
+    def _wrap_template_func(func, main_window):
+        def _f(path):
+            ok, result = func(path)
+            if ok:
+                main_window.show_message('Шаблоны импортированы')
+            else:
+                main_window.show_alert('Произошла ошибка\n{}'.format(result.get('error')))
+            return ok, result
+        return _f
+
     def _create_layout(self, main_window):
 
         wrapper = QHBoxLayout()
@@ -53,7 +85,8 @@ class OptionsWidget(QWidget):
         widgets = ((TemplateWidgetInOptions(main_window, self.items, self), 'Шаблоны'),
                    (UsersAndGroupsWidget(main_window, self), 'Пользователи и группы'),
                    (self._switch_user, 'Сменить пользователя'),
-                   )
+                   (self._get_template_export_func(main_window), 'Экспортировать шаблоны'),
+                   (self._get_template_import_func(main_window), 'Импортировать шаблоны'))
 
         for i, widget in enumerate(widgets):
             b = QPushButton(widget[1])

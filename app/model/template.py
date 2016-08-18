@@ -103,26 +103,26 @@ class Template:
         Export all templates into JSON.
         :return
         bool status
-        string templates in json or error message
+        dict templates in json or error message
         """
         templates = [t.to_dict(relations={'item': {}})
                      for t in db.SESSION.query(db.Template).join(db.Template.item).all()]
 
         if not templates:
-            return False, 'No templates to export'
+            return False, {'error': 'No templates to export'}
 
         try:
             templates = json.dumps(templates, ensure_ascii=False)
         except (ValueError, TypeError) as e:
-            return False, str(e)
+            return False, {'error': str(e)}
 
         try:
             with open(path, 'wb') as f:
                 f.write(templates.encode('utf8'))
         except IOError as e:
-            return False, str(e)
+            return False, {'error': str(e)}
 
-        return True, templates
+        return True, {'result': templates}
 
     @classmethod
     def import_(cls, path):
