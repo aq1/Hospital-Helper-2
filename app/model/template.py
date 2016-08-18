@@ -99,3 +99,42 @@ class Template:
             result[each.item.id].append(each)
 
         return result
+
+    @classmethod
+    def export(cls, path):
+        """
+        Export all templates into JSON.
+        :return
+        bool status
+        string templates in json or error message
+        """
+        templates = [t.to_dict() for t in db.SESSION.query(db.Template).all()]
+
+        if not templates:
+            return False, 'No templates to export'
+
+        for each in templates:
+            each.pop('id')
+
+        try:
+            templates = json.dumps(templates, ensure_ascii=False)
+        except (ValueError, TypeError) as e:
+            return False, str(e)
+
+        try:
+            with open(path, 'w') as f:
+                f.write(templates)
+        except IOError as e:
+            return False, str(e)
+
+        return True, templates
+
+    @classmethod
+    def import_(cls, path):
+        """
+        Import templates from JSON file.
+        Warning: Existed templates with similar names will be overwritten.
+        :return
+        bool status
+        """
+        pass
