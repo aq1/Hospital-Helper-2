@@ -18,6 +18,7 @@ class MessageWidget(QFrame):
         self.x_pos = 0
         self.label = self._create_layout_and_get_label(main_window)
         self._animation = self._get_animation(main_window)
+        self._show = self._get_show_func(main_window)
         self.timer = self._get_timer()
 
         main_window.communication.set_message_text.connect(self._show)
@@ -29,6 +30,7 @@ class MessageWidget(QFrame):
 
         l = QLabel()
         l.setAlignment(Qt.AlignCenter)
+        l.setScaledContents(True)
         vbox.addWidget(l)
         self.setGraphicsEffect(utils.get_shadow())
         self.hide()
@@ -65,11 +67,16 @@ class MessageWidget(QFrame):
         self.timer.stop()
         self.timer.start(self.TIMEOUT)
 
-    def _show(self, text):
-        self.label.setText(text)
-        self.show()
-        self.raise_()
-        self._animation['show'].start()
+    def _get_show_func(self, main_window):
+        def _show(text):
+            self.label.setText(text)
+            self.show()
+            self.raise_()
+            self.setFixedSize(self.label.width(), self.height())
+            self.move(main_window.width() - self.width() - self.RIGHT_MARGIN,
+                      main_window.height())
+            self._animation['show'].start()
+        return _show
 
     def _hide(self):
         self._animation['show'].stop()

@@ -1,7 +1,7 @@
-codecov==1.2.3
-nose==1.3.7
-coverage==3.7.1
-unidecode==0.4.18
+codecov
+nose
+coverage
+unidecode
 unicode-slugify
 sqlalchemy
 # git+https://github.com/aq1/odfpy.git
