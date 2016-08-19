@@ -63,6 +63,5 @@ dump.rdb
 *.*~
 .idea/
 app/reports/
-dist/
-build/
 *.odt
+.vagrant/
