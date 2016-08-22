@@ -14,6 +14,7 @@ DATAS = [
     (os.path.join(STATIC, 'style', '*.qss'), os.path.join('gui', 'static', 'style')),
     (os.path.join(STATIC, '*.png'), os.path.join('gui', 'static')),
     (os.path.join(STATIC, '*.ico'), os.path.join('gui', 'static')),
+    (os.path.join(ROOT, 'app', 'data', '*.json'), os.path.join('data')),
 ]
 
 def get_module_imports(*modules_names):
