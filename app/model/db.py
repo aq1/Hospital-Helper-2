@@ -6,6 +6,7 @@ from sqlalchemy import exc, UniqueConstraint
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm.session import sessionmaker
 from sqlalchemy.orm import relationship
+from sqlalchemy.orm import exc as orm_exc
 from sqlalchemy import create_engine
 from sqlalchemy import (Column, Integer, String, Float,
                         ForeignKey, Date, SmallInteger,
@@ -13,19 +14,32 @@ from sqlalchemy import (Column, Integer, String, Float,
 
 from app import options
 
-
 Base = declarative_base()
 engine = create_engine('sqlite:///{}'.format(options.DATABASE), echo=False)
 SESSION = sessionmaker()(bind=engine, autocommit=True, expire_on_commit=False)
 
 
 class Model:
+    @classmethod
+    def get(cls, **kwargs):
+        result = SESSION.query(cls).filter_by(**kwargs)
+        quantity = result.count()
+
+        if not quantity:
+            raise orm_exc.NoResultFound('{}: {}'.format(cls.__name__, kwargs))
+
+        if quantity > 1:
+            raise orm_exc.MultipleResultsFound('{}: {}'.format(cls.__name__, kwargs))
+
+        return result.first()
 
     @classmethod
     def get_or_create(cls, defaults=None, instant_flush=False, **kwargs):
-        inst = SESSION.query(cls).filter_by(**kwargs).first()
-
-        if inst:
+        try:
+            inst = cls.get(**kwargs)
+        except orm_exc.NoResultFound:
+            pass
+        else:
             return inst, False
 
         if defaults:
@@ -69,7 +83,6 @@ class Model:
 
 
 class Client(Base, Model):
-
     __tablename__ = options.CLIENT_TABLE_NAME
 
     id = Column(Integer, primary_key=True)
@@ -93,7 +106,6 @@ class Client(Base, Model):
 
 
 class User(Base, Model):
-
     __tablename__ = 'user'
 
     id = Column(Integer, primary_key=True)
@@ -111,7 +123,6 @@ class User(Base, Model):
 
 
 class Organization(Base, Model):
-
     __tablename__ = 'organization'
 
     id = Column(Integer, primary_key=True)
@@ -127,7 +138,6 @@ class Organization(Base, Model):
 
 
 class Report(Base, Model):
-
     __tablename__ = 'report'
 
     id = Column(Integer, primary_key=True)
@@ -141,7 +151,6 @@ class Report(Base, Model):
 
 
 class Group(Base, Model):
-
     __tablename__ = 'group'
 
     id = Column(Integer, primary_key=True)
@@ -154,7 +163,6 @@ class Group(Base, Model):
 
 
 class Item(Base, Model):
-
     __tablename__ = 'item'
 
     id = Column(Integer, primary_key=True)
@@ -169,7 +177,6 @@ class Item(Base, Model):
 
 
 class Template(Base, Model):
-
     __tablename__ = 'template'
 
     id = Column(Integer, primary_key=True)
@@ -187,7 +194,6 @@ class Template(Base, Model):
 
 
 class KeyValue(Base, Model):
-
     __tablename__ = 'key_value'
 
     key = Column(String, primary_key=True)
@@ -200,7 +206,6 @@ class KeyValue(Base, Model):
 
 
 class Translation(Base, Model):
-
     __tablename__ = 'translation'
 
     sys = Column(String, primary_key=True)
@@ -212,7 +217,6 @@ class Translation(Base, Model):
 
 
 class ModelFactory:
-
     def __init__(self):
         self.default_type = 'float'
 
@@ -246,14 +250,24 @@ class ModelFactory:
                 ForeignKey('{}.id'.format(rel)), nullable=False)
 
         try:
-            return type('{}Model'.format(item['name']), (Base, ), fields)
+            return type('{}Model'.format(item['name']), (Base,), fields)
         except exc.InvalidRequestError as e:
             print(e)
             return
 
 
 def create_db():
-    Base.metadata.create_all(engine)
+    try:
+        structure = SESSION.query(KeyValue).get(options.STRUCTURE_KEY)
+        structure = structure.value
+    except (AttributeError, exc.OperationalError):
+        structure = KeyValue(key=options.STRUCTURE_KEY,
+                             value=options.INIT_STRUCTURE)
+        SESSION.add(structure)
+        structure = structure.value
+
+    SESSION.flush()
+    return structure
 
 
-create_db()
+Base.metadata.create_all(engine)
