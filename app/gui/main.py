@@ -2,6 +2,8 @@ import os
 import sys
 import functools
 
+from sqlalchemy.orm import exc
+
 from PyQt5.QtCore import QCoreApplication, Qt, QObject, pyqtSignal
 from PyQt5.QtWidgets import (QWidget, QStackedLayout, QDesktopWidget,
                              QVBoxLayout, QShortcut, QApplication, QSplashScreen)
@@ -9,7 +11,7 @@ from PyQt5.QtWidgets import (QWidget, QStackedLayout, QDesktopWidget,
 from PyQt5.QtGui import QKeySequence, QPixmap, QIcon
 
 from app import options
-from app.model import report
+from app.model import db, report
 
 from app.gui.top_frame import TopFrame
 from app.gui.users_widget import UsersWidget
@@ -72,6 +74,24 @@ class MainWindow(QWidget):
         self._create_layout()
         self.communication.menu_btn_clicked.connect(self.menu_btn_clicked)
         self.show()
+        self._first_start_check()
+
+    def _first_start_check(self):
+
+        def _import_templates(value):
+            if value:
+                from app.model import template
+                template.Template.import_(options.INIT_TEMPLATES_PATH)
+                self.show_message('Готово!')
+            db.KeyValue(key=options.FIRST_START_KEY, value='').save()
+
+        try:
+            first_time = db.KeyValue.get(key=options.FIRST_START_KEY).value
+        except (exc.NoResultFound, AttributeError):
+            first_time = True
+
+        if first_time:
+            self.create_alert(options.FIRST_START_WELCOME_TEXT, _import_templates)
 
     def _create_layout(self):
         """
