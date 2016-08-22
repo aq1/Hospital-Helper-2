@@ -10,11 +10,11 @@ ROOT = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 STATIC = os.path.join(ROOT, 'app', 'gui', 'static')
 
 DATAS = [
-    (os.path.join(STATIC, 'icons', '*.png'), os.path.join('gui', 'static', 'icons')),
-    (os.path.join(STATIC, 'style', '*.qss'), os.path.join('gui', 'static', 'style')),
-    (os.path.join(STATIC, '*.png'), os.path.join('gui', 'static')),
-    (os.path.join(STATIC, '*.ico'), os.path.join('gui', 'static')),
-    (os.path.join(ROOT, 'app', 'data', '*.json'), os.path.join('data')),
+    (os.path.join(STATIC, 'icons', '*.png'), os.path.join('app', 'gui', 'static', 'icons')),
+    (os.path.join(STATIC, 'style', '*.qss'), os.path.join('app', 'gui', 'static', 'style')),
+    (os.path.join(STATIC, '*.png'), os.path.join('app', 'gui', 'static')),
+    (os.path.join(STATIC, '*.ico'), os.path.join('app', 'gui', 'static')),
+    (os.path.join(ROOT, 'app', 'data', '*.json'), os.path.join('app', 'data')),
 ]
 
 def get_module_imports(*modules_names):
