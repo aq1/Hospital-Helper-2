@@ -180,7 +180,6 @@ class TemplateEditingWidget(QFrame):
         Add menu buttons with item attributes.
         """
 
-        keywords = self._fill_controls_layout(item)
         self.template_text_edit.set_rules(item)
 
         self.item = item
@@ -451,7 +450,10 @@ class TemplateWidget(AbstractTemplateWidget):
         return items
 
     def _get_button_name(self, item):
-        "Return item name + template name"
+        """
+        Return item name + template name
+        """
+
         if item.template:
             return '{} - {}'.format(_(item.name), item.template.name)
 
