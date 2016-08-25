@@ -105,5 +105,9 @@ class TestModel(unittest.TestCase):
         with self.assertRaises(orm_exc.NoResultFound):
             db.User.get(id=self.user.id)
 
+    def test_create_db(self):
+        structure = db.create_db()
+        self.assertIsInstance(structure, str)
+
     def tearDown(self):
         self._clean_db()
