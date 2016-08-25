@@ -84,5 +84,26 @@ class TestModel(unittest.TestCase):
         with self.assertRaises(exc.NoForeignKeysError):
             self.user.to_dict(relations={'organization': {'no': {}}})
 
+    def test_update(self):
+        args = {
+            'name': 'Hello',
+            'patronymic': 'There'
+        }
+
+        self.user.update(**args)
+        for k, v in args.items():
+            self.assertEqual(getattr(self.user, k), v)
+
+    def test_save(self):
+        name = 'New Name'
+        self.user.name = name
+        self.user.save()
+        self.assertEqual(db.User.get(id=self.user.id).name, name)
+
+    def test_delete(self):
+        self.user.delete()
+        with self.assertRaises(orm_exc.NoResultFound):
+            db.User.get(id=self.user.id)
+
     def tearDown(self):
         self._clean_db()
