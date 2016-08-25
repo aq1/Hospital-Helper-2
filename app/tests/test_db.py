@@ -12,6 +12,10 @@ class TestModel(unittest.TestCase):
         'patronymic': 'Test'
     }
 
+    def _clean_db(self):
+        for t in db.Base.metadata.tables:
+            db.SESSION.execute('delete from "{}";'.format(t))
+
     def setUp(self):
         self.organization = db.Organization(name='test', header='')
         self.organization.save()
@@ -32,3 +36,17 @@ class TestModel(unittest.TestCase):
         db.User(organization=self.organization, **self.user_args).save()
         with self.assertRaises(exc.MultipleResultsFound):
             db.User.get(name=self.user_args['name'])
+
+    def test_get_or_create(self):
+        self._clean_db()
+        for _ in range(3):
+            db.User(organization=self.organization, **self.user_args).save()
+
+        with self.assertRaises(exc.MultipleResultsFound):
+            db.User.get_or_create(name=self.user_args['name'])
+
+        user, created = db.User.get_or_create(id=1)
+        self.assertEqual(created, False)
+
+        user, created = db.User.get_or_create(organization=self.organization, name='1', surname='2', patronymic='3')
+        self.assertEqual(created, True)
