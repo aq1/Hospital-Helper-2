@@ -132,6 +132,8 @@ class Mediator:
 
 class CalculableObject(collections.OrderedDict):
 
+    calculation_divider = ';\n'
+
     def __init__(self, name, verbose_name, group, args, parser, mediator, model=None, item=None):
         super().__init__()
 
@@ -153,7 +155,7 @@ class CalculableObject(collections.OrderedDict):
                 self.calculations.append(
                     parser.parse_calculation_string(each['name'], calculation))
 
-        self.calculations = '\n'.join(self.calculations)
+        self.calculations = self.calculation_divider.join(self.calculations)
 
     def __str__(self):
         return '{}: [{}]'.format(self.name, ', '.join(self.keys()))
@@ -205,10 +207,11 @@ class CalculableObject(collections.OrderedDict):
         return _(self.verbose_name)
 
     def calculate(self):
-        try:
-            exec(self.calculations)
-        except ZeroDivisionError:
-            pass
+        for calc in self.calculations.split(self.calculation_divider):
+            try:
+                exec(calc)
+            except ZeroDivisionError:
+                pass
 
     def for_template(self):
         out = {

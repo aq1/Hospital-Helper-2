@@ -236,7 +236,7 @@ class ModelFactory:
         except KeyError:
             pass
 
-        fields = {}
+        fields = dict()
         fields['__tablename__'] = slugify.slugify(item['name'])
         fields['id'] = Column(Integer, primary_key=True)
         for f in item['args']:

@@ -3,7 +3,7 @@ import unittest
 from sqlalchemy import exc
 from sqlalchemy.orm import exc as orm_exc
 
-from app.model import db, exceptions
+from app.model import db
 
 
 class TestModel(unittest.TestCase):
