@@ -63,7 +63,7 @@ class OptionsWidget(QWidget):
         func = self._wrap_template_func(template.Template.export, main_window)
 
         def _f():
-            path = QFileDialog.getExistingDirectory(main_window, 'Выберите директорию', options.DATABASE_DIR)
+            path = QFileDialog.getExistingDirectory(main_window, 'Выберите путь', options.DATABASE_DIR)
             if path:
                 return func(path)
         return _f
@@ -73,7 +73,7 @@ class OptionsWidget(QWidget):
         def _f(path):
             ok, result = func(path)
             if ok:
-                main_window.show_message('Шаблоны\nимпортированы')
+                main_window.show_message('Готово')
             else:
                 main_window.create_alert('Произошла ошибка\n{}'.format(result.get('error')))
             return ok, result
