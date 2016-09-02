@@ -231,12 +231,16 @@ class MainWindow(QWidget):
         self.show_message('Отчет создан')
 
     def clean_input(self):
-        self.communication.clean_items.emit()
-        self.communication.input_changed_signal.emit('')
-        for item in self.items:
-            item.clean()
+        def _clean_input(value):
+            if not value:
+                return
 
-        self.show_message('Ок')
+            self.communication.clean_items.emit()
+            self.communication.input_changed_signal.emit('')
+            for item in self.items:
+                item.clean()
+
+        self.create_alert('Очистить все поля?', _clean_input)
 
     def resized(self, top_frame, top_sys_btns, event):
         """

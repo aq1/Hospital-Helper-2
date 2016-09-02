@@ -1,7 +1,7 @@
 import os
-import  subprocess
+import subprocess
 import datetime
-from collections import OrderedDict
+from collections import OrderedDict, defaultdict
 
 from odf.opendocument import OpenDocumentText
 from odf.style import Style, TextProperties, ParagraphProperties
@@ -97,7 +97,7 @@ class Report:
 
         document.text.addElement(P(text=self._get_header(), stylename=header))
 
-        keywords = {}
+        keywords = defaultdict(lambda: defaultdict(str))
         for k, group in self.template_groups.items():
             for item in group:
                 keywords.update(item.for_template())
