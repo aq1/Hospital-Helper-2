@@ -1,3 +1,4 @@
+import options
 from app.gui import main as gui
 from app.model import db, logic, exceptions, localization
 
