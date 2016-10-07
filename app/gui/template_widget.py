@@ -52,6 +52,20 @@ class SyntaxHighlighter(QSyntaxHighlighter):
         self.setCurrentBlockState(0)
 
 
+class TextControls(QFrame):
+
+    """
+    Group of buttons for text format.
+    """
+
+    def __init__(self):
+        super().__init__()
+        layout = QHBoxLayout()
+        self.setLayout(layout)
+        layout.addWidget(QPushButton('WTFMAN'))
+        self.setGraphicsEffect(utils.get_shadow())
+
+
 class TemplateTextEdit(QTextEdit):
 
     """
@@ -71,6 +85,24 @@ class TemplateTextEdit(QTextEdit):
 
     def set_rules(self, item):
         self.highlighter.set_rules(item)
+
+
+class TextEditWidget(QFrame):
+
+    def __init__(self, items):
+        super().__init__()
+        layout = QVBoxLayout()
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(0)
+        self.setLayout(layout)
+
+        self.template_text_edit = TemplateTextEdit(items)
+        self.text_controls = TextControls()
+        layout.addWidget(self.text_controls)
+        layout.addWidget(self.template_text_edit)
+
+    def __getattr__(self, a):
+        return getattr(self.template_text_edit, a)
 
 
 class TemplateEditingWidget(QFrame):
@@ -134,7 +166,8 @@ class TemplateEditingWidget(QFrame):
         """
 
         layout = QVBoxLayout()
-        self.template_text_edit = TemplateTextEdit(self.items)
+        self.template_edit_widget = TextEditWidget(self.items)
+        self.template_text_edit = self.template_edit_widget.template_text_edit
         self.conclusion_text_edit = QTextEdit()
         self.name_text_edit = QLineEdit()
 
@@ -158,7 +191,7 @@ class TemplateEditingWidget(QFrame):
         Get all TextEdit fields.
         """
 
-        return self.name_text_edit, self.template_text_edit, self.conclusion_text_edit
+        return self.name_text_edit, self.template_edit_widget, self.conclusion_text_edit
 
     def _item_selected(self, index):
         self._fill_controls_layout(self.items[index])
