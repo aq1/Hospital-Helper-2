@@ -58,11 +58,17 @@ class TextControls(QFrame):
     Group of buttons for text format.
     """
 
-    def __init__(self):
+    def __init__(self, text_edit):
         super().__init__()
         layout = QHBoxLayout()
         self.setLayout(layout)
-        layout.addWidget(QPushButton('WTFMAN'))
+
+        for n in 'B', 'I', 'C':
+            b = QPushButton(n)
+            b.clicked.connect(functools.partial(text_edit.format_selected, n))
+            layout.addWidget(b)
+
+        layout.addStretch()
         self.setGraphicsEffect(utils.get_shadow())
 
 
@@ -86,6 +92,43 @@ class TemplateTextEdit(QTextEdit):
     def set_rules(self, item):
         self.highlighter.set_rules(item)
 
+    def _get_bold(self):
+        _format = QTextCharFormat()
+        if self.textCursor().charFormat().font().bold():
+            _format.setFontWeight(QFont.Normal)
+        else:
+            _format.setFontWeight(QFont.Bold)
+
+        return _format
+
+    def _get_cursive(self):
+        _format = QTextCharFormat()
+        if self.textCursor().charFormat().font().italic():
+            _format.setFontItalic(False)
+        else:
+            _format.setFontItalic(True)
+
+        return _format
+
+    def _get_underline(self):
+        _format = QTextCharFormat()
+        if self.textCursor().charFormat().font().underline():
+            _format.setFontUnderline(False)
+        else:
+            _format.setFontUnderline(True)
+
+        return _format
+
+    def _get_format(self, f):
+        return {
+            'B': self._get_bold,
+            'I': self._get_cursive,
+            'C': self._get_underline
+        }[f]()
+
+    def format_selected(self, f):
+        self.textCursor().mergeCharFormat(self._get_format(f))
+
 
 class TextEditWidget(QFrame):
 
@@ -97,7 +140,7 @@ class TextEditWidget(QFrame):
         self.setLayout(layout)
 
         self.template_text_edit = TemplateTextEdit(items)
-        self.text_controls = TextControls()
+        self.text_controls = TextControls(self.template_text_edit)
         layout.addWidget(self.text_controls)
         layout.addWidget(self.template_text_edit)
 
