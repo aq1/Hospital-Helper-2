@@ -7,3 +7,4 @@ sqlalchemy
 git+https://github.com/aq1/odfpy.git
 # odfpy
 pyinstaller
+beautifulsoup4

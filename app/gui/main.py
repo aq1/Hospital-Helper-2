@@ -143,7 +143,7 @@ class MainWindow(QWidget):
 
         self.setWindowTitle('Hospital Helper')
         dw = QDesktopWidget()
-        w = dw.geometry().size().width() * 0.75
+        w = min(1150, dw.geometry().size().width() * 0.75)
         self.setFixedSize(w, w * 0.6)
         qr = self.frameGeometry()
         cp = dw.availableGeometry().center()
@@ -239,6 +239,7 @@ class MainWindow(QWidget):
             self.communication.input_changed_signal.emit('')
             for item in self.items:
                 item.clean()
+            self.show_message('Ok')
 
         self.create_alert('Очистить все поля?', _clean_input)
 

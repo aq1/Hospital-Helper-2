@@ -3,16 +3,13 @@ import subprocess
 import datetime
 from collections import OrderedDict, defaultdict
 
-from odf.opendocument import OpenDocumentText
-from odf.style import Style, TextProperties, ParagraphProperties
-from odf.text import H, P
+from PyQt5.Qt import QTextDocument, QTextDocumentWriter
 
 from app import options
 from app.model import db
 
 
 class Report:
-
     def __init__(self, user, items):
 
         self.user = user
@@ -54,10 +51,10 @@ class Report:
         if not self.user:
             return ''
         else:
-            return '{} {} {} {}'.format(datetime.datetime.now().strftime('%d.%m.%Y'),
-                                        self.user.surname,
-                                        self.user.name,
-                                        self.user.patronymic)
+            return '<p style="text-align:right">{} {} {} {}</p>'.format(datetime.datetime.now().strftime('%d.%m.%Y'),
+                                                                        self.user.surname,
+                                                                        self.user.name,
+                                                                        self.user.patronymic)
 
     @staticmethod
     def open(path):
@@ -71,31 +68,7 @@ class Report:
             raise AttributeError('Unknown system')
 
     def render(self):
-        document = OpenDocumentText()
-
-        h1style = Style(name='CenterHeading 1', family='paragraph')
-        h1style.addElement(ParagraphProperties(attributes={'textalign': 'center'}))
-        h1style.addElement(TextProperties(attributes={'fontsize': '18pt', 'fontweight': 'bold'}))
-
-        header = Style(name='Header', family='paragraph')
-        header.addElement(ParagraphProperties(attributes={'textalign': 'center'}))
-        header.addElement(TextProperties(attributes={'fontsize': '14pt', 'fontweight': 'bold'}))
-
-        footer = Style(name='Footer', family='paragraph')
-        footer.addElement(ParagraphProperties(attributes={'textalign': 'right'}))
-        
-        h2style = Style(name='CenterHeading 2', family='paragraph')
-        h2style.addElement(ParagraphProperties(attributes={'textalign': 'center'}))
-        h2style.addElement(TextProperties(attributes={'fontsize': '13pt', 'fontweight': 'bold'}))
-
-        # For bold text
-        boldstyle = Style(name='Bold', family='text')
-        boldstyle.addElement(TextProperties(attributes={'fontweight': 'bold'}))
-
-        for s in (h1style, h2style, boldstyle, header, footer):
-            document.styles.addElement(s)
-
-        document.text.addElement(P(text=self._get_header(), stylename=header))
+        document = [self._get_header()]
 
         keywords = defaultdict(lambda: defaultdict(str))
         for k, group in self.template_groups.items():
@@ -106,20 +79,17 @@ class Report:
             conclusion = []
 
             for item in group:
-                document.text.addElement(H(outlinelevel=4, text=item.get_verbose_name(), stylename=h2style))
+                document.append('<h4>{}</h4>'.format(item.get_verbose_name()))
+                document.append(item.template.body.format(**keywords))
                 conclusion.append(item.template.conclusion)
-                text = item.template.body.format(**keywords)
-                for t in text.splitlines():
-                    document.text.addElement(P(text=t))
 
             conclusion = '\n'.join(conclusion)
             if conclusion:
-                conclusion = '{o}{c}'.format(o=options.CONCLUSION, c=conclusion)
-                document.text.addElement(P(text=conclusion))
+                document.append('{o}{c}'.format(o=options.CONCLUSION, c=conclusion))
 
-        document.text.addElement(P(text=self._get_footer(), stylename=footer))
+        document.append(self._get_footer())
 
-        return document
+        return ''.join(document)
 
     def render_and_save(self):
         path = os.path.join(options.REPORTS_DIR, *(datetime.date.today().isoformat().split('-')))
@@ -127,8 +97,9 @@ class Report:
             os.makedirs(path)
 
         path = os.path.join(path, '{}.odt'.format(self.user))
-        document = self.render()
-        document.save(path)
+        document = QTextDocument()
+        document.setHtml(self.render())
+        QTextDocumentWriter(path).write(document)
 
         self.client.save()
         report = db.Report(path=path, client_id=self.client.id)

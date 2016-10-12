@@ -1,6 +1,8 @@
 import os
 import functools
 
+from bs4 import BeautifulSoup
+
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import (QFrame, QHBoxLayout, QLabel, QVBoxLayout, QComboBox,
@@ -10,6 +12,7 @@ from app import options
 from app.model import db
 
 from app.gui.crud_widget import CrudWidget
+from app.gui.text_edit_with_format_controls import TextEditWithFormatControls
 from app.gui import utils
 
 
@@ -39,7 +42,7 @@ class UsersAndGroupsWidget(QFrame):
     def _create_layout(self, parent):
         self._groups_combo_box = QComboBox()
         self._users_layout = QVBoxLayout()
-        self._text_field = QTextEdit()
+        self._text_field = TextEditWithFormatControls()
 
         self._text_field.setPlaceholderText('Заголовок появится в начале отчета')
         self._groups_combo_box.currentIndexChanged.connect(self._group_selected)
@@ -194,7 +197,9 @@ class UsersAndGroupsWidget(QFrame):
         if not self._selected_group:
             return
 
-        self._selected_group.header = self._text_field.toPlainText()
+        self._selected_group.header = ''.join(filter(lambda x: '\n' not in x,
+                                                     map(str, BeautifulSoup(self._text_field.toHtml(),
+                                                                            'html.parser').body.contents)))
         self._selected_group.save()
         self.show_message('Ок')
 

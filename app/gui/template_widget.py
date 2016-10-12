@@ -1,5 +1,7 @@
 import functools
 
+from bs4 import BeautifulSoup
+
 from PyQt5.Qt import QColor, Qt, QBrush, QFont, QRegExp
 from PyQt5.QtGui import QSyntaxHighlighter, QTextCharFormat, QGuiApplication
 from PyQt5.QtWidgets import (QFrame, QHBoxLayout, QLabel, QStackedLayout,
@@ -10,6 +12,7 @@ from app.model import template as template_module
 from app.model import exceptions
 
 from app.gui import utils
+from app.gui.text_edit_with_format_controls import TextEditWithFormatControls
 
 
 class SyntaxHighlighter(QSyntaxHighlighter):
@@ -37,7 +40,7 @@ class SyntaxHighlighter(QSyntaxHighlighter):
                 format_ = self.keywords
 
             for w in [_(k) for k in each.keys()]:
-                pattern = QRegExp(r"\{%s.%s\}" % (_(each.name), w))
+                pattern = QRegExp(r"{%s.%s}" % (_(each.name), w))
                 self.rules.append({'pattern': pattern, 'format': format_})
         self.rehighlight()
 
@@ -50,102 +53,6 @@ class SyntaxHighlighter(QSyntaxHighlighter):
                 self.setFormat(index, length, rule['format'])
                 index = expression.indexIn(text, index + length)
         self.setCurrentBlockState(0)
-
-
-class TextControls(QFrame):
-
-    """
-    Group of buttons for text format.
-    """
-
-    def __init__(self, text_edit):
-        super().__init__()
-        layout = QHBoxLayout()
-        self.setLayout(layout)
-
-        for n in 'B', 'I', 'C':
-            b = QPushButton(n)
-            b.clicked.connect(functools.partial(text_edit.format_selected, n))
-            layout.addWidget(b)
-
-        layout.addStretch()
-        self.setGraphicsEffect(utils.get_shadow())
-
-
-class TemplateTextEdit(QTextEdit):
-
-    """
-    Custom widget with syntax highlighting and custom controls.
-    """
-
-    def __init__(self, items):
-
-        super().__init__()
-        self.setGraphicsEffect(utils.get_shadow())
-        self.highlighter = SyntaxHighlighter(items, self)
-        self.keywords = []
-
-    def insert_attribute(self, item, name):
-        self.insertPlainText('{{{i}.{n}}}'.format(i=_(item.name), n=_(name)))
-        self.setFocus()
-
-    def set_rules(self, item):
-        self.highlighter.set_rules(item)
-
-    def _get_bold(self):
-        _format = QTextCharFormat()
-        if self.textCursor().charFormat().font().bold():
-            _format.setFontWeight(QFont.Normal)
-        else:
-            _format.setFontWeight(QFont.Bold)
-
-        return _format
-
-    def _get_cursive(self):
-        _format = QTextCharFormat()
-        if self.textCursor().charFormat().font().italic():
-            _format.setFontItalic(False)
-        else:
-            _format.setFontItalic(True)
-
-        return _format
-
-    def _get_underline(self):
-        _format = QTextCharFormat()
-        if self.textCursor().charFormat().font().underline():
-            _format.setFontUnderline(False)
-        else:
-            _format.setFontUnderline(True)
-
-        return _format
-
-    def _get_format(self, f):
-        return {
-            'B': self._get_bold,
-            'I': self._get_cursive,
-            'C': self._get_underline
-        }[f]()
-
-    def format_selected(self, f):
-        self.textCursor().mergeCharFormat(self._get_format(f))
-
-
-class TextEditWidget(QFrame):
-
-    def __init__(self, items):
-        super().__init__()
-        layout = QVBoxLayout()
-        layout.setContentsMargins(0, 0, 0, 0)
-        layout.setSpacing(0)
-        self.setLayout(layout)
-
-        self.template_text_edit = TemplateTextEdit(items)
-        self.text_controls = TextControls(self.template_text_edit)
-        layout.addWidget(self.text_controls)
-        layout.addWidget(self.template_text_edit)
-
-    def __getattr__(self, a):
-        return getattr(self.template_text_edit, a)
 
 
 class TemplateEditingWidget(QFrame):
@@ -209,7 +116,7 @@ class TemplateEditingWidget(QFrame):
         """
 
         layout = QVBoxLayout()
-        self.template_edit_widget = TextEditWidget(self.items)
+        self.template_edit_widget = TextEditWithFormatControls(SyntaxHighlighter(self.items, self))
         self.template_text_edit = self.template_edit_widget.template_text_edit
         self.conclusion_text_edit = QTextEdit()
         self.name_text_edit = QLineEdit()
@@ -274,7 +181,10 @@ class TemplateEditingWidget(QFrame):
 
             for w, t in zip(self._get_all_text_fields(),
                             (self.template.name, self.template.body, self.template.conclusion)):
-                w.setText(t)
+                try:
+                    w.setHtml(t)
+                except AttributeError:
+                    w.setText(t)
         else:
             for w in self._get_all_text_fields():
                 w.setText('')
@@ -290,8 +200,11 @@ class TemplateEditingWidget(QFrame):
             self.template.item = self.item
             self.template.items = self.items
             self.template.name = self.name_text_edit.text()
-            self.template.body = self.template_text_edit.toPlainText()
-            self.template.conclusion = self.conclusion_text_edit.toPlainText()
+
+            for attr, text_edit in zip(('body', 'conclusion'), (self.template_text_edit, self.conclusion_text_edit)):
+                text = ''.join(filter(lambda x: '\n' not in x,
+                                      map(str, BeautifulSoup(text_edit.toHtml(), 'html.parser').body.contents)))
+                setattr(self.template, attr, text)
 
             try:
                 self.template.render_and_save()
