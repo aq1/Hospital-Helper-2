@@ -39,9 +39,10 @@ class SyntaxHighlighter(QSyntaxHighlighter):
             else:
                 format_ = self.keywords
 
-            for w in [_(k) for k in each.keys()]:
-                pattern = QRegExp(r"{%s.%s}" % (_(each.name), w))
+            for w in map(_, each.keys()):
+                pattern = QRegExp(r"\{%s.%s\}" % (_(each.name), w))
                 self.rules.append({'pattern': pattern, 'format': format_})
+
         self.rehighlight()
 
     def highlightBlock(self, text):
