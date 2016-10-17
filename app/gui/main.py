@@ -143,7 +143,7 @@ class MainWindow(QWidget):
 
         self.setWindowTitle('Hospital Helper')
         dw = QDesktopWidget()
-        w = min(1150, dw.geometry().size().width() * 0.75)
+        w = min(1300, dw.geometry().size().width() * 0.75)
         self.setFixedSize(w, w * 0.6)
         qr = self.frameGeometry()
         cp = dw.availableGeometry().center()

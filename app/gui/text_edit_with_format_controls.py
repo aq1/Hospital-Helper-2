@@ -2,6 +2,7 @@ import os
 import functools
 
 from PyQt5.Qt import QFont
+from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QTextCharFormat, QIcon
 from PyQt5.QtWidgets import (QFrame, QHBoxLayout, QVBoxLayout, QPushButton, QTextEdit)
 
@@ -80,15 +81,37 @@ class TemplateTextEdit(QTextEdit):
 
         return _format
 
+    def _get_alignment(self, f):
+        a = {
+            'la': Qt.AlignLeft,
+            'ca': Qt.AlignCenter,
+            'ra': Qt.AlignRight,
+        }
+
+        def _f():
+            block = self.textCursor().blockFormat()
+            block.setAlignment(a[f])
+            return block
+        return _f
+
     def _get_format(self, f):
         return {
             'b': self._get_bold,
             'i': self._get_cursive,
-            'u': self._get_underline
+            'u': self._get_underline,
+            'la': self._get_alignment(f),
+            'ca': self._get_alignment(f),
+            'ra': self._get_alignment(f),
         }[f]()
 
     def format_selected(self, f):
-        self.textCursor().mergeCharFormat(self._get_format(f))
+        _format = self._get_format(f)
+        cursor = self.textCursor()
+        try:
+            cursor.mergeCharFormat(_format)
+        except TypeError:
+            cursor.mergeBlockFormat(_format)
+        self.setTextCursor(cursor)
 
 
 class TextEditWithFormatControls(QFrame):
