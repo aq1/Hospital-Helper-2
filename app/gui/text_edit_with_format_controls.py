@@ -38,12 +38,12 @@ class TemplateTextEdit(QTextEdit):
     Custom widget with syntax highlighting and custom controls.
     """
 
-    def __init__(self, highlighter=None):
+    def __init__(self, items, highlighter=None):
 
         super().__init__()
         self.setGraphicsEffect(utils.get_shadow())
         if highlighter:
-            self.highlighter = highlighter
+            self.highlighter = highlighter(items, self)
         self.keywords = []
 
     def insert_attribute(self, item, name):
@@ -116,13 +116,13 @@ class TemplateTextEdit(QTextEdit):
 
 class TextEditWithFormatControls(QFrame):
 
-    def __init__(self, highlighter=None):
+    def __init__(self, items=None, highlighter=None):
         super().__init__()
         layout = QVBoxLayout()
         layout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(layout)
 
-        self.template_text_edit = TemplateTextEdit(highlighter)
+        self.template_text_edit = TemplateTextEdit(items, highlighter)
         self.text_controls = TextControls(self.template_text_edit)
         layout.addWidget(self.text_controls)
         layout.addWidget(self.template_text_edit)

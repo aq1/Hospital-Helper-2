@@ -117,7 +117,7 @@ class TemplateEditingWidget(QFrame):
         """
 
         layout = QVBoxLayout()
-        self.template_edit_widget = TextEditWithFormatControls(SyntaxHighlighter(self.items, self))
+        self.template_edit_widget = TextEditWithFormatControls(self.items, SyntaxHighlighter)
         self.template_text_edit = self.template_edit_widget.template_text_edit
         self.conclusion_text_edit = QTextEdit()
         self.name_text_edit = QLineEdit()

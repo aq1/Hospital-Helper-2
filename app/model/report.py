@@ -79,7 +79,7 @@ class Report:
             conclusion = []
 
             for item in group:
-                document.append('<h4>{}</h4>'.format(item.get_verbose_name()))
+                document.append('<h4 style="text-align: center">{}</h4>'.format(item.get_verbose_name()))
                 document.append(item.template.body.format(**keywords))
                 conclusion.append(item.template.conclusion)
 
