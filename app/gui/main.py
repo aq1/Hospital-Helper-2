@@ -1,6 +1,8 @@
 import os
 import sys
 import functools
+import traceback as trb
+import datetime
 
 from sqlalchemy.orm import exc
 
@@ -189,7 +191,7 @@ class MainWindow(QWidget):
                 return
             self.communication.shortcut_pressed.emit(key)
 
-        QShortcut(QKeySequence('Esc'), self).activated.connect(self.close)
+        # QShortcut(QKeySequence('Esc'), self).activated.connect(self.close)
         keys = [str(i) for i in range(0, 11)] + [chr(c) for c in range(ord('A'), ord('Z') + 1)]
         for key in keys:
             QShortcut(QKeySequence('Ctrl+{}'.format(key)), self).activated.connect(
@@ -290,6 +292,14 @@ class MainWindow(QWidget):
 
         self.setWindowState(Qt.WindowMinimized)
 
+    def excepthook(self, exctype, value, traceback):
+        with open(options.LOG_FILE, 'a') as f:
+            f.write('\n{}\n{}'.format(datetime.datetime.now(),
+                                      '\n'.join(trb.format_exception(exctype, value, traceback))))
+
+        self.create_alert('Произошла непредвиденная ошибка.\n'
+                          'Попробуйте повторить действие, хотя это вряд ли поможет')
+
 
 def init(bootstrap_function):
     """
@@ -317,4 +327,6 @@ def init(bootstrap_function):
 
     mw = MainWindow(items)
     splash.finish(mw)
+
+    sys.excepthook = mw.excepthook
     sys.exit(app.exec_())

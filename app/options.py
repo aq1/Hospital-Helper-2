@@ -9,6 +9,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATABASE_DIR = os.path.dirname(sys.executable)
 DATABASE = os.path.join(DATABASE_DIR, 'data.sqlite3')
 DATA_DIR = os.path.join(BASE_DIR, 'data')
+LOG_FILE = os.path.join(DATABASE_DIR, 'error.log')
 
 # klient left here intentionally
 CLIENT_TABLE_NAME = 'klient'
