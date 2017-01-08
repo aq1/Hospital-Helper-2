@@ -96,7 +96,7 @@ class Report:
         if not os.path.exists(path):
             os.makedirs(path)
 
-        path = os.path.join(path, '{}.odt'.format(self.user))
+        path = os.path.join(path, '{}.odt'.format(self.client))
         document = QTextDocument()
         document.setHtml(self.render())
         QTextDocumentWriter(path).write(document)
