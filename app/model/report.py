@@ -95,13 +95,13 @@ class Report:
             conclusion = []
 
             for item in group:
-                document.append('<h4 style="text-align: center">{}</h4>'.format(item.get_verbose_name()))
                 document.append(item.template.body.format(**keywords))
                 conclusion.append(item.template.conclusion)
 
             conclusion = '\n'.join(conclusion)
             if BeautifulSoup(conclusion, 'html.parser').text:
                 document.append('{o}{c}'.format(o=options.CONCLUSION, c=conclusion))
+            document.append('<br>')
 
         document.append(self._get_footer())
 

@@ -1,7 +1,6 @@
 [
     {
         "name": "Клиент",
-        "verbose_name": "",
         "db": true,
         "group": "Клиент",
         "relations": [
@@ -40,7 +39,6 @@
     },
     {
         "name": "Сердце",
-        "verbose_name": "",
         "db": false,
         "relations": [
             "Клиент"
@@ -163,7 +161,6 @@
     },
     {
         "name": "Поджелудочная",
-        "verbose_name": "Поджелудочная железа",
         "group": "Брюшная полость",
         "db": false,
         "relations": [
@@ -247,7 +244,6 @@
     },
     {
         "name": "Щитовидная",
-        "verbose_name": "Щитовидная железа",
         "db": false,
         "relations": [
             "Клиент"
@@ -290,7 +286,6 @@
     },
     {
         "name": "Предстательная",
-        "verbose_name": "Предстательная железа",
         "db": false,
         "relations": [
             "Клиент"
@@ -325,8 +320,7 @@
         ]
     },
     {
-        "name": "М.Пузырь",
-        "verbose_name": "Мочевой пузырь",
+        "name": "М Пузырь",
         "db": false,
         "relations": [
             "Клиент"

@@ -38,8 +38,12 @@ class Parser:
     self_str = 'self.set("{}", {})'
 
     @staticmethod
-    def unidecode(value):
-        return unidecode.unidecode(value.lower().replace(' ', ''))
+    def _escape_value(value):
+        return value.lower().replace(' ', '')
+
+    @classmethod
+    def unidecode(cls, value):
+        return unidecode.unidecode(cls._escape_value(value)).replace('\'', '')
 
     @classmethod
     def parse_calculation_string(cls, name, string):
