@@ -3,6 +3,8 @@ import subprocess
 import datetime
 from collections import OrderedDict, defaultdict
 
+from bs4 import BeautifulSoup
+
 from PyQt5.Qt import QTextDocument, QTextDocumentWriter
 
 from app import options
@@ -98,7 +100,7 @@ class Report:
                 conclusion.append(item.template.conclusion)
 
             conclusion = '\n'.join(conclusion)
-            if conclusion:
+            if BeautifulSoup(conclusion, 'html.parser').text:
                 document.append('{o}{c}'.format(o=options.CONCLUSION, c=conclusion))
 
         document.append(self._get_footer())
