@@ -221,7 +221,7 @@ class MainWindow(QWidget):
         if go_to_data_frame:
             self.communication.menu_btn_clicked.emit(self.data_frame_index)
 
-    def create_report(self):
+    def create_report(self, event=None):
         """
         Render and save report.
         Open report in default OS program.

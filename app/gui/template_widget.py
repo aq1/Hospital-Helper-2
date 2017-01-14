@@ -320,6 +320,7 @@ class AbstractTemplateWidget(QFrame):
 
         cols = 3
         templates = template_module.Template.get_all()
+        check_templates = []
 
         for j, item in enumerate(self.visible_items):
             if not templates[item.id]:
@@ -332,6 +333,8 @@ class AbstractTemplateWidget(QFrame):
                 b = QRadioButton(each.name)
                 b.setChecked(item.template == each)
                 b.clicked.connect(functools.partial(self._template_clicked, j, each))
+                if len(templates[item.id]) == 1:
+                    check_templates.append((b, j, each))
                 b.mouseDoubleClickEvent = functools.partial(self.open_template_edit_widget, j, each)
                 layouts[i % cols].addWidget(b)
 
@@ -340,6 +343,11 @@ class AbstractTemplateWidget(QFrame):
                 each.addStretch()
                 wrapper.addLayout(each, stretch=int(100 / cols))
             self.templates_layout.addWidget(utils.get_scrollable(wrapper))
+        for i, each in enumerate(check_templates):
+            b, j, template = each
+            self._template_clicked(j, template, i == 0)
+            b.setChecked(True)
+
 
     def _template_selected(self, index, template):
 
@@ -365,7 +373,7 @@ class AbstractTemplateWidget(QFrame):
     def _double_click(self, index, template, event):
         pass
 
-    def _template_clicked(self, index, template):
+    def _template_clicked(self, index, template, show_next=False):
         pass
 
     def action_btn_function(self, event):
@@ -449,7 +457,10 @@ class TemplateWidget(AbstractTemplateWidget):
 
         return _(item.name)
 
-    def _template_clicked(self, index, template):
+    def _add_template(self):
+        pass
+
+    def _template_clicked(self, index, template, select_next=False):
         """
         Set item's template to selected.
         If Ctrl key pressed - find next item without the template and focus on it.
@@ -459,7 +470,7 @@ class TemplateWidget(AbstractTemplateWidget):
         buttons = self.findChildren(QRadioButton, name='menu_button')
         buttons[index].setText(self._get_button_name(self.visible_items[index]))
 
-        if QGuiApplication.keyboardModifiers() != Qt.ControlModifier:
+        if QGuiApplication.keyboardModifiers() != Qt.ControlModifier and not select_next:
             return
 
         for i in range(len(self.visible_items)):

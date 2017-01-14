@@ -14,7 +14,8 @@ LOG_FILE = os.path.join(DATABASE_DIR, 'error.log')
 # klient left here intentionally
 CLIENT_TABLE_NAME = 'klient'
 
-CONCLUSION = 'Заключение: '
+CONCLUSION = '<span>Заключение: </span>'
+TEMPLATE_GLOBAL_STYLE = '<style>* {font-size: 11pt;}</style>'
 
 STATIC_DIR = os.path.join(BASE_DIR, 'gui', 'static')
 REPORTS_DIR = os.path.join(DATABASE_DIR, 'reports')

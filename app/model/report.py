@@ -51,10 +51,11 @@ class Report:
         if not self.user:
             return ''
         else:
-            return '<p style="text-align:right">{} {} {} {}</p>'.format(datetime.datetime.now().strftime('%d.%m.%Y'),
-                                                                        self.user.surname,
-                                                                        self.user.name,
-                                                                        self.user.patronymic)
+            return ('<p style="text-align:right">{}<br>'
+                    '{} {} {}</p>'.format(datetime.datetime.now().strftime('%d.%m.%Y'),
+                                                 self.user.surname,
+                                                 self.user.name,
+                                                 self.user.patronymic))
 
     @staticmethod
     def open(path):
@@ -67,8 +68,21 @@ class Report:
         else:
             raise AttributeError('Unknown system')
 
+    def _get_report_path(self):
+        _path_template = os.path.join(options.REPORTS_DIR, *(datetime.date.today().isoformat().split('-')))
+        if not os.path.exists(_path_template):
+            os.makedirs(_path_template)
+
+        _path_template = os.path.join(_path_template, '{}{{}}.odt'.format(self.client))
+        path = _path_template
+        i = 1
+        while os.path.exists(path.format('')):
+            path = _path_template.format(' ({})'.format(i))
+            i += 1
+        return path.format('')
+
     def render(self):
-        document = [self._get_header()]
+        document = [options.TEMPLATE_GLOBAL_STYLE, self._get_header()]
 
         keywords = defaultdict(lambda: defaultdict(str))
         for k, group in self.template_groups.items():
@@ -92,11 +106,7 @@ class Report:
         return ''.join(document)
 
     def render_and_save(self):
-        path = os.path.join(options.REPORTS_DIR, *(datetime.date.today().isoformat().split('-')))
-        if not os.path.exists(path):
-            os.makedirs(path)
-
-        path = os.path.join(path, '{}.odt'.format(self.client))
+        path = self._get_report_path()
         document = QTextDocument()
         document.setHtml(self.render())
         QTextDocumentWriter(path).write(document)

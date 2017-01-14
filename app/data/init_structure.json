@@ -40,6 +40,7 @@
     },
     {
         "name": "Сердце",
+        "verbose_name": "",
         "db": false,
         "relations": [
             "Клиент"

@@ -194,7 +194,10 @@ class CalculableObject(collections.OrderedDict):
             value = type_()
 
         if type_ is float:
-            value = round(value, 2)
+            if value == int(value):
+                value = int(value)
+            else:
+                value = round(value, 2)
 
         self[name] = value
 
