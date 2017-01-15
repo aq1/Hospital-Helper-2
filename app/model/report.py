@@ -98,9 +98,11 @@ class Report:
                 document.append(item.template.body.format(**keywords))
                 conclusion.append(item.template.conclusion)
 
-            conclusion = '\n'.join(conclusion)
+            conclusion = '<br>'.join(conclusion)
             if BeautifulSoup(conclusion, 'html.parser').text:
-                document.append('{o}{c}'.format(o=options.CONCLUSION, c=conclusion))
+                conclusion = BeautifulSoup(conclusion, 'html.parser')
+                conclusion.p.string = options.CONCLUSION + conclusion.string
+                document.append(str(conclusion))
             document.append('<br>')
 
         document.append(self._get_footer())
