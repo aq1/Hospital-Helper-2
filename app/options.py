@@ -15,7 +15,10 @@ LOG_FILE = os.path.join(DATABASE_DIR, 'error.log')
 CLIENT_TABLE_NAME = 'klient'
 
 CONCLUSION = 'Заключение: '
-TEMPLATE_GLOBAL_STYLE = '<style>* {font-size: 11pt;}</style>'
+TEMPLATE_GLOBAL_STYLE = {
+    'font-size': '11pt',
+    'line-height': '11pt',
+}
 
 STATIC_DIR = os.path.join(BASE_DIR, 'gui', 'static')
 REPORTS_DIR = os.path.join(DATABASE_DIR, 'reports')

@@ -44,6 +44,11 @@ class Report:
                          examined=datetime.date.today(),
                          user_id=self.user.id)
 
+    def _get_global_style(self):
+        return '<style>\n* {{\n{}\n}}\n</style>'.format(
+            '\n'.join(['{}: {} !important;'.format(k, v)
+                       for k, v in options.TEMPLATE_GLOBAL_STYLE.items()]))
+
     def _get_header(self):
 
         return self.user.organization.header or ''
@@ -84,7 +89,7 @@ class Report:
         return path.format('')
 
     def render(self):
-        document = [options.TEMPLATE_GLOBAL_STYLE, self._get_header()]
+        document = [self._get_global_style(), self._get_header()]
 
         keywords = defaultdict(lambda: defaultdict(str))
         for k, group in self.template_groups.items():
@@ -107,7 +112,6 @@ class Report:
                 conclusion.p.insert(0, c)
                 list(map(lambda c: c.extract(), conclusion.find_all('p')[1:]))
                 document.append(str(conclusion))
-            document.append('<br>')
 
         document.append(self._get_footer())
 
