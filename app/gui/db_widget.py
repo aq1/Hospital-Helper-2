@@ -1,10 +1,13 @@
 import os
 import functools
 
+from sqlalchemy import or_
+
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import (QWidget, QFrame, QVBoxLayout, QHBoxLayout,
-                             QLabel, QGridLayout, QPushButton, QSizePolicy)
+                             QLabel, QGridLayout, QPushButton, QSizePolicy,
+                             QLineEdit)
 
 from app import options
 from app.model import db, report
@@ -27,6 +30,7 @@ class DBWidget(QFrame):
         self.items = []
         self.current_items_index = 0
         self.model = db.Client
+        self._query = db.SESSION.query(self.model).order_by(self.model.id.desc())
         self._open_report = self._get_open_report_func(main_window)
         self.columns = []
         self._columns_to_display = {'id', 'name', 'surname', 'patronymic',
@@ -38,6 +42,7 @@ class DBWidget(QFrame):
         self.layout.setSpacing(0)
         vbox = QVBoxLayout()
         vbox.setSpacing(0)
+        vbox.addLayout(self._get_search_layout())
         vbox.addLayout(self.header_layout)
         vbox.addWidget(utils.get_scrollable(self.layout))
         vbox.addLayout(self.control_layout)
@@ -54,6 +59,30 @@ class DBWidget(QFrame):
 
         self.showEvent = self._get_show_event(main_window)
 
+    def _get_search_layout(self):
+        hbox = QHBoxLayout()
+        _input = QLineEdit()
+        _input.setGraphicsEffect(utils.get_shadow())
+        _input.setPlaceholderText('Поиск...')
+        _input.textEdited.connect(self._filter)
+        hbox.addWidget(_input)
+        return hbox
+
+    def _filter(self, query_text):
+        # Since it's not really important,
+        # I'll keep columns hard-coded here.
+        # This motherfucking sqlaalchemy doesnt care about ilike function at all
+        if query_text:
+            query_text = '%{}%'.format(query_text)
+            self.items = (db.SESSION.query(self.model)
+                          .filter(or_(self.model.surname.like(query_text),
+                                      self.model.name.like(query_text),
+                                      self.model.patronymic.like(query_text)))
+                          .order_by(self.model.id))
+        else:
+            self.items = self._query
+        self.display_model()
+
     def _get_show_event(self, main_window):
         def showEvent(event):
             """
@@ -61,7 +90,7 @@ class DBWidget(QFrame):
             """
 
             if not self.items:
-                self.items = db.SESSION.query(self.model).order_by(self.model.id.desc())
+                self.items = self._query
 
             self.display_model()
             main_window.communication.action_button_toggle.emit(False, '', None)

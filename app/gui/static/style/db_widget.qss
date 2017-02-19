@@ -40,3 +40,9 @@ DBWidget QLabel#header {
 DBWidget QLabel#header:hover {
     background-color: white;
 }
+
+
+DBWidget QLineEdit {
+    margin-bottom: 10px;
+    font-size: 11pt;
+}
