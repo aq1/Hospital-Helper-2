@@ -14,26 +14,14 @@ LOG_FILE = os.path.join(DATABASE_DIR, 'error.log')
 # klient left here intentionally
 CLIENT_TABLE_NAME = 'klient'
 
-SEARCH_QUERY_COLUMNS = [
-    'id',
-    'surname',
-    'name',
-    'patronymic',
-    'age',
-    'examined',
-]
 
 SEARCH_QUERY = '''
-    SELECT {columns},
-    user.surname || ' ' || substr(user.name, 0, 2) || '. ' || substr(user.patronymic, 0, 2) || '.' as user
+    SELECT id
     FROM {table}
-    JOIN user on user.id = klient.user_id
     WHERE lowercase({table}.surname) LIKE ? 
        OR lowercase({table}.name) LIKE ? 
        OR lowercase({table}.patronymic) LIKE ?
-    ORDER BY {table}.examined DESC
-'''.format(columns=', '.join(['{}.{}'.format(CLIENT_TABLE_NAME, c) for c in SEARCH_QUERY_COLUMNS]),
-           table=CLIENT_TABLE_NAME)
+'''.format(table=CLIENT_TABLE_NAME)
 
 CONCLUSION = '<span style="font-weight: bold">Заключение: </span>'
 TEMPLATE_GLOBAL_STYLE = {

@@ -2,7 +2,7 @@ import os
 import math
 import functools
 
-from sqlalchemy import or_
+from sqlalchemy import sql
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
@@ -80,7 +80,11 @@ class DBWidget(QFrame):
         if query_text:
             query_text = '%{}%'.format(query_text.lower())
             db.cursor.execute(options.SEARCH_QUERY, [query_text, query_text, query_text])
-            self.items = db.FakeORMResult(db.cursor.fetchall())
+            ids = [i[0] for i in db.cursor.fetchall()]
+            if ids:
+                self.items = db.SESSION.query(self.model).filter(self.model.id.in_(ids))
+            else:
+                self.items = db.SESSION.query(self.model).filter(sql.false())
         else:
             self.items = self._query
         self.display_model()
