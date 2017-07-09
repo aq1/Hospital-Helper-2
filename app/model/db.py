@@ -131,7 +131,7 @@ class User(Base, Model):
     deleted = Column(Boolean, nullable=False, default=False)
 
     def __str__(self):
-        return '{} {} {}'.format(self.surname, self.name, self.patronymic)
+        return '{} {:.1}. {:.1}.'.format(self.surname or '', self.name or '', self.patronymic or '')
 
 
 class Organization(Base, Model):

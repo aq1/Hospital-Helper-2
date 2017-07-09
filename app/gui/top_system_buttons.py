@@ -56,7 +56,7 @@ class TopSystemButtons(QFrame):
         Change title when user is selected.
         """
 
-        self.title.setText('{} {}. {}.'.format(user.surname, user.name[0], user.patronymic[0]))
+        self.title.setText(str(user))
 
     def mousePressEvent(self, event):
         self.move_offset = event.pos()
