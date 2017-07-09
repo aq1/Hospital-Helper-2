@@ -153,7 +153,7 @@ class CalculableObject(collections.OrderedDict):
             self.id = item.id
 
         for each in args:
-            self[each['name']] = 0
+            self[each['name']] = self.types[each['name']]()
             calculation = each.get('calculation')
             if calculation:
                 self.calculations.append(
