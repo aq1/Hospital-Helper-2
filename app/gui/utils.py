@@ -3,7 +3,14 @@ Module for common gui operations.
 """
 
 from PyQt5.Qt import Qt
-from PyQt5.QtWidgets import QVBoxLayout, QWidget, QGroupBox, QScrollArea, QGraphicsDropShadowEffect
+from PyQt5.QtWidgets import (
+    QLayout,
+    QVBoxLayout,
+    QWidget,
+    QGroupBox,
+    QScrollArea,
+    QGraphicsDropShadowEffect,
+)
 
 
 def get_scrollable(layout):
@@ -49,6 +56,8 @@ def clear_layout(layout):
 
     for i in reversed(range(layout.count())):
         item = layout.takeAt(i)
+        if isinstance(item, QLayout):
+            clear_layout(item)
         try:
             item.widget().setParent(None)
         except AttributeError:

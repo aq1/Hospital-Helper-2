@@ -1,4 +1,5 @@
 import datetime
+import sqlite3
 
 import slugify
 
@@ -82,6 +83,17 @@ class Model:
         SESSION.flush()
 
 
+class FakeORMResult(list):
+
+    def __init__(self, fetch_results):
+        for i, _ in enumerate(fetch_results):
+            fetch_results[i] = Client(**{c: fetch_results[i][j] for (j, c) in enumerate(options.SEARCH_QUERY_COLUMNS)})
+        super().__init__(fetch_results)
+
+    def count(self, value=None):
+        return len(self)
+
+
 class Client(Base, Model):
     __tablename__ = options.CLIENT_TABLE_NAME
 
@@ -110,7 +122,7 @@ class User(Base, Model):
 
     id = Column(Integer, primary_key=True)
     organization_id = Column(ForeignKey('organization.id'), nullable=False)
-    organization = relationship('Organization', backref='user', cascade="save-update, merge, delete")
+    organization = relationship('Organization', backref='user', cascade='save-update, merge, delete')
 
     surname = Column(String, nullable=False)
     name = Column(String, nullable=False)
@@ -144,7 +156,7 @@ class Report(Base, Model):
     path = Column(String, nullable=False)
 
     client_id = Column(ForeignKey('{}.id'.format(options.CLIENT_TABLE_NAME)))
-    client = relationship('Client', backref='report')
+    client = relationship('Client', backref='report', cascade='save-update, merge, delete')
 
     def __str__(self):
         return self.path
@@ -271,3 +283,6 @@ def create_db():
 
 
 Base.metadata.create_all(engine)
+raw_connection = sqlite3.connect(options.DATABASE)
+raw_connection.create_function('lowercase', 1, str.lower)
+cursor = raw_connection.cursor()

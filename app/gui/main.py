@@ -136,7 +136,7 @@ class MainWindow(QWidget):
 
     def _set_sys_attributes(self):
         """
-        Set sys attributes like window titile.
+        Set sys attributes like window title.
         Disable OS-specific buttons.
         Remove borders.
         """
@@ -146,7 +146,7 @@ class MainWindow(QWidget):
         self.setWindowTitle('Hospital Helper')
         dw = QDesktopWidget()
         w = min(1300, dw.geometry().size().width() * 0.75)
-        self.setFixedSize(w, w * 0.6)
+        self.setFixedSize(w, w * 0.65)
         qr = self.frameGeometry()
         cp = dw.availableGeometry().center()
         qr.moveCenter(cp)
@@ -328,5 +328,5 @@ def init(bootstrap_function):
     mw = MainWindow(items)
     splash.finish(mw)
 
-    sys.excepthook = mw.excepthook
+    # sys.excepthook = mw.excepthook
     sys.exit(app.exec_())

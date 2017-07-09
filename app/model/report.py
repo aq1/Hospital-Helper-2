@@ -107,9 +107,7 @@ class Report:
             if BeautifulSoup(conclusion, 'html.parser').text:
                 conclusion = BeautifulSoup(conclusion, 'html.parser')
                 conclusion.p.string = ' '.join([c.string or '' for c in conclusion.find_all('p')])
-                c = conclusion.new_tag('b')
-                c.string = options.CONCLUSION
-                conclusion.p.insert(0, c)
+                conclusion.p.insert(0, BeautifulSoup(options.CONCLUSION, 'html.parser'))
                 list(map(lambda c: c.extract(), conclusion.find_all('p')[1:]))
                 document.append(str(conclusion))
 

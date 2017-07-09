@@ -20,5 +20,7 @@
     {"sys": "template", "ru": "Шаблон"},
     {"sys": "sent_by", "ru": "Направлен"},
     {"sys": "item", "ru": "Объект"},
-    {"sys": "path", "ru": "Путь"}
+    {"sys": "path", "ru": "Путь"},
+    {"sys": "controls", "ru": "Действия"},
+    {"sys": "fullname", "ru": "ФИО"}
 ]

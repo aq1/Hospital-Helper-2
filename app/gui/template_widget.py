@@ -119,12 +119,12 @@ class TemplateEditingWidget(QFrame):
         layout = QVBoxLayout()
         self.template_edit_widget = TextEditWithFormatControls(self.items, SyntaxHighlighter)
         self.template_text_edit = self.template_edit_widget.template_text_edit
-        self.conclusion_text_edit = QTextEdit()
+        self.conclusion_text_edit = TextEditWithFormatControls(self.items, SyntaxHighlighter)
         self.name_text_edit = QLineEdit()
 
         for w, p, s in zip(self._get_all_text_fields(),
                            ('Имя', 'Шаблон', 'Заключение'),
-                           (5, 80, 15)):
+                           (5, 60, 35)):
             w.setPlaceholderText(p)
             w.setGraphicsEffect(utils.get_shadow())
             layout.addWidget(w, stretch=s)

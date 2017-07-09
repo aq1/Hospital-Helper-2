@@ -1,8 +1,14 @@
 import functools
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import (QWidget, QFrame, QPushButton, QHBoxLayout, QLabel,
-                             QGridLayout, QGraphicsDropShadowEffect)
+from PyQt5.QtWidgets import (
+    QWidget,
+    QFrame,
+    QPushButton,
+    QHBoxLayout,
+    QLabel,
+    QGridLayout,
+)
 
 from app import options
 

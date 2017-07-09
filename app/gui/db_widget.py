@@ -1,4 +1,5 @@
 import os
+import math
 import functools
 
 from sqlalchemy import or_
@@ -32,12 +33,13 @@ class DBWidget(QFrame):
         self.model = db.Client
         self._query = db.SESSION.query(self.model).order_by(self.model.id.desc())
         self._open_report = self._get_open_report_func(main_window)
+        self._delete_item = self._get_delete_item_func(main_window)
         self.columns = []
-        self._columns_to_display = {'id', 'name', 'surname', 'patronymic',
-                                    'user', 'age', 'examined', 'report'}
+        self._columns_to_display = ['fullname', 'user', 'age', 'examined', 'controls']
         self.layout = QGridLayout()
         self.header_layout = QGridLayout()
-        self.control_layout = QHBoxLayout()
+        self.control_layout = QWidget()
+        self._page_count_label = QLabel('')
         self.layout.setContentsMargins(0, 0, 0, 0)
         self.layout.setSpacing(0)
         vbox = QVBoxLayout()
@@ -45,16 +47,19 @@ class DBWidget(QFrame):
         vbox.addLayout(self._get_search_layout())
         vbox.addLayout(self.header_layout)
         vbox.addWidget(utils.get_scrollable(self.layout))
-        vbox.addLayout(self.control_layout)
+        vbox.addWidget(self.control_layout)
         self.setLayout(vbox)
 
-        self.control_layout.addStretch()
+        control_layout = QHBoxLayout()
+        control_layout.addStretch()
+        control_layout.addWidget(self._page_count_label)
         for icon, direciton in zip(('left.png', 'right.png'), (-1, 1)):
             b = QPushButton()
             b.setIcon(QIcon(os.path.join(options.STATIC_DIR, 'icons', icon)))
             b.clicked.connect(functools.partial(self._move, direciton))
             b.setObjectName(icon)
-            self.control_layout.addWidget(b)
+            control_layout.addWidget(b)
+        self.control_layout.setLayout(control_layout)
         self.setGraphicsEffect(utils.get_shadow())
 
         self.showEvent = self._get_show_event(main_window)
@@ -71,14 +76,11 @@ class DBWidget(QFrame):
     def _filter(self, query_text):
         # Since it's not really important,
         # I'll keep columns hard-coded here.
-        # This motherfucking sqlaalchemy doesnt care about ilike function at all
+        # Sqlalchemy doesn't care about ilike function at all
         if query_text:
-            query_text = '%{}%'.format(query_text)
-            self.items = (db.SESSION.query(self.model)
-                          .filter(or_(self.model.surname.like(query_text),
-                                      self.model.name.like(query_text),
-                                      self.model.patronymic.like(query_text)))
-                          .order_by(self.model.id))
+            query_text = '%{}%'.format(query_text.lower())
+            db.cursor.execute(options.SEARCH_QUERY, [query_text, query_text, query_text])
+            self.items = db.FakeORMResult(db.cursor.fetchall())
         else:
             self.items = self._query
         self.display_model()
@@ -86,7 +88,7 @@ class DBWidget(QFrame):
     def _get_show_event(self, main_window):
         def showEvent(event):
             """
-            On each show data is refreshing.
+            Data is being refreshed on each show.
             """
 
             if not self.items:
@@ -114,10 +116,7 @@ class DBWidget(QFrame):
         self.columns = []
         j = 0
 
-        columns = [c.name for c in self.model.__table__.columns] + ['report']
-        for c in columns:
-            if c not in self._columns_to_display:
-                continue
+        for c in self._columns_to_display:
             self.columns.append(c)
             l = QLabel(_(c))
             l.setObjectName('header')
@@ -125,12 +124,21 @@ class DBWidget(QFrame):
             self.header_layout.addWidget(l, 0, j)
             j += 1
 
-        for i, item in enumerate(self.items[self.current_items_index:self.current_items_index + self.ITEMS_PER_PAGE], 0):
+        for i, item in enumerate(self.items[self.current_items_index:self.current_items_index + self.ITEMS_PER_PAGE]):
             self._add_row(i, item)
 
         empty = QWidget()
         empty.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
         self.layout.addWidget(empty, self.layout.rowCount(), 0)
+
+        if self.current_items_index and self.current_items_index >= self.items.count():
+            self.current_items_index = 0
+            return self.display_model()
+
+        self.control_layout.setVisible(self.items.count() > self.ITEMS_PER_PAGE)
+        page = round(self.current_items_index / self.ITEMS_PER_PAGE) + 1
+        page_count = math.floor((self.items.count() - 1) / self.ITEMS_PER_PAGE) + 1
+        self._page_count_label.setText('{}/{}'.format(page, page_count))
 
     def _move(self, direction):
         """
@@ -144,25 +152,49 @@ class DBWidget(QFrame):
         self.current_items_index = index
         self.display_model()
 
+    def _get_delete_item_func(self, main_window):
+        def _delete_item(item, for_real):
+            if not for_real:
+                return
+            for r in item.report:
+                r.delete()
+            item.delete()
+            self.showEvent(event=None)
+            main_window.show_message('Отчет удален')
+
+        def _ask_before_deletion(item):
+            main_window.create_alert('{} {} {}: удалить отчет?'.format(item.surname, item.name, item.patronymic),
+                                     functools.partial(_delete_item, item))
+        return _ask_before_deletion
+
     @staticmethod
     def _get_open_report_func(main_window):
-        def _open_report(reports):
+        def _open_report(item):
             try:
-                report.Report.open(reports[0].path)
+                report.Report.open(item.report[0].path)
             except (IndexError, AttributeError, FileNotFoundError):
                 main_window.create_alert('Не удалось открыть отчет')
         return _open_report
 
-    def _add_row(self, row_id, item):
+    def _get_controls_column(self, item):
+        layout = QHBoxLayout()
+        for i, callback in zip(('open.png', 'delete_g.png'), (self._open_report, self._delete_item)):
+            b = QPushButton()
+            b.setIcon(QIcon(os.path.join(options.STATIC_DIR, 'icons', i)))
+            b.clicked.connect(functools.partial(callback, item))
+            layout.addWidget(b)
+        return layout
+
+    def _add_row(self, row_id, client):
         """
         Create row for item.
         """
-
         for j, c in enumerate(self.columns):
-            if c == 'report':
-                b = QPushButton()
-                b.setIcon(QIcon(os.path.join(options.STATIC_DIR, 'icons', 'open.png')))
-                b.clicked.connect(functools.partial(self._open_report, item.report))
-                self.layout.addWidget(b, row_id, j)
+            if c == 'controls':
+                self.layout.addLayout(self._get_controls_column(client), row_id, j)
+                continue
+            if c == 'fullname':
+                s = '{} {} {}'.format(client.surname, client.name, client.patronymic)
             else:
-                self.layout.addWidget(QLabel(str(getattr(item, c))), row_id, j)
+                s = str(getattr(client, c))
+            self.layout.addWidget(QLabel(s), row_id, j)
