@@ -328,5 +328,5 @@ def init(bootstrap_function):
     mw = MainWindow(items)
     splash.finish(mw)
 
-    # sys.excepthook = mw.excepthook
+    sys.excepthook = mw.excepthook
     sys.exit(app.exec_())
