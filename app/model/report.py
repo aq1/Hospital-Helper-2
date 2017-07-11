@@ -106,9 +106,9 @@ class Report:
             conclusion = ' '.join(conclusion)
             if BeautifulSoup(conclusion, 'html.parser').text:
                 conclusion = BeautifulSoup(conclusion, 'html.parser')
-                conclusion.p.string = ' '.join([c.string or '' for c in conclusion.find_all('p')])
-                conclusion.p.insert(0, BeautifulSoup(options.CONCLUSION, 'html.parser'))
-                list(map(lambda c: c.extract(), conclusion.find_all('p')[1:]))
+                for p in conclusion.find_all('p'):
+                    p.name = 'span'
+                conclusion.insert(0, BeautifulSoup(options.CONCLUSION, 'html.parser'))
                 document.append(str(conclusion))
 
         document.append(self._get_footer())

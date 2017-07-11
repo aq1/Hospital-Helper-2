@@ -16,13 +16,17 @@ class TextControls(QFrame):
     Group of buttons for text format.
     """
 
-    def __init__(self, text_edit):
+    def __init__(self, text_edit, excluded_controls=None):
         super().__init__()
         layout = QHBoxLayout()
         layout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(layout)
 
+        excluded_controls = excluded_controls or []
+
         for n in 'b', 'i', 'u', 'la', 'ca', 'ra':
+            if n in excluded_controls:
+                continue
             b = QPushButton()
             b.setIcon(QIcon(os.path.join(options.STATIC_DIR, 'icons', n + '.png')))
             b.clicked.connect(functools.partial(text_edit.format_selected, n))
@@ -116,14 +120,14 @@ class TemplateTextEdit(QTextEdit):
 
 class TextEditWithFormatControls(QFrame):
 
-    def __init__(self, items=None, highlighter=None):
+    def __init__(self, items=None, highlighter=None, excluded_controls=None):
         super().__init__()
         layout = QVBoxLayout()
         layout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(layout)
 
         self.template_text_edit = TemplateTextEdit(items, highlighter)
-        self.text_controls = TextControls(self.template_text_edit)
+        self.text_controls = TextControls(self.template_text_edit, excluded_controls)
         layout.addWidget(self.text_controls)
         layout.addWidget(self.template_text_edit)
 
