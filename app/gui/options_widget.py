@@ -9,6 +9,7 @@ from app.model import template
 from app.gui import utils
 from app.gui.template_widget import TemplateWidgetInOptions
 from app.gui.users_and_groups_widget import UsersAndGroupsWidget
+from app.gui.journal_widget import JournalWidget
 
 
 class OptionsWidget(QWidget):
@@ -46,7 +47,7 @@ class OptionsWidget(QWidget):
         return _switch_user
 
     def _get_template_import_func(self, main_window):
-        func = self._wrap_template_func(template.Template.import_, main_window)
+        func = self._wrap_func(template.Template.import_, main_window)
 
         def _alert_callback(path, value):
             if value:
@@ -60,7 +61,7 @@ class OptionsWidget(QWidget):
         return _f
 
     def _get_template_export_func(self, main_window):
-        func = self._wrap_template_func(template.Template.export, main_window)
+        func = self._wrap_func(template.Template.export, main_window)
 
         def _f():
             path = QFileDialog.getExistingDirectory(main_window, 'Выберите путь', options.DATABASE_DIR)
@@ -69,7 +70,7 @@ class OptionsWidget(QWidget):
         return _f
 
     @staticmethod
-    def _wrap_template_func(func, main_window):
+    def _wrap_func(func, main_window):
         def _f(path):
             ok, result = func(path)
             if ok:
@@ -87,11 +88,14 @@ class OptionsWidget(QWidget):
         cols = 3
         vboxes = [QVBoxLayout() for _ in range(cols)]
 
-        widgets = ((TemplateWidgetInOptions(main_window, self.items, self), 'Шаблоны'),
-                   (UsersAndGroupsWidget(main_window, self), 'Пользователи и группы'),
-                   (self._switch_user, 'Сменить пользователя'),
-                   (self._get_template_export_func(main_window), 'Экспортировать шаблоны'),
-                   (self._get_template_import_func(main_window), 'Импортировать шаблоны'))
+        widgets = (
+            (TemplateWidgetInOptions(main_window, self.items, self), 'Шаблоны'),
+            (UsersAndGroupsWidget(main_window, self), 'Пользователи и группы'),
+            (JournalWidget(main_window, self), 'Журнал'),
+            (self._switch_user, 'Сменить пользователя'),
+            (self._get_template_export_func(main_window), 'Экспортировать шаблоны'),
+            (self._get_template_import_func(main_window), 'Импортировать шаблоны'),
+        )
 
         for i, widget in enumerate(widgets):
             b = QPushButton(widget[1])

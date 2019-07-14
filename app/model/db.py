@@ -9,9 +9,17 @@ from sqlalchemy.orm.session import sessionmaker
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm import exc as orm_exc
 from sqlalchemy import create_engine
-from sqlalchemy import (Column, Integer, String, Float,
-                        ForeignKey, Date, SmallInteger,
-                        Text, Boolean)
+from sqlalchemy import (
+    Column,
+    Integer,
+    String,
+    Float,
+    ForeignKey,
+    Date,
+    SmallInteger,
+    Text,
+    Boolean,
+)
 
 from app import options
 
@@ -102,6 +110,9 @@ class Client(Base, Model):
     name = Column(String, nullable=False, default='')
     patronymic = Column(String, nullable=False, default='')
     age = Column(Integer, nullable=False, default=0)
+    date_of_birth = Column(String, nullable=True)
+    phone = Column(String, nullable=True)
+    address = Column(String, nullable=True)
     hr = Column(SmallInteger, nullable=False, default=0)
     height = Column(SmallInteger, nullable=False, default=0)
     weight = Column(SmallInteger, nullable=False, default=0)
@@ -269,17 +280,21 @@ class ModelFactory:
 
 
 def create_db():
+    # I'm not gonna add a migration engine for one migration
+    new_fields = ('date_of_birth', 'phone', 'address')
     try:
-        structure = SESSION.query(KeyValue).get(options.STRUCTURE_KEY)
-        structure = structure.value
-    except (AttributeError, exc.OperationalError):
-        structure = KeyValue(key=options.STRUCTURE_KEY,
-                             value=options.INIT_STRUCTURE)
-        SESSION.add(structure)
-        structure = structure.value
+        SESSION.execute('select {} from klient'.format(','.join(new_fields) ))
+    except exc.OperationalError:
+        for col, max_char in zip(new_fields, (255, 255, 5000)):
+            try:
+                SESSION.execute('alter table klient add column {} char({})'.format(
+                    col,
+                    max_char,
+                ))
+            except exc.OperationalError:
+                pass
 
-    SESSION.flush()
-    return structure
+    return options.INIT_STRUCTURE
 
 
 Base.metadata.create_all(engine)

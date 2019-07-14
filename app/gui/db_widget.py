@@ -35,7 +35,7 @@ class DBWidget(QFrame):
         self._open_report = self._get_open_report_func(main_window)
         self._delete_item = self._get_delete_item_func(main_window)
         self.columns = []
-        self._columns_to_display = ['fullname', 'user', 'age', 'examined', 'controls']
+        self._columns_to_display = ['fullname', 'user', 'date_of_birth', 'examined', 'controls']
         self.layout = QGridLayout()
         self.header_layout = QGridLayout()
         self.control_layout = QWidget()

@@ -1,0 +1,41 @@
+JournalWidget QLineEdit {
+    font-size: 12pt;
+    padding: 10px 30px;
+    margin: 0;
+    icon-size: 18px;
+    line-height: 18px;
+    border-width: 0;
+}
+
+JournalWidget QPushButton#button-white {
+    font-size: 12pt;
+    padding: 10px 30px;
+    margin: 0;
+    icon-size: 18px;
+    line-height: 18px;
+    border-width: 0;
+}
+
+JournalWidget QPushButton#button {
+    font-size: 12pt;
+    padding: 10px 30px;
+    color: white;
+    background-color: #45A0A3;
+    margin: 0;
+    text-transform: uppercase;
+    icon-size: 18px;
+    line-height: 18px;
+    border-width: 0;
+}
+
+JournalWidget QPushButton#button:hover {
+    background-color: #3B8689;
+}
+
+JournalWidget QPushButton#button:pressed {
+    background-color: #1F484A;
+}
+
+JournalWidget QPushButton#button:disabled {
+    background-color: #AAAAAA;
+}

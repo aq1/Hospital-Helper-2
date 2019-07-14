@@ -34,15 +34,20 @@ class Report:
     def _get_client(self, item):
         # It's hardcoded for now
         # FIXME: change it in the future'
-        return db.Client(surname=item['familiia'],
-                         name=item['imia'],
-                         patronymic=item['otchestvo'],
-                         age=item['vozrast'],
-                         hr=item['chss'],
-                         height=item['rost'],
-                         weight=item['ves'],
-                         examined=datetime.date.today(),
-                         user_id=self.user.id)
+        # Nope lol
+        return db.Client(
+            surname=item['familiia'],
+            name=item['imia'],
+            patronymic=item['otchestvo'],
+            date_of_birth=item['datarozhdeniia'],
+            address=item['adres'],
+            phone=item['telefon'],
+            hr=item['chss'],
+            height=item['rost'],
+            weight=item['ves'],
+            examined=datetime.date.today(),
+            user_id=self.user.id,
+        )
 
     def _get_global_style(self):
         return '<style>\n* {{\n{}\n}}\n</style>'.format(
@@ -58,11 +63,15 @@ class Report:
         if not self.user:
             return ''
         else:
-            return ('<p style="text-align:right">{}<br>'
-                    '{} {} {}</p>'.format(datetime.datetime.now().strftime('%d.%m.%Y'),
-                                                 self.user.surname,
-                                                 self.user.name,
-                                                 self.user.patronymic))
+            return (
+                '<p style="text-align:right">{}<br>'
+                '{} {} {}</p>'.format(
+                    datetime.datetime.now().strftime('%d.%m.%Y'),
+                    self.user.surname,
+                    self.user.name,
+                    self.user.patronymic,
+                )
+            )
 
     @staticmethod
     def open(path):
