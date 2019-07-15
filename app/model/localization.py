@@ -57,7 +57,8 @@ class Localization:
     def create_init_translation(cls):
 
         structure = db.SESSION.query(db.KeyValue).filter(
-            db.KeyValue.key == options.STRUCTURE_KEY).first()
+            db.KeyValue.key == options.STRUCTURE_KEY
+        ).first()
 
         try:
             structure = json.loads(structure.value)

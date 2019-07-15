@@ -294,6 +294,11 @@ def create_db():
             except exc.OperationalError:
                 pass
 
+    if not SESSION.query(KeyValue).filter(KeyValue.key == 'structure').update({'value': options.INIT_STRUCTURE}):
+        SESSION.add(KeyValue(key='structure', value=options.INIT_STRUCTURE))
+
+    SESSION.flush()
+
     return options.INIT_STRUCTURE
 
 
