@@ -14,6 +14,7 @@ from PyQt5.QtWidgets import (
     QVBoxLayout,
     QPushButton,
     QLineEdit,
+    QComboBox,
 )
 
 from app.model import db
@@ -21,9 +22,31 @@ from app import options
 
 
 class JournalWidget(QFrame):
+    months = (
+        'Январь',
+        'Февраль',
+        'Март',
+        'Апрель',
+        'Май',
+        'Июнь',
+        'Июль',
+        'Август',
+        'Сентябрь',
+        'Октябрь',
+        'Ноябрь',
+        'Декабрь',
+    )
 
     def __init__(self, main_window, parent):
         super().__init__()
+        now = datetime.datetime.now()
+        self.year = now.year
+        self.month = now.month - 1
+        self.doctors = [
+            (d.id, '{} {}.{}. - {}'.format(d.surname, d.name[0], d.patronymic[0], d.organization.name))
+            for d in db.SESSION.query(db.User).all()
+            if not (d.deleted or d.organization.deleted)
+        ]
 
         self._create_layout(main_window, parent)
 
@@ -36,25 +59,55 @@ class JournalWidget(QFrame):
         vbox.setContentsMargins(15, 15, 15, 15)
         vbox.setSpacing(20)
 
+        hbox = QHBoxLayout()
         year_input = QLineEdit()
         year_input.setMinimumHeight(35)
-        year_input.setText(str(datetime.datetime.now().year))
-        vbox.addWidget(year_input)
+        year_input.setText(str(self.year))
+        year_input.textChanged.connect(self._set_year)
+        hbox.addWidget(year_input)
 
-        b = QPushButton('Создать журнал')
-        b.setObjectName('button-white')
-        b.clicked.connect(self._create_journal(main_window, year_input))
-        vbox.addWidget(b)
+        month_input = QComboBox(self, maxVisibleItems=6)
+        month_input.view().setSpacing(6)
+        list(map(month_input.addItem, self.months))
+        month_input.setCurrentIndex(self.month)
+        month_input.activated[str].connect(self._set_month)
+        hbox.addWidget(month_input)
 
+        vbox.addLayout(hbox)
+
+        self.doctor_input = QComboBox(self, maxVisibleItems=4)
+        self.doctor_input.view().setSpacing(6)
+        list(map(self.doctor_input.addItem, [d[1] for d in self.doctors]))
+        vbox.addWidget(self.doctor_input)
+
+        hbox = QHBoxLayout()
         b = QPushButton('Назад')
         b.setObjectName('button')
         b.clicked.connect(functools.partial(parent.set_current_index, 0))
-        vbox.addWidget(b)
+        hbox.addWidget(b)
+
+        b = QPushButton('Создать журнал')
+        b.setObjectName('button-white')
+        b.clicked.connect(self._create_journal(main_window))
+        hbox.addWidget(b)
+
+        vbox.addStretch()
+        vbox.addLayout(hbox)
 
         vbox.addStretch()
         layout.addLayout(vbox)
         layout.addStretch()
         self.setLayout(layout)
+
+    def _set_year(self, text):
+        self.year = text
+
+    def _set_month(self, text):
+        self.month = self.months.index(text)
+
+    @property
+    def doctor(self):
+        return self.doctors[self.doctor_input.currentIndex()]
 
     @staticmethod
     def _open(path):
@@ -67,16 +120,22 @@ class JournalWidget(QFrame):
         else:
             raise AttributeError('Unknown system')
 
-    @staticmethod
-    def _get_reports(year):
-        return db.SESSION.query(db.Report).filter(
-            extract('year', db.Client.examined) == year,
-        ).all()
+    def _get_reports(self):
+        q = db.SESSION.query(db.Report).join(db.Client).join(db.User)
+        q = q.filter(
+            extract('year', db.Client.examined) == self.year,
+            extract('month', db.Client.examined) == self.month + 1,
+        )
+        q = q.filter(db.Client.user_id == self.doctor[0])
+        return q
 
     @staticmethod
     def _get_conclusion_from_report(report):
         conclusion = []
-        doc = load(report.path)
+        try:
+            doc = load(report.path)
+        except FileNotFoundError:
+            return 'Не найдено'
         paragraphs = doc.getElementsByType(text.P)
         for i in range(len(paragraphs)):
             if teletype.extractText(paragraphs[i]).strip().startswith('Заключение:'):
@@ -101,23 +160,28 @@ class JournalWidget(QFrame):
 
         return data
 
-    def _create_journal(self, main_window, year_input):
+    def _create_journal(self, main_window):
         def _f():
             try:
-                year = int(year_input.text())
-                if year > datetime.datetime.now().year or year < 1900:
+                if self.year > datetime.datetime.now().year or self.year < 1900:
                     raise ValueError
             except ValueError:
                 main_window.create_alert('Неправильно введен год')
                 return
 
-            reports = self._get_reports(year)
+            reports = self._get_reports()
             journal = []
             for report in reports:
                 journal.append(self._get_data_from_report(report))
 
-            path = os.path.join(options.REPORTS_DIR, 'Журнал {}.csv'.format(year))
-            with open(path, 'w', encoding='utf8') as journal_file:
+            path = os.path.join(
+                options.REPORTS_DIR, 'Журнал {} {} {}.csv'.format(
+                    self.year,
+                    self.months[self.month],
+                    self.doctor[1],
+                )
+            )
+            with open(path, 'w', encoding='cp1251') as journal_file:
                 journal_file_writer = csv.writer(journal_file, quotechar='"')
                 journal_file_writer.writerow(['Дата', 'ФИО', 'Дата Рождения', 'Адрес', 'Заключение'])
                 for row in journal:

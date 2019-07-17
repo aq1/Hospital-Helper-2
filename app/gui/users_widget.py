@@ -9,7 +9,6 @@ from app.gui import utils
 
 
 class UsersWidget(QFrame):
-
     """
     Widget for selecting and creating Users.
     """
@@ -43,6 +42,7 @@ class UsersWidget(QFrame):
                                                                 functools.partial(main_window.create_crud_widget,
                                                                                   db.User,
                                                                                   self._update_content))
+
         return _show_event
 
     def _update_content(self, *args):
@@ -51,8 +51,10 @@ class UsersWidget(QFrame):
         """
 
         utils.clear_layout(self.content_layout)
-        self.users = list(db.SESSION.query(db.User).filter(db.User.deleted == False,
-                                                           db.Organization.deleted == False))
+        self.users = list(db.SESSION.query(db.User).filter(
+            db.User.deleted == False,
+            db.Organization.deleted == False)
+        )
         organizations = list(db.SESSION.query(db.Organization).filter(db.Organization.deleted == False))
 
         for organization in organizations:
@@ -87,4 +89,3 @@ class UsersWidget(QFrame):
         Select user.
         """
         self.main_window.user_selected(user, go_to_data_frame=True)
-

@@ -7,6 +7,18 @@ JournalWidget QLineEdit {
     border-width: 0;
 }
 
+JournalWidget QComboBox {
+    font-size: 12pt;
+    padding: 10px 30px;
+    margin: 0;
+    icon-size: 18px;
+    border-width: 0;
+}
+
+JournalWidget QComboBox QAbstractItemView QWidget {
+    color: red;
+}
+
 JournalWidget QPushButton#button-white {
     font-size: 12pt;
     padding: 10px 30px;
