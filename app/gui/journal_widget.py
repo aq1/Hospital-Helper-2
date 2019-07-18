@@ -1,10 +1,16 @@
 import os
-import csv
 import datetime
 import functools
 import subprocess
 
-from odf import text, teletype
+from odf import (
+    opendocument,
+    style,
+    text,
+    teletype,
+    table,
+)
+
 from odf.opendocument import load
 from sqlalchemy import extract
 
@@ -39,6 +45,7 @@ class JournalWidget(QFrame):
 
     def __init__(self, main_window, parent):
         super().__init__()
+        self.main_window = main_window
         now = datetime.datetime.now()
         self.year = now.year
         self.month = now.month - 1
@@ -160,10 +167,59 @@ class JournalWidget(QFrame):
 
         return data
 
+    def _write_journal(self, journal):
+        path = os.path.join(
+            options.REPORTS_DIR, 'Журнал {} {} {}.odt'.format(
+                self.year,
+                self.months[self.month],
+                self.doctor[1],
+            )
+        )
+
+        doc = opendocument.OpenDocumentText()
+        table_style = style.Style(name='tableStyle', family='table', masterpagename='masterQ')
+        page_layout = style.PageLayout(name='pageStyle')
+        page_layout.addElement(style.PageLayoutProperties(
+            printorientation='landscape',
+            margin='0cm',
+            pagewidth='290cm',
+            pageheight='21cm',
+        ))
+        master_q = style.MasterPage(name='masterQ', pagelayoutname=page_layout)
+        doc.automaticstyles.addElement(table_style)
+        doc.automaticstyles.addElement(page_layout)
+        doc.masterstyles.addElement(master_q)
+
+        journal = (
+                [['Дата', 'ФИО', 'Дата Рождения', 'Адрес', 'Заключение']] +
+                journal
+        )
+
+        _table = table.Table(name='journal')
+        _table.addElement(table.TableColumn(numbercolumnsrepeated=len(journal[0])))
+        for data in journal:
+            row = table.TableRow()
+            _table.addElement(row)
+            for col in data:
+                cell = table.TableCell(valuetype='string')
+                cell.addElement(text.P(text=str(col or '')))
+                row.addElement(cell)
+
+        doc.text.addElement(_table)
+        try:
+            doc.save(path)
+        except PermissionError:
+            self.main_window.create_alert(
+                'Файл журнала используется.\nЗакройте его и создайте снова.'
+            )
+            return
+        self._open(path)
+
     def _create_journal(self, main_window):
         def _f():
             try:
-                if self.year > datetime.datetime.now().year or self.year < 1900:
+                year = int(self.year)
+                if year > datetime.datetime.now().year or year < 1900:
                     raise ValueError
             except ValueError:
                 main_window.create_alert('Неправильно введен год')
@@ -174,19 +230,6 @@ class JournalWidget(QFrame):
             for report in reports:
                 journal.append(self._get_data_from_report(report))
 
-            path = os.path.join(
-                options.REPORTS_DIR, 'Журнал {} {} {}.csv'.format(
-                    self.year,
-                    self.months[self.month],
-                    self.doctor[1],
-                )
-            )
-            with open(path, 'w', encoding='cp1251') as journal_file:
-                journal_file_writer = csv.writer(journal_file, quotechar='"')
-                journal_file_writer.writerow(['Дата', 'ФИО', 'Дата Рождения', 'Адрес', 'Заключение'])
-                for row in journal:
-                    journal_file_writer.writerow(row)
-
-            self._open(path)
+            self._write_journal(journal)
 
         return _f

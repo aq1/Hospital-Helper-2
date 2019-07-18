@@ -41,6 +41,10 @@
                 "name": "Чсс"
             },
             {
+                "name": "Возраст",
+                "calculation": "get_years_from_birthday(ДатаРождения)"
+            },
+            {
                 "name": "_ППТ",
                 "calculation": "sqrt(Рост * Вес / 3600)"
             }

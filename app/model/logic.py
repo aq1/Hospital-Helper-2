@@ -2,14 +2,26 @@ import sys
 import re
 import json
 import math
+import datetime
 import builtins
 import collections
-from collections import defaultdict
 
 import unidecode
 
 from app import options
 from app.model import exceptions, db
+
+
+class YearsFromBirthday:
+
+    @staticmethod
+    def get_years_from_birthday(date_of_birth):
+        try:
+            return math.floor(
+                (datetime.datetime.now() - datetime.datetime.strptime(date_of_birth, '%d.%m.%Y')).total_seconds() / 31557600
+            )
+        except ValueError:
+            raise ZeroDivisionError
 
 
 class AllowedModule(list):
@@ -18,11 +30,13 @@ class AllowedModule(list):
 
     def __init__(self, module):
         self.name = module.__name__
-        super().__init__(
-            [attr for attr in dir(module) if attr not in self.excluded_attr])
+        super().__init__([attr
+             for attr in dir(module)
+             if attr not in self.excluded_attr
+        ])
 
 
-MODULES = math, builtins
+MODULES = math, builtins, YearsFromBirthday
 ALLOWED_MODULES = [AllowedModule(module) for module in MODULES]
 
 
@@ -157,7 +171,8 @@ class CalculableObject(collections.OrderedDict):
             calculation = each.get('calculation')
             if calculation:
                 self.calculations.append(
-                    parser.parse_calculation_string(each['name'], calculation))
+                    parser.parse_calculation_string(each['name'], calculation)
+                )
 
         self.calculations = self.calculation_divider.join(self.calculations)
 
@@ -222,7 +237,7 @@ class CalculableObject(collections.OrderedDict):
 
     def for_template(self):
         out = {
-            self.name: defaultdict(str)
+            self.name: collections.defaultdict(str)
         }
 
         for key, value in self.items():
