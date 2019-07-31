@@ -57,7 +57,7 @@ class SelectMenu(QWidget):
 
         SelectItemMenu(main_window, self, items)
         self.buttons[0].setText(_(main_window.items[0].name))
-        self.buttons[0].setFixedWidth(int(main_window.width() / 5))
+        # self.buttons[0].setFixedWidth(max(items))
         hbox.addStretch()
 
     def _item_selected(self, index):
@@ -141,7 +141,7 @@ class SelectItemMenu(QFrame):
         """
 
         return [(key, getattr(Qt, 'Key_{}'.format(key), -1))
-                for key in '12345qwertsdfgcv'.upper()]
+                for key in '123456qwertysdfgcvb'.upper()]
 
     def _get_btn_clicked_func(self, main_window, select_menu):
 

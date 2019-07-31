@@ -18,22 +18,22 @@ class YearsFromBirthday:
     def get_years_from_birthday(date_of_birth):
         try:
             return math.floor(
-                (datetime.datetime.now() - datetime.datetime.strptime(date_of_birth, '%d.%m.%Y')).total_seconds() / 31557600
+                (datetime.datetime.now() - datetime.datetime.strptime(date_of_birth,
+                                                                      '%d.%m.%Y')).total_seconds() / 31557600
             )
         except ValueError:
             raise ZeroDivisionError
 
 
 class AllowedModule(list):
-
     excluded_attr = ('exec', 'eval')
 
     def __init__(self, module):
         self.name = module.__name__
         super().__init__([attr
-             for attr in dir(module)
-             if attr not in self.excluded_attr
-        ])
+                          for attr in dir(module)
+                          if attr not in self.excluded_attr
+                          ])
 
 
 MODULES = math, builtins, YearsFromBirthday
@@ -41,7 +41,6 @@ ALLOWED_MODULES = [AllowedModule(module) for module in MODULES]
 
 
 class Parser:
-
     """
     Used to parse structure and calculation strings
     """
@@ -98,7 +97,6 @@ class Parser:
 
 
 class Mediator:
-
     """
     Sort of implementation of 'Mediator' pattern.
     Provides access to other objects attributes.
@@ -149,7 +147,6 @@ class Mediator:
 
 
 class CalculableObject(collections.OrderedDict):
-
     calculation_divider = ';\n'
 
     def __init__(self, name, verbose_name, group, args, parser, mediator, model=None, item=None):
@@ -246,12 +243,10 @@ class CalculableObject(collections.OrderedDict):
 
 
 class ObjectFactory:
-
     model_factory = db.ModelFactory()
 
     @classmethod
     def get_object(cls, info):
-
         model = None
         group, _ = db.Group.get_or_create(name=info.get('group', info['name']), instant_flush=True)
         item, _ = db.Item.get_or_create(name=info['name'], group=group, instant_flush=True)
@@ -259,11 +254,13 @@ class ObjectFactory:
         if info.get('db'):
             model = cls.model_factory.get_model(info)
 
-        return CalculableObject(name=info['name'],
-                                verbose_name=info.get('verbose_name', info['name']),
-                                args=info['args'],
-                                group=info.get('group', info['name']),
-                                parser=Parser(),
-                                mediator=Mediator(),
-                                model=model,
-                                item=item)
+        return CalculableObject(
+            name=info['name'],
+            verbose_name=info.get('verbose_name', info['name']),
+            args=info['args'],
+            group=info.get('group', info['name']),
+            parser=Parser(),
+            mediator=Mediator(),
+            model=model,
+            item=item,
+        )
