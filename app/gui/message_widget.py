@@ -46,13 +46,14 @@ class MessageWidget(QFrame):
         animation = {'show': QPropertyAnimation(self, b'pos'),
                      'hide': QPropertyAnimation(self, b'pos')}
 
-        animation['show'].setStartValue(QPoint(self.x_pos, main_window.height()))
-        animation['show'].setEndValue(QPoint(self.x_pos, main_window.height() - self.height()))
+        x_pos = self.parent().width() - self.width() - self.RIGHT_MARGIN
+        animation['show'].setStartValue(QPoint(x_pos, main_window.height()))
+        animation['show'].setEndValue(QPoint(x_pos, main_window.height() - self.height()))
         animation['show'].setDuration(200)
         animation['show'].finished.connect(self._set_timeout_to_hide)
 
-        animation['hide'].setStartValue(QPoint(self.x_pos, main_window.height() - self.height()))
-        animation['hide'].setEndValue(QPoint(self.x_pos, main_window.height()))
+        animation['hide'].setStartValue(QPoint(x_pos, main_window.height() - self.height()))
+        animation['hide'].setEndValue(QPoint(x_pos, main_window.height()))
         animation['hide'].setDuration(200)
         animation['hide'].finished.connect(self.hide)
         return animation
@@ -72,10 +73,17 @@ class MessageWidget(QFrame):
             self.label.setText(text)
             self.show()
             self.raise_()
-            self.setFixedSize(self.label.width(), self.height())
-            self.move(main_window.width() - self.width() - self.RIGHT_MARGIN,
-                      main_window.height())
+            width = self.label.fontMetrics().boundingRect(self.label.text()).width() + self.RIGHT_MARGIN
+            self.setFixedSize(
+                width,
+                self.height(),
+            )
+            self.move(
+                main_window.width() - self.width() - self.RIGHT_MARGIN,
+                main_window.height(),
+            )
             self._animation['show'].start()
+
         return _show
 
     def _hide(self):

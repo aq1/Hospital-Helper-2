@@ -6,9 +6,21 @@ import datetime
 
 from sqlalchemy.orm import exc
 
-from PyQt5.QtCore import QCoreApplication, Qt, QObject, pyqtSignal
-from PyQt5.QtWidgets import (QWidget, QStackedLayout, QDesktopWidget,
-                             QVBoxLayout, QShortcut, QApplication, QSplashScreen)
+from PyQt5.QtCore import (
+    QCoreApplication,
+    Qt,
+    QObject,
+    pyqtSignal,
+)
+from PyQt5.QtWidgets import (
+    QWidget,
+    QStackedLayout,
+    QDesktopWidget,
+    QVBoxLayout,
+    QShortcut,
+    QApplication,
+    QSplashScreen,
+)
 
 from PyQt5.QtGui import QKeySequence, QPixmap, QIcon
 

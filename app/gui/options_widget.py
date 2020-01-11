@@ -10,6 +10,7 @@ from app.gui import utils
 from app.gui.template_widget import TemplateWidgetInOptions
 from app.gui.users_and_groups_widget import UsersAndGroupsWidget
 from app.gui.journal_widget import JournalWidget
+from app.gui.update_widget import UpdateWidget
 
 
 class OptionsWidget(QWidget):
@@ -95,6 +96,7 @@ class OptionsWidget(QWidget):
             (self._switch_user, 'Сменить пользователя'),
             (self._get_template_export_func(main_window), 'Экспортировать шаблоны'),
             (self._get_template_import_func(main_window), 'Импортировать шаблоны'),
+            (UpdateWidget(main_window), 'Обновить программу'),
         )
 
         for i, widget in enumerate(widgets):

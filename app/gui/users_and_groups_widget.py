@@ -5,8 +5,15 @@ from bs4 import BeautifulSoup
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import (QFrame, QHBoxLayout, QLabel, QVBoxLayout, QComboBox,
-                             QPushButton, QTextEdit, QWidget)
+from PyQt5.QtWidgets import (
+    QFrame,
+    QHBoxLayout,
+    QLabel,
+    QVBoxLayout,
+    QComboBox,
+    QPushButton,
+    QWidget,
+)
 
 from app import options
 from app.model import db

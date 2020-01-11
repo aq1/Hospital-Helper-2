@@ -1,4 +1,11 @@
-from PyQt5.QtWidgets import QFrame, QPushButton, QHBoxLayout, QLabel
+from PyQt5.QtWidgets import (
+    QFrame,
+    QPushButton,
+    QHBoxLayout,
+    QLabel,
+)
+
+from app import options
 
 
 class TopSystemButtons(QFrame):
@@ -56,7 +63,10 @@ class TopSystemButtons(QFrame):
         Change title when user is selected.
         """
 
-        self.title.setText(str(user))
+        self.title.setText('{} - Hospital Helper v{}'.format(
+            str(user),
+            options.VERSION,
+        ))
 
     def mousePressEvent(self, event):
         self.move_offset = event.pos()

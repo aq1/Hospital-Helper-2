@@ -2,13 +2,16 @@ import os
 import sys
 import json
 
+VERSION = '1.0'
+
 STRUCTURE_KEY = 'structure'
 FIRST_START_KEY = 'first_start'
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+APP_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = os.path.dirname(APP_DIR)
 DATABASE_DIR = os.path.dirname(sys.executable)
 DATABASE = os.path.join(DATABASE_DIR, 'data.sqlite3')
-DATA_DIR = os.path.join(BASE_DIR, 'data')
+DATA_DIR = os.path.join(APP_DIR, 'data')
 LOG_FILE = os.path.join(DATABASE_DIR, 'error.log')
 
 # klient left here intentionally
@@ -29,7 +32,7 @@ TEMPLATE_GLOBAL_STYLE = {
     'line-height': '11pt',
 }
 
-STATIC_DIR = os.path.join(BASE_DIR, 'gui', 'static')
+STATIC_DIR = os.path.join(APP_DIR, 'gui', 'static')
 REPORTS_DIR = os.path.join(DATABASE_DIR, 'reports')
 
 TYPES = {
