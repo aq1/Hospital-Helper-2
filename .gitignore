@@ -66,3 +66,4 @@ app/reports/
 *.odt
 .vagrant/
 venv/
+app/local_options.py

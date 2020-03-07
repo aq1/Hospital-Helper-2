@@ -62,3 +62,9 @@ CONTROL_BUTTONS_LABELS = [
     {'sys': 'db', 'ru': 'База', 'en': 'DB'},
     {'sys': 'options', 'ru': 'Настройки', 'en': 'Options'},
 ]
+
+
+try:
+    from .local_options import *
+except ImportError:
+    pass

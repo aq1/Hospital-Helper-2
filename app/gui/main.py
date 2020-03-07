@@ -1,10 +1,12 @@
 import os
 import sys
+import threading
 import functools
 import traceback as trb
 import datetime
 
 from sqlalchemy.orm import exc
+import telegram
 
 from PyQt5.QtCore import (
     QCoreApplication,
@@ -305,12 +307,28 @@ class MainWindow(QWidget):
         self.setWindowState(Qt.WindowMinimized)
 
     def excepthook(self, exctype, value, traceback):
+        text = '\n'.join(trb.format_exception(exctype, value, traceback))
+
         with open(options.LOG_FILE, 'a') as f:
-            f.write('\n{}\n{}'.format(datetime.datetime.now(),
-                                      '\n'.join(trb.format_exception(exctype, value, traceback))))
+            f.write(
+                '\n{}\n{}'.format(
+                    datetime.datetime.now(),
+                    text,
+                ))
 
         self.create_alert('Произошла непредвиденная ошибка.\n'
                           'Попробуйте повторить действие, хотя это вряд ли поможет')
+
+        def send_alert_to_telegram():
+            bot = telegram.Bot(token=options.TELEGRAM_TOKEN)
+            bot.send_message(
+                chat_id=options.ADMIN_CHAT_ID,
+                text=f'```{text}```',
+                parse_mode=telegram.ParseMode.MARKDOWN,
+            )
+
+        thread = threading.Thread(target=send_alert_to_telegram)
+        thread.start()
 
 
 def init(bootstrap_function):
