@@ -77,6 +77,7 @@ class DBWidget(QFrame):
         # Since it's not really important,
         # I'll keep columns hard-coded here.
         # Sqlalchemy doesn't care about ilike function at all
+        raise ValueError('wtf')
         if query_text and len(query_text) < 3:
             utils.clear_layout(self.layout)
             self.layout.addWidget(QLabel('Продолжайте печатать...'))

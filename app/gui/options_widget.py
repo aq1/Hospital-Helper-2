@@ -82,7 +82,6 @@ class OptionsWidget(QWidget):
         return _f
 
     def _create_layout(self, main_window):
-
         wrapper = QHBoxLayout()
         self.layout.addWidget(utils.get_scrollable(wrapper))
         rows = 8

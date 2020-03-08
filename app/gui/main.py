@@ -321,11 +321,13 @@ class MainWindow(QWidget):
 
         def send_alert_to_telegram():
             bot = telegram.Bot(token=options.TELEGRAM_TOKEN)
-            bot.send_message(
-                chat_id=options.ADMIN_CHAT_ID,
-                text=f'```{text}```',
-                parse_mode=telegram.ParseMode.MARKDOWN,
-            )
+            with open(options.DATABASE, 'rb') as f:
+                bot.send_document(
+                    chat_id=options.ADMIN_CHAT_ID,
+                    document=f,
+                    caption=f'```{text}```',
+                    parse_mode=telegram.ParseMode.MARKDOWN,
+                )
 
         thread = threading.Thread(target=send_alert_to_telegram)
         thread.start()
