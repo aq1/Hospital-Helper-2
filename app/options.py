@@ -63,6 +63,8 @@ CONTROL_BUTTONS_LABELS = [
     {'sys': 'options', 'ru': 'Настройки', 'en': 'Options'},
 ]
 
+LOG_PATH = 'https://10khl.com/utils/log/'
+
 
 try:
     from .local_options import *

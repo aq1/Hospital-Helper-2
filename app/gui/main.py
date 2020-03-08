@@ -6,7 +6,7 @@ import traceback as trb
 import datetime
 
 from sqlalchemy.orm import exc
-import telegram
+import requests
 
 from PyQt5.QtCore import (
     QCoreApplication,
@@ -319,17 +319,20 @@ class MainWindow(QWidget):
         self.create_alert('Произошла непредвиденная ошибка.\n'
                           'Попробуйте повторить действие, хотя это вряд ли поможет')
 
-        def send_alert_to_telegram():
-            bot = telegram.Bot(token=options.TELEGRAM_TOKEN)
+        def send_alert():
             with open(options.DATABASE, 'rb') as f:
-                bot.send_document(
-                    chat_id=options.ADMIN_CHAT_ID,
-                    document=f,
-                    caption=f'```{text}```',
-                    parse_mode=telegram.ParseMode.MARKDOWN,
+                requests.post(
+                    options.LOG_PATH,
+                    data={
+                        'user': os.getlogin(),
+                        'traceback': text,
+                    },
+                    files={
+                        'db': f
+                    }
                 )
 
-        thread = threading.Thread(target=send_alert_to_telegram)
+        thread = threading.Thread(target=send_alert)
         thread.start()
 
 

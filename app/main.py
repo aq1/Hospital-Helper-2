@@ -26,7 +26,6 @@ def convert_structure_to_items(structure):
 
 
 def init():
-
     structure = db.create_db()
     items = convert_structure_to_items(structure)
     localization.Localization.install('ru')
