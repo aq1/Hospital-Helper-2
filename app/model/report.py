@@ -20,6 +20,7 @@ class Report:
             self.user.organization = db.SESSION.query(db.Organization).get(self.user.organization_id)
 
         self.template_groups = OrderedDict()
+        self.items = items
 
         for item in items:
             if item.name == options.CLIENT_TABLE_NAME:
@@ -100,7 +101,10 @@ class Report:
     def render(self):
         document = [self._get_global_style(), self._get_header()]
 
-        keywords = defaultdict(lambda: defaultdict(str))
+        keywords = {}
+        for item in self.items:
+            keywords[item.name] = defaultdict(str)
+
         for k, group in self.template_groups.items():
             for item in group:
                 keywords.update(item.for_template())
