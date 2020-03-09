@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 from PyQt5.Qt import QColor, Qt, QBrush, QFont, QRegExp
 from PyQt5.QtGui import QSyntaxHighlighter, QTextCharFormat, QGuiApplication
 from PyQt5.QtWidgets import (QFrame, QHBoxLayout, QLabel, QStackedLayout,
-                             QVBoxLayout, QPushButton, QTextEdit, QWidget,
+                             QVBoxLayout, QPushButton, QWidget,
                              QRadioButton, QLineEdit, QComboBox)
 
 from app.model import template as template_module
@@ -33,6 +33,16 @@ class SyntaxHighlighter(QSyntaxHighlighter):
 
     def set_rules(self, item):
         self.rules = []
+        bad_syntax_format = QTextCharFormat()
+        self.item_keywords.setFontWeight(QFont.Bold)
+        bad_syntax_format.setForeground(
+            QBrush(QColor(190, 0, 0), Qt.SolidPattern)
+        )
+        self.rules.append({
+            'pattern': QRegExp(r'\{|\}'),
+            'format': bad_syntax_format,
+        })
+
         for each in self.items:
             if each.id == item.id:
                 format_ = self.item_keywords
@@ -209,10 +219,15 @@ class TemplateEditingWidget(QFrame):
 
             try:
                 self.template.render_and_save()
-            except exceptions.CannotSaveTemplate:
+            except exceptions.CannotSaveTemplate as e:
                 main_window.create_alert('Не удалось сохранить шаблон.\nПоле "Имя" обязательно.')
             except exceptions.NeedBodyOrConclusion:
                 main_window.create_alert('Необходимо добавить тело или заключение шаблона.')
+            except exceptions.TemplateFormatError:
+                main_window.create_alert(
+                    'Неправильный формат шаблона.\n'
+                    'Возможно в тексте есть одиночная фигрурная скобка. Удалите её'
+                )
             else:
                 main_window.show_message('Шаблон сохранен')
         return save

@@ -64,7 +64,7 @@ CONTROL_BUTTONS_LABELS = [
 ]
 
 LOG_PATH = 'https://10khl.com/utils/log/'
-
+DEBUG = False
 
 try:
     from .local_options import *

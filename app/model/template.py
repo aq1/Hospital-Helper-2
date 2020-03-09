@@ -46,8 +46,15 @@ class Template:
         template.name = self.name
         template.body = self.body
         template.conclusion = self.conclusion
+        self._validate_body()
         template.save()
         self.pk = template.id
+
+    def _validate_body(self):
+        try:
+            re.sub(r'\{.*?\}', '', self.body).format()
+        except ValueError:
+            raise exceptions.TemplateFormatError
 
     def get_translated_body(self, reverse=False):
         """

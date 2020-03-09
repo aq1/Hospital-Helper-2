@@ -53,3 +53,7 @@ class NoTemplateForItem(Warning):
 
     def __str__(self):
         return 'No template found for item'
+
+
+class TemplateFormatError(Exception):
+    pass

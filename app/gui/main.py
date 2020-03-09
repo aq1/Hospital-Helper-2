@@ -242,9 +242,15 @@ class MainWindow(QWidget):
         """
 
         r = report.Report(self.user, self.items)
-        db_report = r.render_and_save()
-        r.open(db_report.path)
-        self.show_message('Отчет создан')
+        try:
+            db_report = r.render_and_save()
+        except Exception as e:
+            self.create_alert(f'Произошла ошибка при создании отчета.\nПроверьте шаблоны.\n{e}')
+            if not options.DEBUG:
+                self.excepthook(type(e), e, e.__traceback__)
+        else:
+            r.open(db_report.path)
+            self.show_message('Отчет создан')
 
     def clean_input(self):
         def _clean_input(value):
@@ -332,8 +338,7 @@ class MainWindow(QWidget):
                     }
                 )
 
-        thread = threading.Thread(target=send_alert)
-        thread.start()
+        threading.Thread(target=send_alert).start()
 
 
 def init(bootstrap_function):
@@ -363,5 +368,6 @@ def init(bootstrap_function):
     mw = MainWindow(items)
     splash.finish(mw)
 
-    sys.excepthook = mw.excepthook
+    if not options.DEBUG:
+        sys.excepthook = mw.excepthook
     sys.exit(app.exec_())
