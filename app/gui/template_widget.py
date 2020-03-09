@@ -36,7 +36,7 @@ class SyntaxHighlighter(QSyntaxHighlighter):
         bad_syntax_format = QTextCharFormat()
         self.item_keywords.setFontWeight(QFont.Bold)
         bad_syntax_format.setForeground(
-            QBrush(QColor(190, 0, 0), Qt.SolidPattern)
+            QBrush(QColor(250, 0, 0), Qt.SolidPattern)
         )
         self.rules.append({
             'pattern': QRegExp(r'\{|\}'),
