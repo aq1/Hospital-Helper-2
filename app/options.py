@@ -63,7 +63,7 @@ CONTROL_BUTTONS_LABELS = [
     {'sys': 'options', 'ru': 'Настройки', 'en': 'Options'},
 ]
 
-LOG_PATH = 'https://10khl.com/utils/log/'
+LOG_PATH = 'https://valiz-uzi.ru/utils/log/'
 DEBUG = False
 
 try:
