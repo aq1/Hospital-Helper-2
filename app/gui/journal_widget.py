@@ -161,6 +161,7 @@ class JournalWidget(QFrame):
                 report.client.patronymic,
             ),
             report.client.date_of_birth,
+            report.client.phone,
             report.client.address,
             self._get_conclusion_from_report(report),
         ]
@@ -191,7 +192,7 @@ class JournalWidget(QFrame):
         doc.masterstyles.addElement(master_q)
 
         journal = (
-                [['Дата', 'ФИО', 'Дата Рождения', 'Адрес', 'Заключение']] +
+                [['Дата', 'ФИО', 'Дата Рождения', 'Телефон', 'Адрес', 'Заключение']] +
                 journal
         )
 
